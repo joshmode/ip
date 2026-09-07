@@ -26,14 +26,13 @@ import bibi.task.Todo;
  * while parsing: a {@code deadline} line becomes a finished {@link Deadline}, and
  * {@code mark 2} becomes a number, so a command can assume its input is sound.
  */
-public class Parser {
+public final class Parser {
     /**
      * Hides the constructor, because this class holds only static helpers and
      * is never meant to be instantiated.
      */
     private Parser() {
     }
-
 
     /**
      * Reads one line of user input and returns the command it describes.
@@ -48,39 +47,40 @@ public class Parser {
             throw new BibiException("Please enter a command.");
         }
 
-        // Compared in lower case so command words are recognised whatever case
+        // Compared in lower case so command words are recognized whatever case
         // the user typed, while arguments are taken from the original text.
-        String command = input.toLowerCase(Locale.ROOT);
+        String lowerCasedInput = input.toLowerCase(Locale.ROOT);
 
-        if (isCommand(command, "bye")) {
+        if (isCommand(lowerCasedInput, "bye")) {
             return new ExitCommand();
-        } else if (isCommand(command, "list")) {
+        } else if (isCommand(lowerCasedInput, "list")) {
             return new ListCommand();
-        } else if (isCommand(command, "sort")) {
+        } else if (isCommand(lowerCasedInput, "sort")) {
             return new SortCommand();
-        } else if (isCommand(command, "help")) {
+        } else if (isCommand(lowerCasedInput, "help")) {
             return new HelpCommand();
-        } else if (isCommand(command, "todo")) {
+        } else if (isCommand(lowerCasedInput, "todo")) {
             return new AddCommand(new Todo(argumentOf(input, "todo")));
-        } else if (isCommand(command, "deadline")) {
+        } else if (isCommand(lowerCasedInput, "deadline")) {
             return new AddCommand(parseDeadline(argumentOf(input, "deadline")));
-        } else if (isCommand(command, "event")) {
+        } else if (isCommand(lowerCasedInput, "event")) {
             return new AddCommand(parseEvent(argumentOf(input, "event")));
-        } else if (isCommand(command, "mark")) {
+        } else if (isCommand(lowerCasedInput, "mark")) {
             return new MarkCommand(parseTaskNumber(argumentOf(input, "mark"), "mark"));
-        } else if (isCommand(command, "unmark")) {
+        } else if (isCommand(lowerCasedInput, "unmark")) {
             return new UnmarkCommand(parseTaskNumber(argumentOf(input, "unmark"), "unmark"));
-        } else if (isCommand(command, "remove")) {
+        } else if (isCommand(lowerCasedInput, "remove")) {
             return new DeleteCommand(parseTaskNumber(argumentOf(input, "remove"), "remove"));
-        } else if (isCommand(command, "find")) {
+        } else if (isCommand(lowerCasedInput, "find")) {
             return new FindCommand(requireKeyword(argumentOf(input, "find")));
-        } else if (isCommand(command, "on")) {
+        } else if (isCommand(lowerCasedInput, "on")) {
             // Any time of day in the query is ignored, since the question is
             // which tasks belong to the day as a whole.
             return new OnCommand(TaskDateTime.parse(argumentOf(input, "on")).getDate());
         } else {
             throw new BibiException("I don't understand that command. "
-                    + "Try todo, deadline, event, list, sort, find, on, mark, unmark, or bye.");
+                    + "Try todo, deadline, event, list, sort, find, on, mark, unmark, remove, "
+                    + "help, or bye.");
         }
     }
 
