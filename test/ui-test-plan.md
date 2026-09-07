@@ -128,7 +128,7 @@ bye
 
 ```text
 Bibi: Please enter a command.
-Bibi: I don't understand that command. Try todo, deadline, event, list, sort, find, on, mark, unmark, or bye.
+Bibi: I don't understand that command. Try todo, deadline, event, list, sort, find, on, mark, unmark, remove, help, or bye.
 Bibi: Use todo followed by a description.
 Bibi: Use mark followed by a task number, for example: mark 2
 ```

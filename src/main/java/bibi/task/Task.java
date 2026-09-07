@@ -16,7 +16,7 @@ public abstract class Task {
     public static final String FIELD_SEPARATOR = "|";
 
     private final String description;
-    private boolean complete;
+    private boolean isComplete;
 
     /**
      * Creates an incomplete task with the supplied description.
@@ -26,7 +26,7 @@ public abstract class Task {
      */
     protected Task(String description) throws BibiException {
         this.description = requireTaskText(description, "A task needs a description.");
-        complete = false;
+        isComplete = false;
     }
 
     /**
@@ -56,14 +56,14 @@ public abstract class Task {
      * Marks this task as complete.
      */
     public void markComplete() {
-        complete = true;
+        isComplete = true;
     }
 
     /**
      * Marks this task as incomplete.
      */
     public void markIncomplete() {
-        complete = false;
+        isComplete = false;
     }
 
     /**
@@ -145,7 +145,7 @@ public abstract class Task {
                 : "description contains the field separator: " + description;
 
         return getTypeCode()
-                + " " + FIELD_SEPARATOR + " " + (complete ? "1" : "0")
+                + " " + FIELD_SEPARATOR + " " + (isComplete ? "1" : "0")
                 + " " + FIELD_SEPARATOR + " " + description
                 + getSaveFields();
     }
@@ -158,7 +158,7 @@ public abstract class Task {
     @Override
     public String toString() {
         return "[" + getTypeCode() + "]"
-                + (complete ? "[X] " : "[ ] ")
+                + (isComplete ? "[X] " : "[ ] ")
                 + description
                 + getDetails();
     }
