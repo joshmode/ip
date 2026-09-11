@@ -106,8 +106,8 @@ bye
 ### Expected output
 
 ```text
-Bibi: Use deadline <description> /by <time>.
-Bibi: Use event <description> /from <start> /to <end>.
+Bibi: Use deadline <description> /by <time>, for example:
+Bibi: Use event <description> /from <start> /to <end>, for example:
 ```
 
 ## Test 6: Reject empty, unknown, and incomplete commands
@@ -128,9 +128,9 @@ bye
 
 ```text
 Bibi: Please enter a command.
-Bibi: I don't understand that command. Try todo, deadline, event, list, sort, find, on, mark, unmark, remove, help, or bye.
+Bibi: I don't understand 'remind'. Try todo, deadline, event, list, sort, find, on, mark, unmark, remove, help, or bye.
 Bibi: Use todo followed by a description.
-Bibi: Use mark followed by a task number, for example: mark 2
+Bibi: 'two' is not a task number.
 ```
 
 ## Test 7: Keep tasks between sessions
@@ -488,4 +488,75 @@ bye
 ```text
 Bibi: Your task list is empty, so there is nothing to sort.
 Bibi: Goodbye! Till next time...
+```
+
+## Test 20: Reject a parameter given twice
+
+Aim: Confirm that a repeated /by or /to is reported as such, rather than being
+half-read and failing later as an unreadable date.
+
+### Input
+
+```text
+deadline submit report /by 2019-10-15 /by 2019-11-11
+event camp /from 2019-08-06 /to 2019-08-07 /to 2019-08-08
+list
+bye
+```
+
+### Expected output
+
+```text
+Bibi: You used /by 2 times, but it belongs exactly once.
+Bibi: You used /to 2 times, but it belongs exactly once.
+Bibi: Your task list is empty.
+```
+
+## Test 21: Reject stray text after a command that takes none
+
+Aim: Confirm that extra words are reported rather than silently ignored, so a
+user who expected them to filter the result is not misled.
+
+### Input
+
+```text
+list extra
+sort now
+bye
+```
+
+### Expected output
+
+```text
+Bibi: list does not take anything after it, but I found 'extra'.
+Bibi: sort does not take anything after it, but I found 'now'.
+Bibi: Goodbye!
+```
+
+## Test 22: Refuse to add the same task twice
+
+Aim: Confirm that re-adding an identical task points at the existing one instead
+of quietly creating a second copy.
+
+### Input
+
+```text
+todo read book
+todo    read    book
+deadline pay fees /by 2019-10-15
+deadline pay fees /by 2019-10-15
+list
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Got it. I've added this task:
+Bibi: You already have that one, as task 1: [T][ ] read book.
+Bibi: Got it. I've added this task:
+Bibi: You already have that one, as task 2: [D][ ] pay fees (by: Oct 15 2019).
+Bibi: Here are the tasks in your list:
+1. [T][ ] read book
+2. [D][ ] pay fees (by: Oct 15 2019)
 ```

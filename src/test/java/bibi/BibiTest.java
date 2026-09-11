@@ -44,7 +44,7 @@ public class BibiTest {
 
         // The GUI has nowhere useful to send an exception, so a rejected command
         // has to come back as ordinary words.
-        assertTrue(bibi.getResponse("blah").contains("I don't understand that command."));
+        assertTrue(bibi.getResponse("blah").contains("I don't understand 'blah'"));
     }
 
     @Test

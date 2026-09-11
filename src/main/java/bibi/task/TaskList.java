@@ -102,6 +102,21 @@ public class TaskList {
     }
 
     /**
+     * Returns the number of an existing task describing the same thing.
+     *
+     * @param task the task being considered for adding
+     * @return the one-based number of the matching task, or 0 when there is none
+     */
+    public int findSameTask(Task task) {
+        for (int index = 0; index < tasks.size(); index++) {
+            if (tasks.get(index).isSameTask(task)) {
+                return index + 1;
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Reorders this list so the earliest task comes first.
      *
      * <p>Tasks with no date go last rather than first, because a ToDo is
