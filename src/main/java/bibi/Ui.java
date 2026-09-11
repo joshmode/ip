@@ -75,7 +75,15 @@ public class Ui {
         assert isCapturing : "takeCapturedReply called without a matching startCapture";
 
         isCapturing = false;
-        return new Reply(capturedText.toString().strip(), isErrorCaptured);
+
+        // Blank lines at either end are trimmed, but not the leading spaces of
+        // the first real line: showDetail indents its lines, and a reply that
+        // opens with one would otherwise lose that indent.
+        String text = capturedText.toString().stripTrailing();
+        while (text.startsWith("\n")) {
+            text = text.substring(1);
+        }
+        return new Reply(text, isErrorCaptured);
     }
 
     /**
