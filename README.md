@@ -1,10 +1,12 @@
-# Bibi project template
+# Bibi
 
 [![Java CI](https://github.com/joshmode/ip/actions/workflows/gradle.yml/badge.svg)](https://github.com/joshmode/ip/actions/workflows/gradle.yml)
 
 Bibi is your friendly neighbourhood clanker! 
 
 Use me to log your tasks _simply_ and _safely_. Privacy and confidentiality is at the core of our work. Created as part of CS2103T 26/27.
+
+📖 **[Read the User Guide](https://joshmode.github.io/ip/)** — or see [`docs/README.md`](docs/README.md).
 
 All you need to do is:
 
@@ -123,3 +125,41 @@ java -cp "bibi.jar" bibi.Bibi
 Bibi creates its `data/bibi.txt` save file relative to the folder the command is
 run in, so copying the JAR into an empty folder gives it a fresh task list, and
 running it there again restores what was saved.
+
+## Acknowledgements
+
+### Third-party libraries
+
+| Library | Used for |
+|---------|----------|
+| [JavaFX](https://openjfx.io) | the graphical interface |
+| [JUnit 5](https://junit.org/junit5/) | the automated tests |
+| [Gradle Shadow](https://github.com/GradleUp/shadow) | packaging the fat JAR |
+| [Checkstyle](https://checkstyle.org) | enforcing the coding standard |
+
+### AI assistance
+
+This project was built with heavy use of **Claude (Opus 5), through Claude Code**,
+by [@joshmode](https://github.com/joshmode). The use was widespread rather than
+localised, so it is cited here rather than in individual comments, as the course
+policy on reuse directs.
+
+Concretely, the assistant was used to:
+
+- draft and refactor most of the Java across the increments, including the JavaFX
+  interface, the parser, and the command classes;
+- write the JUnit tests and the scripted console tests, and diagnose the failures
+  they surfaced;
+- write the commit messages, pull request descriptions, and this documentation.
+
+Design decisions — what each feature should do, how errors should behave, and what
+the product should feel like — were made in conversation rather than delegated, and
+every change was reviewed and verified before being merged.
+
+### Course materials
+
+The structure of the JavaFX interface follows the
+[JavaFX tutorial @SE-EDU](https://se-education.org/guides/tutorials/javaFx.html), and
+the Checkstyle rules are the ones published with
+[addressbook-level3](https://github.com/se-edu/addressbook-level3/tree/master/config/checkstyle).
+Crediting course materials is not required, but is done here for completeness.

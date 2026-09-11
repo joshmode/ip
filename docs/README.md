@@ -1,99 +1,162 @@
 # Bibi User Guide
 
-Bibi is a task chatbot for ToDos, deadlines, and events. It runs either as a
-window or in the console, and remembers your tasks between sessions.
+Bibi is a small filing robot for the things you would rather not hold in your head.
+Tell it what needs doing, and it keeps the list — between sessions, without being asked.
 
-## Starting Bibi
+![Bibi in use](Ui.png)
 
-Double-click `bibi.jar` to open the window, or run it from a terminal:
+## Getting started
 
-```text
-java -jar bibi.jar              # the GUI
-java -cp bibi.jar bibi.Bibi     # the text-based interface
+1. Make sure you have **Java 25** installed.
+2. Download `bibi.jar` from the [latest release](https://github.com/joshmode/ip/releases).
+3. Put it in a folder of its own, then run it:
+
+```
+java -jar bibi.jar
 ```
 
-Either way, tasks are saved to `data/bibi.txt` beside wherever you started it,
-so running Bibi in an empty folder gives you a fresh list.
+Bibi saves your tasks to `data/bibi.txt` beside wherever you started it, so a fresh
+folder gives you a fresh list.
 
-## Adding tasks
+> **Tip:** type in the box at the bottom and press <kbd>Enter</kbd>, or click **Send**.
+> Everything is a short typed command — there is nothing to click through. 🤖
 
-```text
-todo borrow book
-deadline return book /by 2019-10-15
-event project meeting /from 2019-08-06 1400 /to 2019-08-06 1600
+## Adding things to do
+
+Bibi keeps three kinds of task.
+
+| Kind | What it is | Command |
+|------|------------|---------|
+| ToDo | something with no particular date | `todo <description>` |
+| Deadline | something due by a date | `deadline <description> /by <when>` |
+| Event | something that runs from one time to another | `event <description> /from <start> /to <end>` |
+
+For example:
+
+```
+todo buy a birthday present
+deadline submit CS2103T iP /by 2026-09-18 2359
+event tutorial /from 2026-09-15 1400 /to 2026-09-15 1500
 ```
 
-A ToDo is just a description. A deadline has one date, and an event has a start
-and an end.
+Bibi confirms each one and tells you how long your list is:
+
+```
+Logged. That is on your list now:
+  [D][ ] submit CS2103T iP (by: Sep 18 2026 11:59PM)
+Your list holds 1 task.
+```
 
 ### Writing dates
 
-Dates are real dates, not free text, so Bibi can compare them:
+Dates are real dates, not free text, which is what lets Bibi sort them and search
+them by day.
 
 | Form | Example |
 |------|---------|
-| `yyyy-MM-dd` | `2019-10-15` |
-| `d/M/yyyy` | `2/12/2019` |
-| either, plus a 24-hour time | `2/12/2019 1800` |
+| `yyyy-MM-dd` | `2026-09-18` |
+| `d/M/yyyy` | `18/9/2026` |
+| either, plus a 24-hour time | `18/9/2026 2359` |
 
-A date without a time means the whole day. A date that does not exist, such as
-`2019-02-30`, is rejected rather than quietly moved. An event may not end before
-it starts.
+A date without a time means the whole day. A date that does not exist — `2026-02-30`,
+say — is refused rather than quietly shifted, and an event may not end before it starts.
 
-## Seeing your tasks
+## Seeing your list
 
-```text
+```
 list
 ```
 
-Tasks show as `[T]`, `[D]` or `[E]` for the three types, and `[ ]` or `[X]` for
-incomplete or complete:
+Each task shows its kind and whether it is done:
 
-```text
-1. [T][X] borrow book
-2. [D][ ] return book (by: Oct 15 2019)
+```
+1. [D][X] submit CS2103T iP (by: Sep 18 2026 11:59PM)
+2. [T][ ] buy a birthday present
 ```
 
-## Sorting
+`[T]`, `[D]` and `[E]` are ToDo, deadline and event. `[X]` means done, `[ ]` means not yet.
 
-```text
+## Putting the list in order
+
+```
 sort
 ```
 
-Puts the list in order, earliest first. Tasks with no date go last, since a ToDo
-has no particular moment to be ready for. The new order is saved, so it survives
-into your next session, and the numbers you type afterwards refer to the order
-you are looking at.
+Sorts everything with a date into chronological order, earliest first, and puts undated
+ToDos at the end — a ToDo has no particular moment to be ready for.
 
-## Finding tasks
+The new order is **kept**, not just displayed. That matters because the numbers you type
+into `mark`, `unmark` and `remove` come from the list, so an order that vanished when you
+looked away would leave those numbers pointing at the wrong tasks.
 
-```text
+## Finding things
+
+```
 find book
-on 2019-10-15
+on 2026-09-18
 ```
 
-`find` searches descriptions, ignoring case. `on` shows the deadlines due on a
-date and the events running across it.
+- `find` searches descriptions and ignores case, so `find BOOK` finds "read book".
+- `on` shows deadlines falling on a date, and events running across it.
 
-Both keep each task's number from the full list, so you can act on a result
-straight away without listing everything first.
+Both keep each task's number **from the full list**, so you can act on a result straight
+away without running `list` first.
 
-## Changing and removing tasks
+## Marking things done, and removing them
 
-```text
+```
 mark 2
 unmark 2
 remove 2
 ```
 
-Task numbers come from the most recent listing.
+Numbers come from the most recent listing. `mark` ticks a task off, `unmark` reopens it,
+and `remove` takes it off the list for good.
 
-## Getting help, and leaving
+## Help, and leaving
 
-```text
+```
 help
 bye
 ```
 
-`help` lists every command. `bye` closes Bibi, from the window as well as the
-console.
+`help` lists every command. `bye` closes Bibi — your tasks are already saved.
+
+## When something goes wrong
+
+Bibi tries to say what is actually wrong rather than just refusing. Mistakes are shown
+in red so you can spot them when scrolling back:
+
+- **An unknown command** names the word it could not place.
+- **A missing part** shows the shape of the command, with an example.
+- **A parameter used twice** — `deadline report /by Mon /by Tue` — says so, rather than
+  complaining about an unreadable date.
+- **A task you already have** is pointed at by number, and nothing is changed.
+- **A damaged save file** is reported line by line; the lines Bibi *could* read are kept.
+
+## Command summary
+
+| Command | Does | Example |
+|---------|------|---------|
+| `todo` | adds an undated task | `todo buy a present` |
+| `deadline` | adds a task due by a date | `deadline report /by 2026-09-18` |
+| `event` | adds a task with a start and end | `event camp /from 2026-09-15 /to 2026-09-17` |
+| `list` | shows everything | `list` |
+| `sort` | orders by date, undated last | `sort` |
+| `find` | searches descriptions | `find book` |
+| `on` | shows what falls on a date | `on 2026-09-18` |
+| `mark` | ticks a task off | `mark 2` |
+| `unmark` | reopens a task | `unmark 2` |
+| `remove` | deletes a task | `remove 2` |
+| `help` | lists the commands | `help` |
+| `bye` | closes Bibi | `bye` |
+
+## Running without the window
+
+Bibi also has a text-only interface, which is what its automated tests drive:
+
+```
+java -cp bibi.jar bibi.Bibi
+```
+
+Same chatbot, same save file — only the last step differs.
