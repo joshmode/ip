@@ -67,3 +67,45 @@
 .button:pressed {
     -fx-background-color: derive(-bibi-teal-dark, -15%);
 }
+
+/*
+ * The conversation. The two sides are laid out differently on purpose: see
+ * DialogBox for why a person talking to a tool should not look like two people
+ * talking to each other.
+ */
+
+.bibi-row {
+    -fx-alignment: top-left;
+}
+
+.user-row {
+    -fx-alignment: top-right;
+}
+
+/* Bibi's replies are plain text across the width of the window. They are the
+   content, so they get the room rather than a decorated container. */
+.bibi-text {
+    -fx-text-fill: -bibi-ink;
+    -fx-line-spacing: 1px;
+}
+
+/* The user's own lines are short and already known to them, so they are marked
+   rather than presented: a small tinted chip, tucked to the right. */
+.user-chip {
+    -fx-background-color: -bibi-user;
+    -fx-background-radius: 12px 12px 2px 12px;
+    -fx-text-fill: white;
+    -fx-padding: 5px 11px 5px 11px;
+}
+
+/* An error has to be actionable at a glance, so it does not merely differ in
+   colour: the rule down the left edge makes it findable when scrolling back. */
+.error-text {
+    -fx-text-fill: #8c2f20;
+    -fx-background-color: #fdeceaff;
+    -fx-background-radius: 3px;
+    -fx-border-color: #e06a55;
+    -fx-border-width: 0 0 0 3px;
+    -fx-padding: 7px 10px 7px 10px;
+    -fx-line-spacing: 1px;
+}

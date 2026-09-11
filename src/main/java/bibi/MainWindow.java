@@ -19,8 +19,7 @@ import javafx.util.Duration;
  * back is put on screen as a {@link DialogBox}.
  */
 public class MainWindow {
-    private static final String USER_IMAGE = "/images/DaUser.png";
-    private static final String BIBI_IMAGE = "/images/DaBibi.png";
+    private static final String BIBI_ICON = "/images/DaBibi.png";
 
     /**
      * How long the goodbye stays on screen before the window closes. Long enough
@@ -39,8 +38,7 @@ public class MainWindow {
 
     private Bibi bibi;
 
-    private final Image userImage = loadImage(USER_IMAGE);
-    private final Image bibiImage = loadImage(BIBI_IMAGE);
+    private final Image bibiIcon = loadImage(BIBI_ICON);
 
     /**
      * Keeps the transcript scrolled to the newest message.
@@ -62,7 +60,7 @@ public class MainWindow {
      */
     public void setBibi(Bibi bibi) {
         this.bibi = bibi;
-        dialogContainer.getChildren().add(DialogBox.forBibi(bibi.getGreeting(), bibiImage));
+        dialogContainer.getChildren().add(DialogBox.forBibi(bibi.getGreeting(), bibiIcon));
     }
 
     /**
@@ -82,10 +80,10 @@ public class MainWindow {
             return;
         }
 
-        String response = bibi.getResponse(input);
+        Reply reply = bibi.getResponse(input);
         dialogContainer.getChildren().addAll(
-                DialogBox.forUser(input, userImage),
-                DialogBox.forBibi(response, bibiImage));
+                DialogBox.forUser(input),
+                DialogBox.forBibi(reply, bibiIcon));
         userInput.clear();
 
         if (bibi.isExitRequested()) {
