@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -17,6 +18,8 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
     private static final String MAIN_WINDOW_FXML = "/view/MainWindow.fxml";
+    private static final String STYLESHEET = "/view/bibi.css";
+    private static final String WINDOW_ICON = "/images/DaBibi.png";
 
     /** The same Bibi the console uses, pointed at the same save file. */
     private final Bibi bibi = new Bibi(Bibi.DEFAULT_SAVE_FILE_PATH);
@@ -32,8 +35,14 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource(MAIN_WINDOW_FXML));
             AnchorPane root = loader.load();
 
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Main.class.getResource(STYLESHEET).toExternalForm());
+            stage.setScene(scene);
+
+            // The name belongs in the title bar and the taskbar, not only in the
+            // greeting, so the window is recognisable when it is not in front.
             stage.setTitle("Bibi");
+            stage.getIcons().add(new Image(Main.class.getResourceAsStream(WINDOW_ICON)));
             stage.setMinHeight(400.0);
             stage.setMinWidth(450.0);
 

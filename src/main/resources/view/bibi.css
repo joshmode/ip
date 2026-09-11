@@ -1,0 +1,69 @@
+/*
+ * Bibi's visual identity: the palette, the type, and the shape of things.
+ *
+ * The colours are taken from Bibi's own avatar so the app looks like the robot
+ * it is, rather than like default JavaFX with a picture stuck on it. They are
+ * declared once here as looked-up colours and referred to by name everywhere
+ * else, so the whole app can be re-tinted from these six lines.
+ */
+
+.root {
+    -bibi-teal: #27a09c;
+    -bibi-teal-dark: #1d7c79;
+    -bibi-ink: #173e43;
+    -bibi-surface: #f5f8f8;
+    -bibi-line: #dde5e5;
+    -bibi-user: #4a7bc7;
+
+    -fx-background-color: -bibi-surface;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", "Arial", sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* The scroll pane paints its own grey panel by default, which would box the
+   conversation in against the window's background. */
+.scroll-pane,
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: -bibi-line;
+    -fx-background-radius: 4px;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-background-radius: 0;
+    -fx-border-color: -bibi-line;
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 0 12px 0 12px;
+    -fx-text-fill: -bibi-ink;
+    -fx-prompt-text-fill: derive(-bibi-ink, 55%);
+}
+
+.text-field:focused {
+    -fx-border-color: -bibi-teal;
+    -fx-border-width: 2px 0 0 0;
+}
+
+.button {
+    -fx-background-color: -bibi-teal;
+    -fx-background-radius: 0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: -bibi-teal-dark;
+}
+
+.button:pressed {
+    -fx-background-color: derive(-bibi-teal-dark, -15%);
+}

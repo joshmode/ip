@@ -19,12 +19,12 @@ bye
 ### Expected output
 
 ```text
-Bibi: Got it. I've added this task:
+Bibi: Logged. That is on your list now:
 [T][ ] borrow book
-Now you have 1 tasks in the list.
-Bibi: Here are the tasks in your list:
+Your list holds 1 task.
+Bibi: Here is everything on your list:
 1. [T][ ] borrow book
-Bibi: Goodbye! Till next time...
+Bibi: Powering down.
 ```
 
 ## Test 2: Add and list a deadline
@@ -43,7 +43,7 @@ bye
 
 ```text
 [D][ ] return book (by: Oct 15 2019)
-Now you have 1 tasks in the list.
+Your list holds 1 task.
 1. [D][ ] return book (by: Oct 15 2019)
 ```
 
@@ -63,7 +63,7 @@ bye
 
 ```text
 [E][ ] project meeting (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
-Now you have 1 tasks in the list.
+Your list holds 1 task.
 1. [E][ ] project meeting (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
 ```
 
@@ -85,9 +85,9 @@ bye
 ### Expected output
 
 ```text
-Bibi: Marked task 1 as complete.
+Bibi: Task 1 ticked off. Nice work.
 1. [T][X] join sports club
-Bibi: Unmarked task 1, now incomplete.
+Bibi: Task 1 is open again.
 1. [T][ ] join sports club
 ```
 
@@ -153,10 +153,10 @@ bye
 ### Expected output
 
 ```text
-Bibi: Marked task 1 as complete.
-Bibi: Goodbye! Till next time...
-Bibi: Loaded 3 saved task(s).
-Bibi: Here are the tasks in your list:
+Bibi: Task 1 ticked off. Nice work.
+Bibi: Powering down.
+Bibi: Picked up where we left off: 3 tasks restored.
+Bibi: Here is everything on your list:
 1. [T][X] read book
 2. [D][ ] return book (by: Jun 06 2019)
 3. [E][ ] project meeting (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
@@ -176,8 +176,8 @@ bye
 ### Expected output
 
 ```text
-Bibi: Your task list is empty.
-Bibi: Goodbye! Till next time...
+Bibi: Your list is empty.
+Bibi: Powering down.
 ```
 
 ## Test 9: Restore a task list written earlier
@@ -203,7 +203,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Loaded 4 saved task(s).
+Bibi: Picked up where we left off: 4 tasks restored.
 1. [T][X] read book
 2. [D][ ] return book (by: Jun 06 2019)
 3. [E][ ] project meeting (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
@@ -236,14 +236,14 @@ bye
 ### Expected output
 
 ```text
-Bibi: Loaded 2 saved task(s).
-Bibi: I had trouble reading part of your save file:
+Bibi: Picked up where we left off: 2 tasks restored.
+Bibi: Some of the save file did not make sense to me:
   Line 2: expected at least type, status, and description separated by '|'.
   Line 3: unknown task type 'X'.
   Line 4: status '2' should be 1 (done) or 0 (not done).
   Line 5: expected 5 fields but found 3, for example: E | 0 | project meeting | 2019-08-06 1400 | 2019-08-06 1600
-Bibi: Those entries are skipped, and will be dropped from the file the next time your task list changes.
-Bibi: Here are the tasks in your list:
+Bibi: I have skipped those lines. They will leave the file the next time your list changes.
+Bibi: Here is everything on your list:
 1. [T][X] read book
 2. [T][ ] join sports club
 ```
@@ -264,7 +264,7 @@ bye
 
 ```text
 Bibi: Task text cannot contain '|' because that character separates the fields in the save file.
-Bibi: Your task list is empty.
+Bibi: Your list is empty.
 ```
 
 ## Test 12: Understand dates and times in several formats
@@ -288,7 +288,7 @@ bye
 [D][ ] return book (by: Dec 02 2019 6:00PM)
 [D][ ] submit essay (by: Oct 15 2019)
 [E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)
-Bibi: Here are the tasks in your list:
+Bibi: Here is everything on your list:
 1. [D][ ] return book (by: Dec 02 2019 6:00PM)
 2. [D][ ] submit essay (by: Oct 15 2019)
 3. [E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)
@@ -315,7 +315,7 @@ bye
 Bibi: I could not read the date 'next Tuesday'. Use yyyy-MM-dd or d/M/yyyy, optionally followed by a 24-hour time, for example 2019-10-15 or 2/12/2019 1800.
 Bibi: I could not read the date '2019-13-45'.
 Bibi: An event cannot end before it starts.
-Bibi: Your task list is empty.
+Bibi: Your list is empty.
 ```
 
 ## Test 14: Report saved tasks whose dates predate this format
@@ -340,10 +340,10 @@ bye
 ### Expected output
 
 ```text
-Bibi: Loaded 1 saved task(s).
-Bibi: I had trouble reading part of your save file:
+Bibi: Picked up where we left off: 1 task restored.
+Bibi: Some of the save file did not make sense to me:
   Line 2: I could not read the date 'Sunday'.
-Bibi: Here are the tasks in your list:
+Bibi: Here is everything on your list:
 1. [T][ ] read book
 ```
 
@@ -372,7 +372,7 @@ Bibi: Here is what you have on Aug 11 2019:
 2. [D][ ] return book (by: Aug 11 2019)
 3. [E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)
 4. [E][ ] party (from: Aug 11 2019 7:00PM to: Aug 11 2019 11:00PM)
-Bibi: You have nothing on Dec 25 2019.
+Bibi: Nothing on Dec 25 2019. Enjoy the quiet.
 Bibi: I could not read the date 'someday'.
 ```
 
@@ -390,7 +390,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Here are the commands I understand:
+Bibi: Here is everything I know how to do:
   todo <description>
   deadline <description> /by <time>
   event <description> /from <start> /to <end>
@@ -403,7 +403,7 @@ Bibi: Here are the commands I understand:
   remove <number>
   help
   bye
-Bibi: Goodbye! Till next time...
+Bibi: Powering down.
 ```
 
 ## Test 17: Find tasks by keyword
@@ -428,12 +428,12 @@ bye
 ### Expected output
 
 ```text
-Bibi: Here are the matching tasks in your list:
+Bibi: Here is what matches:
 1. [T][X] read book
 2. [D][ ] return Book (by: Jun 06 2019)
-Bibi: Here are the matching tasks in your list:
+Bibi: Here is what matches:
 3. [T][ ] join sports club
-Bibi: No tasks match 'zzz'.
+Bibi: Nothing matches 'zzz'.
 Bibi: Use find followed by a keyword, for example: find book
 ```
 
@@ -458,17 +458,17 @@ bye
 ### Expected output
 
 ```text
-Bibi: Sorted your tasks, earliest first:
+Bibi: Sorted, earliest first:
 1. [E][ ] orientation (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
 2. [D][ ] pay fees (by: Oct 15 2019)
 3. [D][ ] submit report (by: Dec 01 2019)
 4. [T][ ] borrow book
-Bibi: Here are the tasks in your list:
+Bibi: Here is everything on your list:
 1. [E][ ] orientation (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
 2. [D][ ] pay fees (by: Oct 15 2019)
 3. [D][ ] submit report (by: Dec 01 2019)
 4. [T][ ] borrow book
-Bibi: Goodbye! Till next time...
+Bibi: Powering down.
 ```
 
 ## Test 19: Sort an empty list
@@ -486,8 +486,8 @@ bye
 ### Expected output
 
 ```text
-Bibi: Your task list is empty, so there is nothing to sort.
-Bibi: Goodbye! Till next time...
+Bibi: Nothing to sort yet, your list is empty.
+Bibi: Powering down.
 ```
 
 ## Test 20: Reject a parameter given twice
@@ -509,7 +509,7 @@ bye
 ```text
 Bibi: You used /by 2 times, but it belongs exactly once.
 Bibi: You used /to 2 times, but it belongs exactly once.
-Bibi: Your task list is empty.
+Bibi: Your list is empty.
 ```
 
 ## Test 21: Reject stray text after a command that takes none
@@ -530,7 +530,7 @@ bye
 ```text
 Bibi: list does not take anything after it, but I found 'extra'.
 Bibi: sort does not take anything after it, but I found 'now'.
-Bibi: Goodbye!
+Bibi: Powering down.
 ```
 
 ## Test 22: Refuse to add the same task twice
@@ -552,11 +552,11 @@ bye
 ### Expected output
 
 ```text
-Bibi: Got it. I've added this task:
+Bibi: Logged. That is on your list now:
 Bibi: You already have that one, as task 1: [T][ ] read book.
-Bibi: Got it. I've added this task:
+Bibi: Logged. That is on your list now:
 Bibi: You already have that one, as task 2: [D][ ] pay fees (by: Oct 15 2019).
-Bibi: Here are the tasks in your list:
+Bibi: Here is everything on your list:
 1. [T][ ] read book
 2. [D][ ] pay fees (by: Oct 15 2019)
 ```

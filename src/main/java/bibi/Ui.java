@@ -189,9 +189,9 @@ public class Ui {
      * Prints the greeting and a summary of the supported commands.
      */
     public void showWelcome() {
-        showMessage("Enter todo <description>, deadline <description> /by <time>,");
-        showPlain("or event <description> /from <start> /to <end>.");
-        showMessage("Type list, sort, find <keyword>, on <date>, mark <number>, or bye.");
+        showMessage("Bibi online. Hand me anything you would rather not hold in your head.");
+        showMessage("Add work with todo, deadline or event.");
+        showMessage("Then try list, sort, find, on, mark, unmark, remove, or help.");
         showMessage("Dates look like 2019-10-15 or 2/12/2019 1800.");
     }
 
@@ -199,7 +199,7 @@ public class Ui {
      * Prints the full list of commands Bibi understands.
      */
     public void showHelp() {
-        showMessage("Here are the commands I understand:");
+        showMessage("Here is everything I know how to do:");
         showDetail(
                 "todo <description>",
                 "deadline <description> /by <time>",
@@ -219,7 +219,7 @@ public class Ui {
      * Prints the parting message.
      */
     public void showGoodbye() {
-        showMessage("Goodbye! Till next time...");
+        showMessage("Powering down. Everything is filed and will be here next time.");
     }
 
     /**
@@ -237,7 +237,7 @@ public class Ui {
      * @param taskCount the number of tasks that were loaded
      */
     public void showLoaded(int taskCount) {
-        showMessage("Loaded " + taskCount + " saved task(s).");
+        showMessage("Picked up where we left off: " + describeCount(taskCount) + " restored.");
     }
 
     /**
@@ -246,12 +246,12 @@ public class Ui {
      * @param warnings one explanation per skipped line
      */
     public void showLoadWarnings(List<String> warnings) {
-        showMessage("I had trouble reading part of your save file:");
+        showMessage("Some of the save file did not make sense to me:");
         for (String warning : warnings) {
             showDetail(warning);
         }
-        showMessage("Those entries are skipped, and will be dropped from the file the next time "
-                + "your task list changes.");
+        showMessage("I have skipped those lines. They will leave the file the next time "
+                + "your list changes.");
     }
 
     /**
@@ -274,6 +274,19 @@ public class Ui {
     public void showSaveError(Path filePath, IOException exception) {
         showMessage("I could not save your tasks to " + filePath + " (" + describe(exception)
                 + "). Changes made in this session will be lost when Bibi closes.");
+    }
+
+    /**
+     * Describes a number of tasks with the right plural.
+     *
+     * <p>Exists because "1 tasks" is the kind of small wrongness that makes an
+     * app feel unfinished, and the count is shown from several places.
+     *
+     * @param taskCount how many tasks are being described
+     * @return the count followed by "task" or "tasks"
+     */
+    public static String describeCount(int taskCount) {
+        return taskCount + (taskCount == 1 ? " task" : " tasks");
     }
 
     /**

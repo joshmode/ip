@@ -24,9 +24,10 @@ public class BibiTest {
 
         String response = bibi.getResponse("todo borrow book");
 
-        assertTrue(response.contains("Got it. I've added this task:"));
+        assertTrue(response.contains("Logged. That is on your list now:"));
         assertTrue(response.contains("[T][ ] borrow book"));
-        assertTrue(response.contains("Now you have 1 tasks in the list."));
+        // Singular, because "1 tasks" is the kind of wrongness users notice.
+        assertTrue(response.contains("Your list holds 1 task."));
     }
 
     @Test
@@ -79,7 +80,7 @@ public class BibiTest {
 
         String farewell = bibi.getResponse("bye");
 
-        assertTrue(farewell.contains("Goodbye!"));
+        assertTrue(farewell.contains("Powering down."));
         assertTrue(bibi.isExitRequested());
     }
 
@@ -89,11 +90,11 @@ public class BibiTest {
 
         String greeting = bibi.getGreeting();
 
-        assertTrue(greeting.contains("Enter todo <description>"));
+        assertTrue(greeting.contains("Bibi online."));
         // The banner is drawn out of spaced letters and only lines up in a
         // fixed-width font, so the GUI leaves it to the console.
         assertFalse(greeting.contains("B B B B"));
-        assertFalse(greeting.contains("Loaded"));
+        assertFalse(greeting.contains("Picked up where we left off"));
     }
 
     @Test
@@ -104,7 +105,7 @@ public class BibiTest {
 
         String greeting = new Bibi(saveFile).getGreeting();
 
-        assertTrue(greeting.contains("Loaded 2 saved task(s)."));
+        assertTrue(greeting.contains("Picked up where we left off: 2 tasks restored."));
     }
 
     @Test
@@ -116,7 +117,7 @@ public class BibiTest {
         Bibi bibi = new Bibi(saveFile);
         String greeting = bibi.getGreeting();
 
-        assertTrue(greeting.contains("I had trouble reading part of your save file:"));
+        assertTrue(greeting.contains("Some of the save file did not make sense to me:"));
         assertTrue(bibi.getResponse("list").contains("1. [T][ ] borrow book"));
     }
 
@@ -144,7 +145,7 @@ public class BibiTest {
 
         String response = bibi.getResponse("sort");
 
-        assertTrue(response.contains("Sorted your tasks, earliest first:"));
+        assertTrue(response.contains("Sorted, earliest first:"));
         assertTrue(response.contains("1. [D][ ] pay fees"));
         assertTrue(response.contains("2. [D][ ] submit report"));
         // The undated task goes last, not first.
@@ -161,6 +162,6 @@ public class BibiTest {
     public void getResponse_sortEmptyList_saysThereIsNothingToSort(@TempDir Path tempDir) {
         Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
 
-        assertTrue(bibi.getResponse("sort").contains("nothing to sort"));
+        assertTrue(bibi.getResponse("sort").contains("Nothing to sort yet"));
     }
 }

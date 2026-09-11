@@ -24,13 +24,13 @@ public class SortCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         if (tasks.isEmpty()) {
-            ui.showMessage("Your task list is empty, so there is nothing to sort.");
+            ui.showMessage("Nothing to sort yet, your list is empty.");
             return;
         }
 
         tasks.sortBySchedule();
 
-        ui.showMessage("Sorted your tasks, earliest first:");
+        ui.showMessage("Sorted, earliest first:");
         showAllTasks(tasks, ui);
         saveTasks(tasks, ui, storage);
     }
