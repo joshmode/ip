@@ -40,6 +40,9 @@ public class Ui {
     /** Whether output is being collected rather than printed. */
     private boolean isCapturing;
 
+    /** Whether anything captured so far was reported as a problem. */
+    private boolean isErrorCaptured;
+
     /**
      * Creates a user interface that reads from standard input.
      */
@@ -56,6 +59,7 @@ public class Ui {
      */
     public void startCapture() {
         isCapturing = true;
+        isErrorCaptured = false;
         capturedText.setLength(0);
     }
 
@@ -64,14 +68,14 @@ public class Ui {
      *
      * @return the collected lines, separated by newlines and trimmed of blank ends
      */
-    public String takeCapturedText() {
+    public Reply takeCapturedReply() {
         // Taking text without starting a capture would silently return whatever
         // the previous capture left behind, so the GUI would show a stale reply
         // rather than fail.
-        assert isCapturing : "takeCapturedText called without a matching startCapture";
+        assert isCapturing : "takeCapturedReply called without a matching startCapture";
 
         isCapturing = false;
-        return capturedText.toString().strip();
+        return new Reply(capturedText.toString().strip(), isErrorCaptured);
     }
 
     /**
@@ -228,6 +232,7 @@ public class Ui {
      * @param message the explanation to show
      */
     public void showError(String message) {
+        isErrorCaptured = true;
         showMessage(message);
     }
 
@@ -246,7 +251,7 @@ public class Ui {
      * @param warnings one explanation per skipped line
      */
     public void showLoadWarnings(List<String> warnings) {
-        showMessage("Some of the save file did not make sense to me:");
+        showError("Some of the save file did not make sense to me:");
         for (String warning : warnings) {
             showDetail(warning);
         }

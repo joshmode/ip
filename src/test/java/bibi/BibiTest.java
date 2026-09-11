@@ -22,7 +22,7 @@ public class BibiTest {
     public void getResponse_addTodo_confirmsAndCounts(@TempDir Path tempDir) {
         Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
 
-        String response = bibi.getResponse("todo borrow book");
+        String response = bibi.getResponse("todo borrow book").text();
 
         assertTrue(response.contains("Logged. That is on your list now:"));
         assertTrue(response.contains("[T][ ] borrow book"));
@@ -36,7 +36,7 @@ public class BibiTest {
 
         // The window shows Bibi's picture beside every reply, so the console's
         // "Bibi: " prefix would only be noise repeated down the transcript.
-        assertFalse(bibi.getResponse("list").contains("Bibi:"));
+        assertFalse(bibi.getResponse("list").text().contains("Bibi:"));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class BibiTest {
 
         // The GUI has nowhere useful to send an exception, so a rejected command
         // has to come back as ordinary words.
-        assertTrue(bibi.getResponse("blah").contains("I don't understand 'blah'"));
+        assertTrue(bibi.getResponse("blah").text().contains("I don't understand 'blah'"));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class BibiTest {
         Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
         bibi.getResponse("todo borrow book");
 
-        String response = bibi.getResponse("list");
+        String response = bibi.getResponse("list").text();
 
         // Each call starts a fresh capture, so nothing from the first reply may
         // leak into the second.
@@ -78,7 +78,7 @@ public class BibiTest {
 
         assertFalse(bibi.isExitRequested());
 
-        String farewell = bibi.getResponse("bye");
+        String farewell = bibi.getResponse("bye").text();
 
         assertTrue(farewell.contains("Powering down."));
         assertTrue(bibi.isExitRequested());
@@ -88,7 +88,7 @@ public class BibiTest {
     public void getGreeting_noSaveFile_welcomesWithoutTheBanner(@TempDir Path tempDir) {
         Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
 
-        String greeting = bibi.getGreeting();
+        String greeting = bibi.getGreeting().text();
 
         assertTrue(greeting.contains("Bibi online."));
         // The banner is drawn out of spaced letters and only lines up in a
@@ -103,7 +103,7 @@ public class BibiTest {
         Path saveFile = tempDir.resolve("bibi.txt");
         Files.writeString(saveFile, "T | 0 | borrow book\nT | 1 | return book\n");
 
-        String greeting = new Bibi(saveFile).getGreeting();
+        String greeting = new Bibi(saveFile).getGreeting().text();
 
         assertTrue(greeting.contains("Picked up where we left off: 2 tasks restored."));
     }
@@ -115,17 +115,17 @@ public class BibiTest {
         Files.writeString(saveFile, "T | 0 | borrow book\nnonsense\n");
 
         Bibi bibi = new Bibi(saveFile);
-        String greeting = bibi.getGreeting();
+        String greeting = bibi.getGreeting().text();
 
         assertTrue(greeting.contains("Some of the save file did not make sense to me:"));
-        assertTrue(bibi.getResponse("list").contains("1. [T][ ] borrow book"));
+        assertTrue(bibi.getResponse("list").text().contains("1. [T][ ] borrow book"));
     }
 
     @Test
     public void getResponse_help_listsEveryCommand(@TempDir Path tempDir) {
         Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
 
-        String response = bibi.getResponse("help");
+        String response = bibi.getResponse("help").text();
 
         // Ui.showDetail takes the whole list as varargs, so one missing entry
         // would be a silently dropped argument rather than a missing call.
@@ -143,7 +143,7 @@ public class BibiTest {
         bibi.getResponse("deadline submit report /by 2019-12-01");
         bibi.getResponse("deadline pay fees /by 2019-10-15");
 
-        String response = bibi.getResponse("sort");
+        String response = bibi.getResponse("sort").text();
 
         assertTrue(response.contains("Sorted, earliest first:"));
         assertTrue(response.contains("1. [D][ ] pay fees"));
@@ -155,13 +155,55 @@ public class BibiTest {
         // getGreeting is what loads the file, which is how the GUI starts up.
         Bibi reopened = new Bibi(saveFile);
         reopened.getGreeting();
-        assertTrue(reopened.getResponse("list").contains("1. [D][ ] pay fees"));
+        assertTrue(reopened.getResponse("list").text().contains("1. [D][ ] pay fees"));
     }
 
     @Test
     public void getResponse_sortEmptyList_saysThereIsNothingToSort(@TempDir Path tempDir) {
         Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
 
-        assertTrue(bibi.getResponse("sort").contains("Nothing to sort yet"));
+        assertTrue(bibi.getResponse("sort").text().contains("Nothing to sort yet"));
+    }
+
+    @Test
+    public void getResponse_successfulCommand_notFlaggedAsError(@TempDir Path tempDir) {
+        Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
+
+        assertFalse(bibi.getResponse("todo borrow book").isError());
+        assertFalse(bibi.getResponse("list").isError());
+    }
+
+    @Test
+    public void getResponse_rejectedCommand_flaggedAsError(@TempDir Path tempDir) {
+        Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
+
+        // The GUI styles these apart, so the flag is what makes an error look
+        // like one rather than like another confirmation.
+        assertTrue(bibi.getResponse("blah").isError());
+        assertTrue(bibi.getResponse("mark 0").isError());
+        assertTrue(bibi.getResponse("list extra").isError());
+    }
+
+    @Test
+    public void getResponse_duplicateTask_flaggedAsError(@TempDir Path tempDir) {
+        Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
+        bibi.getResponse("todo borrow book");
+
+        assertTrue(bibi.getResponse("todo borrow book").isError());
+    }
+
+    @Test
+    public void getGreeting_cleanStart_notFlaggedAsError(@TempDir Path tempDir) {
+        assertFalse(new Bibi(tempDir.resolve("bibi.txt")).getGreeting().isError());
+    }
+
+    @Test
+    public void getGreeting_damagedSaveFile_flaggedAsError(@TempDir Path tempDir)
+            throws IOException {
+        Path saveFile = tempDir.resolve("bibi.txt");
+        Files.writeString(saveFile, "T | 0 | borrow book\nnonsense\n");
+
+        // A save file that could not be read fully is worth catching the eye.
+        assertTrue(new Bibi(saveFile).getGreeting().isError());
     }
 }

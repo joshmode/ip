@@ -64,12 +64,12 @@ public class Bibi {
     /**
      * Returns the greeting the GUI shows before the user has typed anything.
      *
-     * @return the welcome text, followed by any report about the restored tasks
+     * @return the welcome text, flagged as a problem when the save file was damaged
      */
-    public String getGreeting() {
+    public Reply getGreeting() {
         ui.startCapture();
         greetAndLoad();
-        return ui.takeCapturedText();
+        return ui.takeCapturedReply();
     }
 
     /**
@@ -80,21 +80,21 @@ public class Bibi {
      * user should see the explanation in the conversation like any other reply.
      *
      * @param fullCommand one line of input, exactly as the user typed it
-     * @return Bibi's reply, ready to be shown in a dialog box
+     * @return Bibi's reply, and whether it reports a problem
      */
-    public String getResponse(String fullCommand) {
+    public Reply getResponse(String fullCommand) {
         assert fullCommand != null : "the GUI should pass the text field's contents, never null";
 
         ui.startCapture();
         executeCommand(fullCommand);
 
-        String response = ui.takeCapturedText();
+        Reply reply = ui.takeCapturedReply();
 
         // Every command either reports its result or is reported as failing, so
         // an empty reply means one returned in silence and the GUI would show an
         // empty bubble with no hint of what went wrong.
-        assert !response.isEmpty() : "no reply was produced for: " + fullCommand;
-        return response;
+        assert !reply.text().isEmpty() : "no reply was produced for: " + fullCommand;
+        return reply;
     }
 
     /**
