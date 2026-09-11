@@ -94,6 +94,23 @@ public abstract class Task {
     }
 
     /**
+     * Reports whether another task describes the same commitment as this one.
+     *
+     * <p>Completion state is deliberately excluded: a task already ticked off is
+     * still the same task, and someone re-adding it has almost certainly lost
+     * track rather than genuinely wanting two copies. Type, description and any
+     * dates are what make a task what it is.
+     *
+     * @param other the task to compare against
+     * @return {@code true} when the two describe the same thing
+     */
+    public boolean isSameTask(Task other) {
+        return getTypeCode().equals(other.getTypeCode())
+                && description.equalsIgnoreCase(other.description)
+                && getSaveFields().equals(other.getSaveFields());
+    }
+
+    /**
      * Returns the moment this task is scheduled for, if it has one.
      *
      * <p>Sorting needs one moment per task, and the types disagree on what that

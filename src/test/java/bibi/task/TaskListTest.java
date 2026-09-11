@@ -209,4 +209,48 @@ public class TaskListTest {
         // A whole-day value counts as the start of its day, matching isBefore.
         assertEquals("[D][ ] whole day (by: Oct 15 2019)", tasks.get(1).toString());
     }
+
+    @Test
+    public void findSameTask_identicalTodo_returnsItsNumber() throws BibiException {
+        TaskList tasks = new TaskList(todo("first"), todo("read book"));
+
+        assertEquals(2, tasks.findSameTask(todo("read book")));
+    }
+
+    @Test
+    public void findSameTask_differingOnlyByCase_stillMatches() throws BibiException {
+        TaskList tasks = new TaskList(todo("read book"));
+
+        assertEquals(1, tasks.findSameTask(todo("READ BOOK")));
+    }
+
+    @Test
+    public void findSameTask_sameDescriptionDifferentType_noMatch() throws BibiException {
+        TaskList tasks = new TaskList(todo("pay fees"));
+
+        // A ToDo and a deadline are different commitments even when worded alike.
+        assertEquals(0, tasks.findSameTask(deadline("pay fees", "2019-10-15")));
+    }
+
+    @Test
+    public void findSameTask_sameDescriptionDifferentDate_noMatch() throws BibiException {
+        TaskList tasks = new TaskList(deadline("pay fees", "2019-10-15"));
+
+        assertEquals(0, tasks.findSameTask(deadline("pay fees", "2019-11-15")));
+    }
+
+    @Test
+    public void findSameTask_completedTask_stillCountsAsTheSame() throws BibiException {
+        Task done = todo("read book");
+        done.markComplete();
+        TaskList tasks = new TaskList(done);
+
+        // Ticking a task off does not make re-adding it a different task.
+        assertEquals(1, tasks.findSameTask(todo("read book")));
+    }
+
+    @Test
+    public void findSameTask_emptyList_returnsZero() throws BibiException {
+        assertEquals(0, new TaskList().findSameTask(todo("anything")));
+    }
 }

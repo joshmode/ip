@@ -1,5 +1,6 @@
 package bibi.command;
 
+import bibi.BibiException;
 import bibi.Storage;
 import bibi.Ui;
 import bibi.task.Task;
@@ -25,9 +26,17 @@ public class AddCommand extends Command {
 
     /**
      * Adds the task to the list, confirms it, and saves the longer list.
+     *
+     * @throws BibiException if the list already holds the same task
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
+        int duplicateNumber = tasks.findSameTask(task);
+        if (duplicateNumber > 0) {
+            throw new BibiException("You already have that one, as task " + duplicateNumber
+                    + ": " + tasks.get(duplicateNumber) + ". I have left the list as it is.");
+        }
+
         tasks.add(task);
         ui.showMessage("Got it. I've added this task:");
         ui.showDetail(task.toString());

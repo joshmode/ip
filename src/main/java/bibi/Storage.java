@@ -56,6 +56,13 @@ public class Storage {
      * @throws IOException if the folder or file cannot be written
      */
     public void save(List<Task> tasks) throws IOException {
+        // A folder sitting where the save file belongs would otherwise surface
+        // as a bare FileSystemException naming neither the file nor the cause.
+        if (Files.isDirectory(filePath)) {
+            throw new IOException(filePath + " is a folder, so tasks cannot be saved to it. "
+                    + "Move or rename it, then try again.");
+        }
+
         Path parentFolder = filePath.getParent();
         if (parentFolder != null) {
             Files.createDirectories(parentFolder);

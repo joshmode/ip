@@ -106,7 +106,9 @@ public class ParserTest {
     @Test
     public void parse_unknownCommand_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("remind me"));
-        assertTrue(thrown.getMessage().contains("I don't understand that command."));
+        // The message now names the word it could not place, which is the part
+        // that helps a user who simply mistyped.
+        assertTrue(thrown.getMessage().contains("I don't understand 'remind'"));
     }
 
     @Test
@@ -125,7 +127,7 @@ public class ParserTest {
     public void parse_deadlineWithoutByMarker_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () ->
                 Parser.parse("deadline return book"));
-        assertEquals("Use deadline <description> /by <time>.", thrown.getMessage());
+        assertTrue(thrown.getMessage().startsWith("Use deadline <description> /by <time>"));
     }
 
     @Test
@@ -137,7 +139,8 @@ public class ParserTest {
     public void parse_eventMissingToMarker_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () ->
                 Parser.parse("event camp /from 2019-08-10"));
-        assertEquals("Use event <description> /from <start> /to <end>.", thrown.getMessage());
+        assertTrue(thrown.getMessage()
+                .startsWith("Use event <description> /from <start> /to <end>"));
     }
 
     @Test
@@ -150,8 +153,7 @@ public class ParserTest {
     @Test
     public void parse_taskNumberNotANumber_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("mark two"));
-        assertEquals("Use mark followed by a task number, for example: mark 2",
-                thrown.getMessage());
+        assertTrue(thrown.getMessage().contains("'two' is not a task number"));
     }
 
     @Test
@@ -176,5 +178,65 @@ public class ParserTest {
 
         assertEquals(1, tasks.size());
         assertEquals("[D][ ] return book (by: Dec 02 2019 6:00PM)", tasks.get(1).toString());
+    }
+
+    @Test
+    public void parse_tabBetweenCommandAndArgument_accepted() throws BibiException {
+        // Any run of whitespace separates the command word from its argument,
+        // so a tab is read as the user meant it rather than as an unknown word.
+        assertInstanceOf(AddCommand.class, Parser.parse("todo\tread book"));
+    }
+
+    @Test
+    public void parse_repeatedInnerSpaces_collapsedInDescription() throws BibiException {
+        TaskList tasks = new TaskList();
+        Parser.parse("todo   read    book").execute(tasks, new Ui(), new Storage(Path.of("x")));
+
+        assertEquals("[T][ ] read book", tasks.get(1).toString());
+    }
+
+    @Test
+    public void parse_byGivenTwice_exceptionThrown() {
+        BibiException thrown = assertThrows(BibiException.class, () ->
+                Parser.parse("deadline a /by 2019-10-15 /by 2019-11-11"));
+        assertTrue(thrown.getMessage().contains("You used /by 2 times"));
+    }
+
+    @Test
+    public void parse_toGivenTwice_exceptionThrown() {
+        BibiException thrown = assertThrows(BibiException.class, () ->
+                Parser.parse("event a /from 2019-08-06 /to 2019-08-07 /to 2019-08-08"));
+        assertTrue(thrown.getMessage().contains("You used /to 2 times"));
+    }
+
+    @Test
+    public void parse_toBeforeFrom_exceptionNamesTheOrder() {
+        BibiException thrown = assertThrows(BibiException.class, () ->
+                Parser.parse("event a /to 2019-08-07 /from 2019-08-06"));
+        assertTrue(thrown.getMessage().contains("/to came before the /from"));
+    }
+
+    @Test
+    public void parse_argumentAfterArgumentlessCommand_exceptionThrown() {
+        for (String command : new String[] {"list extra", "sort now", "help me", "bye now"}) {
+            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(command));
+            assertTrue(thrown.getMessage().contains("does not take anything after it"),
+                    "no complaint for: " + command);
+        }
+    }
+
+    @Test
+    public void parse_taskNumberBelowOne_exceptionExplainsNumbering() {
+        for (String command : new String[] {"mark 0", "unmark -1", "remove -7"}) {
+            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(command));
+            assertTrue(thrown.getMessage().contains("Task numbers start at 1"),
+                    "no complaint for: " + command);
+        }
+    }
+
+    @Test
+    public void parse_commandWordInAnyCase_recognized() throws BibiException {
+        assertInstanceOf(ListCommand.class, Parser.parse("LIST"));
+        assertInstanceOf(AddCommand.class, Parser.parse("ToDo read book"));
     }
 }
