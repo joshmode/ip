@@ -24,11 +24,11 @@ public class FindCommand extends FilterCommand {
 
     @Override
     protected String getHeader() {
-        return "Here are the matching tasks in your list:";
+        return "Here is what matches:";
     }
 
     @Override
     protected String getNoMatchMessage() {
-        return "No tasks match '" + keyword + "'.";
+        return "Nothing matches '" + keyword + "'.";
     }
 }

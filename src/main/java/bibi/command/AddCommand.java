@@ -34,13 +34,13 @@ public class AddCommand extends Command {
         int duplicateNumber = tasks.findSameTask(task);
         if (duplicateNumber > 0) {
             throw new BibiException("You already have that one, as task " + duplicateNumber
-                    + ": " + tasks.get(duplicateNumber) + ". I have left the list as it is.");
+                    + ": " + tasks.get(duplicateNumber) + ". Nothing changed.");
         }
 
         tasks.add(task);
-        ui.showMessage("Got it. I've added this task:");
+        ui.showMessage("Logged. That is on your list now:");
         ui.showDetail(task.toString());
-        ui.showPlain("Now you have " + tasks.size() + " tasks in the list.");
+        ui.showPlain("Your list holds " + Ui.describeCount(tasks.size()) + ".");
         saveTasks(tasks, ui, storage);
     }
 }

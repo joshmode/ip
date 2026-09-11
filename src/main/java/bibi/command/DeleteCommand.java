@@ -26,7 +26,7 @@ public class DeleteCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
         tasks.remove(taskNumber);
-        ui.showMessage("Task " + taskNumber + " removed.");
+        ui.showMessage("Task " + taskNumber + " is off the list.");
         saveTasks(tasks, ui, storage);
     }
 }

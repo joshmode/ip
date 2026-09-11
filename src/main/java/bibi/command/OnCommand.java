@@ -32,7 +32,7 @@ public class OnCommand extends FilterCommand {
 
     @Override
     protected String getNoMatchMessage() {
-        return "You have nothing on " + getShownDate() + ".";
+        return "Nothing on " + getShownDate() + ". Enjoy the quiet.";
     }
 
     /**

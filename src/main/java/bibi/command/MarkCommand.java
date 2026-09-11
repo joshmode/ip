@@ -26,7 +26,7 @@ public class MarkCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
         tasks.get(taskNumber).markComplete();
-        ui.showMessage("Marked task " + taskNumber + " as complete.");
+        ui.showMessage("Task " + taskNumber + " ticked off. Nice work.");
         saveTasks(tasks, ui, storage);
     }
 }
