@@ -1,11 +1,11 @@
 package bibi;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private static final String MAIN_WINDOW_FXML_PATH = "/view/MainWindow.fxml";
     private static final String STYLESHEET_PATH = "/view/bibi.css";
-    private static final String WINDOW_ICON_PATH = "/images/DaBibi.png";
 
     /** The same Bibi the console uses, pointed at the same save file. */
     private final Bibi bibi = new Bibi(Bibi.DEFAULT_SAVE_FILE_PATH);
@@ -32,17 +31,17 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource(MAIN_WINDOW_FXML_PATH));
+            FXMLLoader loader = new FXMLLoader(findResource(MAIN_WINDOW_FXML_PATH));
             AnchorPane root = loader.load();
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Main.class.getResource(STYLESHEET_PATH).toExternalForm());
+            scene.getStylesheets().add(findResource(STYLESHEET_PATH).toExternalForm());
             stage.setScene(scene);
 
             // The name belongs in the title bar and the taskbar, not only in the
             // greeting, so the window is recognisable when it is not in front.
             stage.setTitle("Bibi");
-            stage.getIcons().add(new Image(Main.class.getResourceAsStream(WINDOW_ICON_PATH)));
+            stage.getIcons().add(MainWindow.loadImage(MainWindow.BIBI_ICON_PATH));
             stage.setMinHeight(400.0);
             stage.setMinWidth(450.0);
 
@@ -55,5 +54,22 @@ public class Main extends Application {
             // means a broken build rather than anything the user can act on.
             throw new IllegalStateException("Could not load " + MAIN_WINDOW_FXML_PATH, exception);
         }
+    }
+
+    /**
+     * Returns the location of a file packaged with the application.
+     *
+     * <p>A missing file is reported by name here, rather than surfacing later as
+     * a bare {@code NullPointerException} from whatever tried to use it.
+     *
+     * @param resourcePath the file's path inside the resources folder
+     * @return the file's location
+     */
+    private static URL findResource(String resourcePath) {
+        URL resource = Main.class.getResource(resourcePath);
+        if (resource == null) {
+            throw new IllegalStateException("Missing bundled resource: " + resourcePath);
+        }
+        return resource;
     }
 }

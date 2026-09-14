@@ -19,7 +19,8 @@ import javafx.util.Duration;
  * back is put on screen as a {@link DialogBox}.
  */
 public class MainWindow {
-    private static final String BIBI_ICON_PATH = "/images/DaBibi.png";
+    /** Bibi's picture, shown beside every reply and reused by {@link Main} as the window icon. */
+    static final String BIBI_ICON_PATH = "/images/DaBibi.png";
 
     /**
      * How long the goodbye stays on screen before the window closes. Long enough
@@ -108,10 +109,13 @@ public class MainWindow {
     /**
      * Reads one of the pictures packaged with the application.
      *
+     * <p>Package-private so that {@link Main} loads the window icon the same
+     * way, with the same clear error when a picture is missing.
+     *
      * @param resourcePath the image's path inside the resources folder
      * @return the loaded image
      */
-    private static Image loadImage(String resourcePath) {
+    static Image loadImage(String resourcePath) {
         InputStream stream = MainWindow.class.getResourceAsStream(resourcePath);
         if (stream == null) {
             throw new IllegalStateException("Missing bundled image: " + resourcePath);
