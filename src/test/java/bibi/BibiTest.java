@@ -207,4 +207,47 @@ public class BibiTest {
         // A save file that could not be read fully is worth catching the eye.
         assertTrue(new Bibi(saveFile).getGreeting().isError());
     }
+
+    @Test
+    public void isLastCommandRejected_rejectedThenSuccessful_resetsForEachCommand(@TempDir Path tempDir) {
+        Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
+
+        bibi.getResponse("deadline unfinished /by");
+
+        assertTrue(bibi.isLastCommandRejected());
+
+        bibi.getResponse("list");
+
+        assertFalse(bibi.isLastCommandRejected());
+    }
+
+    @Test
+    public void isLastCommandRejected_duplicateAndInvalidNumber_keepsInputCorrectable(@TempDir Path tempDir) {
+        Bibi bibi = new Bibi(tempDir.resolve("bibi.txt"));
+        bibi.getResponse("todo borrow book");
+
+        bibi.getResponse("todo borrow book");
+
+        assertTrue(bibi.isLastCommandRejected());
+
+        bibi.getResponse("remove 2");
+
+        assertTrue(bibi.isLastCommandRejected());
+        assertTrue(bibi.getResponse("list").text().contains("1. [T][ ] borrow book"));
+    }
+
+    @Test
+    public void isLastCommandRejected_failedSave_keepsAppliedChangeDistinct(@TempDir Path tempDir)
+            throws IOException {
+        // A directory cannot be overwritten as a file, regardless of platform permissions.
+        Path saveFile = Files.createDirectory(tempDir.resolve("bibi.txt"));
+        Bibi bibi = new Bibi(saveFile);
+
+        Reply reply = bibi.getResponse("todo borrow book");
+
+        assertTrue(reply.isError());
+        assertFalse(bibi.isLastCommandRejected());
+        assertTrue(bibi.getResponse("list").text().contains("1. [T][ ] borrow book"));
+        assertTrue(Files.isDirectory(saveFile));
+    }
 }

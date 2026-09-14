@@ -4,34 +4,38 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <!--
   The transcript fills the window and the input row is pinned to the bottom, so
-  the conversation grows into whatever space the user gives it. The anchors, not
-  fixed sizes, are what make the window resizable.
+  the conversation grows into whatever space the user gives it. The input row
+  uses its content height so larger fonts do not overlap the transcript.
 -->
 <AnchorPane prefHeight="600.0" prefWidth="450.0"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="bibi.MainWindow">
   <children>
-    <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vvalue="1.0"
-                AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="36.0">
-      <content>
-        <!-- No spacing: each row carries its own padding, so the gap between
-             turns stays even and no space is wasted twice over. -->
-        <VBox fx:id="dialogContainer" fillWidth="true" spacing="0.0" />
-      </content>
-    </ScrollPane>
+    <VBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+      <children>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vvalue="1.0"
+                    minHeight="0.0" VBox.vgrow="ALWAYS">
+          <content>
+            <!-- Each row carries its own padding, keeping spacing consistent. -->
+            <VBox fx:id="dialogContainer" fillWidth="true" spacing="0.0" />
+          </content>
+        </ScrollPane>
 
-    <TextField fx:id="userInput" promptText="Type a command, then press Enter"
-               onAction="#handleUserInput" prefHeight="36.0"
-               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="76.0"
-               AnchorPane.bottomAnchor="0.0" />
-
-    <Button text="Send" mnemonicParsing="false"
-            onAction="#handleUserInput" prefHeight="36.0" prefWidth="76.0"
-            AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" />
+        <HBox styleClass="input-row">
+          <children>
+            <TextField fx:id="userInput" promptText="Type a command, then press Enter"
+                       onAction="#handleUserInput" minWidth="0.0" HBox.hgrow="ALWAYS" />
+            <Button text="Send" mnemonicParsing="false" onAction="#handleUserInput"
+                    minWidth="76.0" />
+          </children>
+        </HBox>
+      </children>
+    </VBox>
   </children>
 </AnchorPane>

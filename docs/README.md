@@ -19,7 +19,18 @@ Bibi saves your tasks to `data/bibi.txt` beside wherever you started it, so a fr
 folder gives you a fresh list.
 
 > **Tip:** type in the box at the bottom and press <kbd>Enter</kbd>, or click **Send**.
-> Everything is a short typed command — there is nothing to click through. 🤖
+> Everything is a short typed command, with keyboard shortcuts to keep things moving.
+
+### Using the keyboard and transcript
+
+- **Enter** submits the input; focus returns to the input after submission.
+- **Up / Down** in the input recalls this session's commands without running them.
+  Your unfinished draft returns when you move Down past the newest command.
+- A rejected command stays in the input so you can correct it. Blank input is ignored.
+- Select text in any previous command or reply, then use **Ctrl+C** (or **Cmd+C** on macOS)
+  to copy it. Selection shortcuts act on the focused text field, not on the task list.
+- New output follows the transcript when you are near the bottom. If you scroll up to
+  read, your position stays put; scroll back down when you are ready.
 
 Commands and `/by`, `/from`, `/to` markers ignore capitalization. Extra separator
 whitespace is fine; descriptions keep their capitalization, with whitespace runs
@@ -144,7 +155,7 @@ help
 bye
 ```
 
-`help` groups the commands, examples, and date formats.
+`help` groups the commands, examples, date formats, and keyboard shortcuts.
 `bye` closes Bibi. Changes are saved after each task-changing command; watch for
 a save warning if a write could not finish.
 
@@ -169,7 +180,8 @@ in red so you can spot them when scrolling back:
 - **An invalid task number** explains the current range, or that the list is empty.
 - **A failed save** warns that the command already changed the list in memory. Do not
   repeat the operation: check the file location and permissions before another save.
-  Unsaved changes can be lost when Bibi closes.
+  Unsaved changes can be lost when Bibi closes. In the GUI, an applied command clears
+  the input even if saving failed; a validation rejection stays available for editing.
 
 ## Command summary
 

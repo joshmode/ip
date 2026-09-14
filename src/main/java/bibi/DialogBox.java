@@ -2,14 +2,21 @@ package bibi;
 
 import java.io.IOException;
 
+import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
+import javafx.scene.Node;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 
 /**
  * One turn of the conversation.
@@ -32,7 +39,7 @@ public class DialogBox extends HBox {
     private static final double USER_CHIP_WIDTH_FRACTION = 0.75;
 
     @FXML
-    private Label dialog;
+    private TextArea dialog;
 
     @FXML
     private ImageView displayPicture;
@@ -55,6 +62,12 @@ public class DialogBox extends HBox {
         }
 
         dialog.setText(text);
+        dialog.setMinHeight(Region.USE_PREF_SIZE);
+        dialog.setMaxHeight(Region.USE_PREF_SIZE);
+        dialog.widthProperty().addListener((observable, oldWidth, newWidth) -> resizeDialog());
+        dialog.fontProperty().addListener((observable, oldFont, newFont) -> resizeDialog());
+        dialog.insetsProperty().addListener((observable, oldInsets, newInsets) -> resizeDialog());
+        dialog.addEventFilter(ScrollEvent.SCROLL, this::forwardScroll);
     }
 
     /**
@@ -95,10 +108,51 @@ public class DialogBox extends HBox {
         box.getStyleClass().add("bibi-row");
         box.dialog.getStyleClass().add(reply.isError() ? "error-text" : "bibi-text");
 
-        // Letting the label take the leftover width is what makes a long reply
+        // Letting the text take the leftover width is what makes a long reply
         // wrap into the window rather than being squeezed into a column.
         box.dialog.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(box.dialog, Priority.ALWAYS);
         return box;
+    }
+
+    /**
+     * Sizes selectable text to its wrapped content instead of adding an inner scrollbar.
+     *
+     * <p>The measurement uses the same font and available width as the control.
+     * Repeating it when those change also accommodates resizing and larger fonts.
+     */
+    private void resizeDialog() {
+        double horizontalInsets = dialog.getInsets().getLeft() + dialog.getInsets().getRight();
+        double verticalInsets = dialog.getInsets().getTop() + dialog.getInsets().getBottom();
+        Text measurement = new Text(dialog.getText());
+        measurement.setFont(dialog.getFont());
+        // TextArea's skin uses these bounds, which include the font's full line height.
+        measurement.setBoundsType(TextBoundsType.LOGICAL_VERTICAL_CENTER);
+        dialog.setPrefWidth(Math.ceil(measurement.getLayoutBounds().getWidth()) + horizontalInsets + 2);
+        measurement.setWrappingWidth(Math.max(1, dialog.getWidth() - horizontalInsets - 2));
+        double preferredHeight = Math.ceil(measurement.getLayoutBounds().getHeight()) + verticalInsets + 2;
+        if (dialog.getPrefHeight() != preferredHeight) {
+            dialog.setPrefHeight(preferredHeight);
+            // Width can change during HBox layout. Its parent must then recalculate
+            // this row's height after that pass, including when a wider reply shrinks.
+            Platform.runLater(this::requestLayout);
+        }
+    }
+
+    /**
+     * Scrolls the transcript when the pointer is over selectable message text.
+     *
+     * <p>Each message fits its contents, so its internal text area must not trap
+     * wheel events intended for the surrounding conversation.
+     *
+     * @param event the scrolling gesture over a message
+     */
+    private void forwardScroll(ScrollEvent event) {
+        Node container = getParent();
+        if (container != null) {
+            // Bubble through the outer viewport, which owns JavaFX's wheel handler.
+            Event.fireEvent(container, event.copyFor(container, container));
+            event.consume();
+        }
     }
 }

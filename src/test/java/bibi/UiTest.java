@@ -211,6 +211,27 @@ public class UiTest {
     }
 
     @Test
+    public void showHelp_always_explainsDatesNumberingAndKeyboard() {
+        Ui ui = createCapturingUi();
+        ui.showHelp();
+
+        String text = ui.takeCapturedReply().text();
+        for (String group : new String[] {"Add", "View", "Update", "Session"}) {
+            assertTrue(text.contains("  " + group + "\n"), "help omitted group " + group);
+        }
+        assertTrue(text.indexOf("Add\n") < text.indexOf("View\n"));
+        assertTrue(text.indexOf("View\n") < text.indexOf("Update\n"));
+        assertTrue(text.indexOf("Update\n") < text.indexOf("Session\n"));
+        assertTrue(text.contains("d/M/yy uses 00-99 for 2000-2099."));
+        assertTrue(text.contains("Numeric dates are always day first."));
+        assertTrue(text.contains("Existing yyyy-MM-dd input still works."));
+        assertTrue(text.contains("Sort and remove can change them"));
+        assertTrue(text.contains("Up/Down recall commands without sending"));
+        assertTrue(text.contains("restores your draft"));
+        assertTrue(text.contains("Ctrl+C (Cmd+C on macOS)"));
+    }
+
+    @Test
     public void describeCount_oneAndMany_pickTheRightPlural() {
         assertEquals("0 tasks", Ui.describeCount(0));
         assertEquals("1 task", Ui.describeCount(1));

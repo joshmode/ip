@@ -244,7 +244,10 @@ public class Ui {
                 "Existing yyyy-MM-dd input still works. Examples: 1/2/2026, 21 December 2026, 21/12/26.",
                 "Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.",
                 "Numbers come from the full list, including find/on results. Sort and remove can change them;",
-                "use list for current numbers before acting on an older reply.");
+                "use list for current numbers before acting on an older reply.",
+                "GUI: Enter sends; Up/Down recall commands without sending. Down past the newest restores your draft.",
+                "Rejected commands stay for editing. Select transcript text and use Ctrl+C (Cmd+C on macOS) to copy.",
+                "New replies scroll into view when you're near the bottom; scroll up to keep your reading position.");
     }
 
     /**

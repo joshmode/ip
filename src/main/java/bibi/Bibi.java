@@ -32,6 +32,7 @@ public class Bibi {
     private final Storage storage;
     private TaskList tasks;
     private boolean isExitRequested;
+    private boolean isLastCommandRejected;
 
     /**
      * Prepares Bibi to work with the given save file.
@@ -107,6 +108,18 @@ public class Bibi {
     }
 
     /**
+     * Reports whether validation rejected the last command before it changed the list.
+     *
+     * <p>The GUI keeps rejected input available for correction. A failed save is different:
+     * the command already took effect in memory, so keeping it ready to repeat would be misleading.
+     *
+     * @return whether the last command needs correction
+     */
+    public boolean isLastCommandRejected() {
+        return isLastCommandRejected;
+    }
+
+    /**
      * Parses and carries out one typed command.
      *
      * <p>A command that fails is reported through {@link Ui} rather than thrown,
@@ -117,11 +130,13 @@ public class Bibi {
      * @param fullCommand one line of input, exactly as the user typed it
      */
     private void executeCommand(String fullCommand) {
+        isLastCommandRejected = false;
         try {
             Command command = Parser.parse(fullCommand);
             command.execute(tasks, ui, storage);
             isExitRequested = command.isExit();
         } catch (BibiException exception) {
+            isLastCommandRejected = true;
             ui.showError(exception.getMessage());
         }
     }

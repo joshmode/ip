@@ -410,6 +410,7 @@ Bibi: Here's the rundown:
   d/M/yy uses 00-99 for 2000-2099. Numeric dates are always day first.
   Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.
   Numbers come from the full list, including find/on results.
+  GUI: Enter sends; Up/Down recall commands without sending. Down past the newest restores your draft.
 Bibi: See you.
 ```
 
@@ -832,3 +833,27 @@ Your list holds 2 tasks.
 Bibi: Task 1 is open again.
   [D][ ] Return Book (by: 21 Dec 2026)
 ```
+
+## GUI checks
+
+These checks supplement the scripted console cases. Use a fresh save location.
+
+1. Open at the default 450 by 600 size, resize down to the minimum and wider, then
+   repeat with enlarged display scaling. Check input/Send visibility, text contrast,
+   avatar size, keyboard focus, and wrapping of long commands and errors.
+2. Submit with Enter and Send. Confirm focus returns to the input; blank input adds
+   nothing. Submit an invalid deadline and edit the retained text to a valid one.
+3. Submit several commands. Type an unfinished draft, press Up and Down, and confirm
+   the commands are recalled without executing and the draft returns at the newest
+   position. Select all input, then press Up: the selected command must not be replaced
+   by history. Shift+arrows and copy shortcuts must keep normal text-selection behavior.
+4. Select and copy a previous command, task description, and error example. Verify
+   text is unchanged and copying does not execute a command or navigate history.
+5. Build a long transcript. Near the bottom, a new reply should follow into view;
+   while scrolled up, it should preserve the text being read. Repeat after resizing.
+   Scroll with the pointer over a command and over a reply; both must scroll the
+   outer transcript without a separate scrollbar or clipped text inside a message.
+6. Make the save location unwritable in a disposable folder and submit a valid task.
+   Confirm the warning states that the change happened in memory, the input clears,
+   and a subsequent list contains the task once. A rejected command must instead
+   remain editable and leave the tasks unchanged.
