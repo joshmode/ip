@@ -127,7 +127,7 @@ public class UndoCommandTest {
         assertThrows(BibiException.class, () -> run(new DeleteCommand(2), tasks, storage));
         assertThrows(BibiException.class, () -> run(new MarkCommand(0), tasks, storage));
         List<Command> otherCommands = List.of(new UnmarkCommand(1), new SortCommand(), new ListCommand(),
-                new FindCommand("added"), new OnCommand(LocalDate.of(2019, 12, 2)), new HelpCommand(),
+                new FindCommand("added"), new OnCommand(LocalDate.of(2019, 12, 2)), new HelpCommand(false),
                 new SocialCommand(false), new SocialCommand(true));
         for (Command command : otherCommands) {
             run(command, tasks, storage);

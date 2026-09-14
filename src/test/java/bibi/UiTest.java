@@ -211,7 +211,7 @@ public class UiTest {
     }
 
     @Test
-    public void showHelp_always_explainsDatesNumberingAndKeyboard() {
+    public void showHelp_always_groupsTheCommandsInOrder() {
         Ui ui = createCapturingUi();
         ui.showHelp();
 
@@ -222,6 +222,44 @@ public class UiTest {
         assertTrue(text.indexOf("Add\n") < text.indexOf("View\n"));
         assertTrue(text.indexOf("View\n") < text.indexOf("Update\n"));
         assertTrue(text.indexOf("Update\n") < text.indexOf("Session\n"));
+    }
+
+    @Test
+    public void showHelp_always_staysShortAndPointsAtTheExamples() {
+        Ui ui = createCapturingUi();
+        ui.showHelp();
+
+        String text = ui.takeCapturedReply().text();
+        assertTrue(text.contains("Usage: <command> [arguments]"));
+        assertTrue(text.contains("Run help --examples"));
+
+        // The reference detail belongs behind the flag. Keeping it out is the
+        // point of the short help, so its absence is asserted rather than assumed.
+        assertFalse(text.contains("d/M/yy uses 00-99 for 2000-2099."));
+        assertFalse(text.contains("Ctrl+C (Cmd+C on macOS)"));
+    }
+
+    @Test
+    public void showHelp_always_alignsTheDescriptionColumn() {
+        Ui ui = createCapturingUi();
+        ui.showHelp();
+
+        // The synopses are padded so the reply scans like a command-line tool's
+        // help; an unpadded row would leave the descriptions ragged.
+        String text = ui.takeCapturedReply().text();
+        int todoColumn = text.indexOf("add an undated task");
+        int listColumn = text.indexOf("show every task with its number");
+        assertEquals(todoColumn - text.lastIndexOf('\n', todoColumn),
+                listColumn - text.lastIndexOf('\n', listColumn));
+    }
+
+    @Test
+    public void showHelpExamples_always_explainsDatesNumberingAndKeyboard() {
+        Ui ui = createCapturingUi();
+        ui.showHelpExamples();
+
+        String text = ui.takeCapturedReply().text();
+        assertTrue(text.contains("deadline return book /by 21/12/2026 1800"));
         assertTrue(text.contains("d/M/yy uses 00-99 for 2000-2099."));
         assertTrue(text.contains("Numeric dates are always day first."));
         assertTrue(text.contains("Existing yyyy-MM-dd input still works."));

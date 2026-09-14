@@ -171,10 +171,19 @@ and can be undone. Closing Bibi discards undo history; it is not written to the 
 
 ```
 help
+help --examples
 bye
 ```
 
-`help` groups the commands, examples, date formats, and keyboard shortcuts.
+`help` lists every command, grouped by what it is for, with a one-line
+description each — enough to find the command word you have forgotten without
+reading past it.
+
+`help --examples` prints that same list and then adds the reference detail:
+worked examples, every accepted date format, how task numbers behave, and the
+keyboard shortcuts. Anything else after `help` is rejected, so a mistyped flag
+is reported rather than quietly ignored.
+
 `bye` closes Bibi. Changes are saved after each task-changing command; watch for
 a save warning if a write could not finish.
 
@@ -217,7 +226,7 @@ in amber, with a rule down the left edge, so you can spot them when scrolling ba
 | `unmark` | reopens a task | `unmark 2` |
 | `remove` | deletes a task | `remove 2` |
 | `undo` | restores the most recent change once, in this session | `undo` |
-| `help` | lists the commands | `help` |
+| `help` | lists the commands; `--examples` adds examples and date formats | `help --examples` |
 | `bye` | closes Bibi | `bye` |
 | `hi`, `hello`, `hey`, `thanks` | replies briefly without changing tasks | `hello!` |
 

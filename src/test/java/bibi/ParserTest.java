@@ -239,9 +239,28 @@ public class ParserTest {
 
     @Test
     public void parse_argumentAfterArgumentlessCommand_exceptionThrown() {
-        for (String input : new String[] {"list extra", "sort now", "undo now", "help me", "bye now"}) {
+        for (String input : new String[] {"list extra", "sort now", "undo now", "bye now"}) {
             BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
             assertTrue(thrown.getMessage().contains("does not take anything after it"),
+                    "no complaint for: " + input);
+        }
+    }
+
+    @Test
+    public void parse_helpExamplesFlag_accepted() throws BibiException {
+        // The flag is the one optional argument Bibi has, so it is matched the
+        // way every other command word is: without regard to case.
+        assertInstanceOf(HelpCommand.class, Parser.parse("help --examples"));
+        assertInstanceOf(HelpCommand.class, Parser.parse("help --EXAMPLES"));
+        assertInstanceOf(HelpCommand.class, Parser.parse("help   --examples"));
+    }
+
+    @Test
+    public void parse_helpWithAnUnknownArgument_exceptionNamesTheFlag() {
+        // Showing the short help anyway would look like the flag had worked.
+        for (String input : new String[] {"help me", "help --example", "help examples", "help -x"}) {
+            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
+            assertTrue(thrown.getMessage().contains("help takes nothing or --examples"),
                     "no complaint for: " + input);
         }
     }

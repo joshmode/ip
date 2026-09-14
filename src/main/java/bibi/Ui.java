@@ -212,41 +212,74 @@ public class Ui {
     }
 
     /**
-     * Prints the full list of commands Bibi understands.
+     * Prints the full list of commands Bibi understands, one to a line.
      *
      * <p>This is the only place the full list is written out; the greeting and
      * the reply to an unknown command both point here instead.
+     *
+     * <p>The synopses are padded into a column so the reply scans like the help
+     * of a command-line tool: the reader looks down the left edge for the
+     * command and across only once they have found it. Everything that is not a
+     * command, such as the date formats and the keyboard shortcuts, is held back
+     * for {@link #showHelpExamples()} so that this list stays short enough to
+     * take in at a glance.
      */
     public void showHelp() {
-        showMessage("Here's the rundown:");
+        showMessage("Usage: <command> [arguments]");
         showDetails(
                 "Add",
-                "todo <description> - add an undated task. Example: todo read book",
-                "deadline <description> /by <time> - add a due date.",
-                "Example: deadline return book /by 21/12/2026 1800",
-                "event <description> /from <start> /to <end> - add a time span.",
-                "Example: event study group /from 21/12/2026 1800 /to 21/12/2026 2000",
+                "  todo <description>                           add an undated task",
+                "  deadline <description> /by <time>            add a task with a due date",
+                "  event <description> /from <start> /to <end>  add a task that spans two times",
                 "View",
-                "list - show all tasks and their current numbers. Example: list",
-                "sort - save tasks in date order, undated last. Example: sort",
-                "find <keyword> - find description text, ignoring case. Example: find book",
-                "on <date> - show deadlines and events on a day. Example: on 21/12/2026",
+                "  list                                         show every task with its number",
+                "  sort                                         save tasks in date order, undated last",
+                "  find <keyword>                               show tasks whose description matches",
+                "  on <date>                                    show deadlines and events on one day",
                 "Update",
-                "mark <number> - mark a task done. Example: mark 2",
-                "unmark <number> - reopen a task. Example: unmark 2",
-                "remove <number> - delete a task. Example: remove 2",
-                "undo - restore the last task change once this session; no redo. Example: undo",
+                "  mark <number>                                mark a task done",
+                "  unmark <number>                              reopen a task",
+                "  remove <number>                              delete a task",
+                "  undo                                         reverse the last task change",
                 "Session",
-                "help - show this reference. Example: help",
-                "bye - end the session. Example: bye",
-                "hi, hello, hey or thanks - a quick reply. Example: hey!",
-                "Dates: d/M/yyyy, d-M-yyyy, d.M.yyyy, d MMM yyyy or d MMMM yyyy.",
+                "  help [--examples]                            show this reference",
+                "  bye                                          end the session",
+                "  hi, hello, hey, thanks                       a quick reply");
+        showMessage("Run help --examples for examples, date formats and keyboard shortcuts.");
+    }
+
+    /**
+     * Prints worked examples and the reference detail behind the command list.
+     *
+     * <p>Kept behind a flag rather than shown with {@link #showHelp()} because
+     * the two answer different questions. Someone who has forgotten a command
+     * word wants the short list; someone who cannot get a date accepted wants
+     * this. Printing both every time made the common case scroll past the
+     * uncommon one.
+     */
+    public void showHelpExamples() {
+        showMessage("Examples:");
+        showDetails(
+                "todo read book",
+                "deadline return book /by 21/12/2026 1800",
+                "event study group /from 21/12/2026 1800 /to 21/12/2026 2000",
+                "find book",
+                "on 21/12/2026",
+                "mark 2");
+        showMessage("Dates:");
+        showDetails(
+                "d/M/yyyy, d-M-yyyy, d.M.yyyy, d MMM yyyy or d MMMM yyyy.",
                 "d/M/yy uses 00-99 for 2000-2099. Numeric dates are always day first.",
                 "Existing yyyy-MM-dd input still works. Examples: 1/2/2026, 21 December 2026, 21/12/26.",
-                "Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.",
+                "Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.");
+        showMessage("Task numbers:");
+        showDetails(
                 "Numbers come from the full list, including find/on results. Sort and remove can change them;",
                 "use list for current numbers before acting on an older reply.",
-                "GUI: Enter sends; Up/Down recall commands without sending. Down past the newest restores your draft.",
+                "undo restores the last task change once this session; there is no redo.");
+        showMessage("Keyboard, in the window:");
+        showDetails(
+                "Enter sends; Up/Down recall commands without sending. Down past the newest restores your draft.",
                 "Rejected commands stay for editing. Select transcript text and use Ctrl+C (Cmd+C on macOS) to copy.",
                 "New replies scroll into view when you're near the bottom; scroll up to keep your reading position.");
     }

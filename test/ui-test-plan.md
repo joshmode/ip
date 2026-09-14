@@ -381,7 +381,8 @@ Bibi: I could not read the date 'someday'.
 
 ## Test 16: Show the list of commands
 
-Aim: Confirm that help is recognised on its own, and lists every command.
+Aim: Confirm that help is recognised on its own, lists every command grouped by
+what it is for, and points at the examples rather than printing them.
 
 ### Input
 
@@ -393,25 +394,71 @@ bye
 ### Expected output
 
 ```text
-Bibi: Here's the rundown:
-  todo <description>
-  deadline <description> /by <time>
-  event <description> /from <start> /to <end>
-  list
-  sort
-  find <keyword>
-  on <date>
-  mark <number>
-  unmark <number>
-  remove <number>
-  undo
-  help
-  bye
-  hi, hello, hey or thanks
+Bibi: Usage: <command> [arguments]
+  Add
+    todo <description>
+    deadline <description> /by <time>
+    event <description> /from <start> /to <end>
+  View
+    list
+    sort
+    find <keyword>
+    on <date>
+  Update
+    mark <number>
+    unmark <number>
+    remove <number>
+    undo
+  Session
+    help [--examples]
+    bye
+    hi, hello, hey, thanks
+Bibi: Run help --examples for examples, date formats and keyboard shortcuts.
+Bibi: See you.
+```
+
+## Test 16a: Show the examples behind the help flag
+
+Aim: Confirm that `help --examples` keeps the command list and adds the worked
+examples, date formats, numbering notes and keyboard shortcuts after it, and
+that any other argument to help is rejected rather than ignored.
+
+### Input
+
+```text
+help --examples
+help me
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Usage: <command> [arguments]
+    todo <description>
+    help [--examples]
+Bibi: Run help --examples for examples, date formats and keyboard shortcuts.
+Bibi: Examples:
+  todo read book
+  deadline return book /by 21/12/2026 1800
+  event study group /from 21/12/2026 1800 /to 21/12/2026 2000
+  find book
+  on 21/12/2026
+  mark 2
+Bibi: Dates:
+  d/M/yyyy, d-M-yyyy, d.M.yyyy, d MMM yyyy or d MMMM yyyy.
   d/M/yy uses 00-99 for 2000-2099. Numeric dates are always day first.
+  Existing yyyy-MM-dd input still works. Examples: 1/2/2026, 21 December 2026, 21/12/26.
   Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.
-  Numbers come from the full list, including find/on results.
-  GUI: Enter sends; Up/Down recall commands without sending. Down past the newest restores your draft.
+Bibi: Task numbers:
+  Numbers come from the full list, including find/on results. Sort and remove can change them;
+  use list for current numbers before acting on an older reply.
+  undo restores the last task change once this session; there is no redo.
+Bibi: Keyboard, in the window:
+  Enter sends; Up/Down recall commands without sending. Down past the newest restores your draft.
+  Rejected commands stay for editing. Select transcript text and use Ctrl+C (Cmd+C on macOS) to copy.
+  New replies scroll into view when you're near the bottom; scroll up to keep your reading position.
+Bibi: help takes nothing or --examples after it, but I found 'me'.
 Bibi: See you.
 ```
 

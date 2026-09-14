@@ -39,7 +39,10 @@ import bibi.task.Todo;
  */
 public final class Parser {
     /** The commands that take no argument at all. */
-    private static final String COMMANDS_WITHOUT_ARGUMENTS = "list, sort, undo, help and bye";
+    private static final String COMMANDS_WITHOUT_ARGUMENTS = "list, sort, undo and bye";
+
+    /** The only argument {@code help} accepts, which asks for the worked examples. */
+    private static final String EXAMPLES_FLAG = "--examples";
 
     private static final String USAGE_TODO = "Use todo <description>, for example: todo read book.";
     private static final String USAGE_DEADLINE = "Use deadline <description> /by <time>, "
@@ -116,10 +119,7 @@ public final class Parser {
                 requireNoArgument(argument, "sort");
                 yield new SortCommand();
             }
-            case "help" -> {
-                requireNoArgument(argument, "help");
-                yield new HelpCommand();
-            }
+            case "help" -> new HelpCommand(parseExamplesFlag(argument));
             case "undo" -> {
                 requireNoArgument(argument, "undo");
                 yield new UndoCommand();
@@ -159,6 +159,31 @@ public final class Parser {
                     + argument + "'. " + COMMANDS_WITHOUT_ARGUMENTS + " are used on their own. "
                     + "Use " + commandWord + ", for example: " + commandWord + ".");
         }
+    }
+
+    /**
+     * Reads the optional flag that may follow {@code help}.
+     *
+     * <p>{@code help} is the one command with an optional argument, so it is
+     * checked here rather than through {@link #requireNoArgument}. Anything else
+     * is still rejected, for the same reason: a user who typed a flag Bibi does
+     * not have should be told so, not shown the short help as though they had
+     * typed nothing.
+     *
+     * @param argument whatever followed the command word
+     * @return {@code true} when the user asked for the worked examples
+     * @throws BibiException if the argument is anything but the examples flag
+     */
+    private static boolean parseExamplesFlag(String argument) throws BibiException {
+        if (argument.isEmpty()) {
+            return false;
+        }
+        if (argument.equalsIgnoreCase(EXAMPLES_FLAG)) {
+            return true;
+        }
+        throw new BibiException("help takes nothing or " + EXAMPLES_FLAG + " after it, but I found '"
+                + argument + "'. Use help for the command list, or help " + EXAMPLES_FLAG
+                + " for examples and date formats.");
     }
 
     /**
