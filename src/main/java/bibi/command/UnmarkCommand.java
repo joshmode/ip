@@ -3,6 +3,7 @@ package bibi.command;
 import bibi.BibiException;
 import bibi.Storage;
 import bibi.Ui;
+import bibi.task.Task;
 import bibi.task.TaskList;
 
 /**
@@ -21,12 +22,16 @@ public class UnmarkCommand extends Command {
     }
 
     /**
-     * Marks the numbered task incomplete and saves the change.
+     * Marks the numbered task incomplete, shows it, and saves the change.
+     *
+     * <p>The task is shown for the same reason as in {@link MarkCommand}.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
-        tasks.get(taskNumber).markIncomplete();
+        Task task = tasks.get(taskNumber);
+        task.markIncomplete();
         ui.showMessage("Task " + taskNumber + " is open again.");
+        ui.showDetails(task.toString());
         saveTasks(tasks, ui, storage);
     }
 }

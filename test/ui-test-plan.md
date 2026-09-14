@@ -69,7 +69,8 @@ Your list holds 1 task.
 
 ## Test 4: Mark and unmark a task
 
-Aim: Confirm that completion state changes are displayed for a Task subclass.
+Aim: Confirm that completion state changes are displayed for a Task subclass,
+and that each reply names the task it changed.
 
 ### Input
 
@@ -86,8 +87,10 @@ bye
 
 ```text
 Bibi: Task 1 ticked off. Nice work.
+  [T][X] join sports club
 1. [T][X] join sports club
 Bibi: Task 1 is open again.
+  [T][ ] join sports club
 1. [T][ ] join sports club
 ```
 
@@ -559,4 +562,31 @@ Bibi: You already have that one, as task 2: [D][ ] pay fees (by: Oct 15 2019).
 Bibi: Here is everything on your list:
 1. [T][ ] read book
 2. [D][ ] pay fees (by: Oct 15 2019)
+```
+
+## Test 23: Remove a task
+
+Aim: Confirm that remove names the task it took away, since every later task
+moves up a number once it is gone, and that the rest are renumbered.
+
+### Input
+
+```text
+todo read book
+todo join sports club
+remove 1
+list
+remove 5
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Task 1 is off the list:
+  [T][ ] read book
+Your list holds 1 task.
+Bibi: Here is everything on your list:
+1. [T][ ] join sports club
+Bibi: That task number does not exist.
 ```

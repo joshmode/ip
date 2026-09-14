@@ -100,6 +100,7 @@ public class CommandTest {
         String said = run(new MarkCommand(1), tasks, storage);
 
         assertTrue(said.contains("ticked off"));
+        assertTrue(said.contains("[T][X] read book"));
         assertEquals("[T][X] read book", tasks.get(1).toString());
         assertEquals("T | 1 | read book", Files.readString(storage.getFilePath()).strip());
     }
@@ -122,6 +123,7 @@ public class CommandTest {
         String said = run(new UnmarkCommand(1), tasks, storageIn(tempDir));
 
         assertTrue(said.contains("open again"));
+        assertTrue(said.contains("[T][ ] read book"));
         assertEquals("[T][ ] read book", tasks.get(1).toString());
     }
 
@@ -133,6 +135,10 @@ public class CommandTest {
         String said = run(new DeleteCommand(1), tasks, storageIn(tempDir));
 
         assertTrue(said.contains("off the list"));
+        // The removed task is named, because once it is gone the numbers shift
+        // and the number alone no longer says which task it was.
+        assertTrue(said.contains("[T][ ] first"));
+        assertTrue(said.contains("Your list holds 1 task."));
         assertEquals(1, tasks.size());
         assertEquals("[T][ ] second", tasks.get(1).toString());
     }
