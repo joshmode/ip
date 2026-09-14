@@ -188,9 +188,11 @@ public class ParserTest {
     }
 
     @Test
-    public void parse_repeatedInnerSpaces_collapsedInDescription() throws BibiException {
+    public void parse_repeatedInnerSpaces_collapsedInDescription(@TempDir Path tempDir)
+            throws BibiException {
         TaskList tasks = new TaskList();
-        Parser.parse("todo   read    book").execute(tasks, new Ui(), new Storage(Path.of("x")));
+        Parser.parse("todo   read    book")
+                .execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
 
         assertEquals("[T][ ] read book", tasks.get(1).toString());
     }

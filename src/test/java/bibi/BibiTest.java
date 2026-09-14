@@ -57,7 +57,7 @@ public class BibiTest {
 
         // Each call starts a fresh capture, so nothing from the first reply may
         // leak into the second.
-        assertFalse(response.contains("Got it."));
+        assertFalse(response.contains("Logged."));
         assertTrue(response.contains("1. [T][ ] borrow book"));
     }
 
