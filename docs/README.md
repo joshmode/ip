@@ -188,7 +188,7 @@ follow-up questions.
 ## When something goes wrong
 
 Bibi tries to say what is actually wrong rather than just refusing. Mistakes are shown
-in red so you can spot them when scrolling back:
+in amber, with a rule down the left edge, so you can spot them when scrolling back:
 
 - **An unknown command** names the word it could not place.
 - **A missing part** shows the shape of the command, with an example.
