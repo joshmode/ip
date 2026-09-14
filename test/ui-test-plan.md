@@ -131,7 +131,7 @@ bye
 
 ```text
 Bibi: Please enter a command.
-Bibi: I don't understand 'remind'. Try todo, deadline, event, list, sort, find, on, mark, unmark, remove, help, or bye.
+Bibi: I don't understand 'remind'. Type help to see every command I know.
 Bibi: Use todo followed by a description.
 Bibi: 'two' is not a task number.
 ```

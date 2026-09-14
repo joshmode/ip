@@ -111,9 +111,10 @@ public final class Parser {
             // Any time of day in the query is ignored, since the question is which
             // tasks belong to the day as a whole.
             case "on" -> new OnCommand(TaskDateTime.parse(argument).getDate());
+            // Pointing at help, rather than listing the commands here as well,
+            // keeps the full list in one place.
             default -> throw new BibiException("I don't understand '" + parts[0] + "'. "
-                    + "Try todo, deadline, event, list, sort, find, on, mark, unmark, remove, "
-                    + "help, or bye.");
+                    + "Type help to see every command I know.");
         };
     }
 

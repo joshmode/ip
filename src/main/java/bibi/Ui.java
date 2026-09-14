@@ -198,17 +198,24 @@ public class Ui {
     }
 
     /**
-     * Prints the greeting and a summary of the supported commands.
+     * Prints the greeting and points the user at the commands.
+     *
+     * <p>Only the commands that add tasks are named here. The full list is
+     * written out in {@link #showHelp()} alone, so adding a command means
+     * updating one list rather than several.
      */
     public void showWelcome() {
         showMessage("Bibi online. Hand me anything you would rather not hold in your head.");
         showMessage("Add work with todo, deadline or event.");
-        showMessage("Then try list, sort, find, on, mark, unmark, remove, or help.");
+        showMessage("Type help to see everything else I can do.");
         showMessage("Dates look like 2019-10-15 or 2/12/2019 1800.");
     }
 
     /**
      * Prints the full list of commands Bibi understands.
+     *
+     * <p>This is the only place the full list is written out; the greeting and
+     * the reply to an unknown command both point here instead.
      */
     public void showHelp() {
         showMessage("Here is everything I know how to do:");
