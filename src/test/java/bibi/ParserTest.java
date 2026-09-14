@@ -21,6 +21,7 @@ import bibi.command.ListCommand;
 import bibi.command.MarkCommand;
 import bibi.command.OnCommand;
 import bibi.command.SocialCommand;
+import bibi.command.UndoCommand;
 import bibi.command.UnmarkCommand;
 import bibi.task.TaskList;
 import bibi.task.Todo;
@@ -36,6 +37,7 @@ public class ParserTest {
         assertInstanceOf(ListCommand.class, Parser.parse("list"));
         assertInstanceOf(HelpCommand.class, Parser.parse("help"));
         assertInstanceOf(ExitCommand.class, Parser.parse("bye"));
+        assertInstanceOf(UndoCommand.class, Parser.parse("undo"));
     }
 
     @Test
@@ -237,7 +239,7 @@ public class ParserTest {
 
     @Test
     public void parse_argumentAfterArgumentlessCommand_exceptionThrown() {
-        for (String input : new String[] {"list extra", "sort now", "help me", "bye now"}) {
+        for (String input : new String[] {"list extra", "sort now", "undo now", "help me", "bye now"}) {
             BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
             assertTrue(thrown.getMessage().contains("does not take anything after it"),
                     "no complaint for: " + input);

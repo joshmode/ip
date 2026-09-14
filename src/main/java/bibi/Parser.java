@@ -15,6 +15,7 @@ import bibi.command.MarkCommand;
 import bibi.command.OnCommand;
 import bibi.command.SocialCommand;
 import bibi.command.SortCommand;
+import bibi.command.UndoCommand;
 import bibi.command.UnmarkCommand;
 import bibi.task.Deadline;
 import bibi.task.Event;
@@ -38,7 +39,7 @@ import bibi.task.Todo;
  */
 public final class Parser {
     /** The commands that take no argument at all. */
-    private static final String COMMANDS_WITHOUT_ARGUMENTS = "list, sort, help and bye";
+    private static final String COMMANDS_WITHOUT_ARGUMENTS = "list, sort, undo, help and bye";
 
     private static final String USAGE_TODO = "Use todo <description>, for example: todo read book.";
     private static final String USAGE_DEADLINE = "Use deadline <description> /by <time>, "
@@ -118,6 +119,10 @@ public final class Parser {
             case "help" -> {
                 requireNoArgument(argument, "help");
                 yield new HelpCommand();
+            }
+            case "undo" -> {
+                requireNoArgument(argument, "undo");
+                yield new UndoCommand();
             }
             case "todo" -> new AddCommand(new Todo(requireDescription(collapseSpaces(argument), USAGE_TODO)));
             case "deadline" -> new AddCommand(parseDeadline(argument));

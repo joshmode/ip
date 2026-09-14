@@ -136,7 +136,7 @@ public class UiTest {
 
         String text = ui.takeCapturedReply().text();
         for (String command : new String[] {"todo", "deadline", "event", "list", "sort",
-            "find", "on", "mark", "unmark", "remove", "help", "bye", "hi", "hello", "hey", "thanks"}) {
+            "find", "on", "mark", "unmark", "remove", "undo", "help", "bye", "hi", "hello", "hey", "thanks"}) {
             assertTrue(text.contains(command), "help omitted " + command);
         }
     }

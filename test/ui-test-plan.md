@@ -404,6 +404,7 @@ Bibi: Here's the rundown:
   mark <number>
   unmark <number>
   remove <number>
+  undo
   help
   bye
   hi, hello, hey or thanks
@@ -834,6 +835,135 @@ Bibi: Task 1 is open again.
   [D][ ] Return Book (by: 21 Dec 2026)
 ```
 
+## Test 31: Undo removal once and save the restored list
+
+Aim: Confirm undo restores contents, completion, order and numbers, persists the
+result, and never supplies a second undo or carries history across sessions.
+
+### Saved data
+
+```text
+T | 0 | first
+D | 1 | return book | 2026-12-21 1800
+T | 0 | last
+```
+
+### Input
+
+```text
+remove 2
+undo
+undo
+bye
+<<restart>>
+undo
+list
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Task 2 is off the list:
+  [D][X] return book (by: 21 Dec 2026 6:00PM)
+Your list holds 2 tasks.
+Bibi: Last change undone. Your list holds 3 tasks.
+1. [T][ ] first
+2. [D][X] return book (by: 21 Dec 2026 6:00PM)
+3. [T][ ] last
+Bibi: There is no change to undo in this session.
+Bibi: See you.
+Bibi: Picked up where we left off: 3 tasks restored.
+Bibi: There is no change to undo in this session.
+1. [T][ ] first
+2. [D][X] return book (by: 21 Dec 2026 6:00PM)
+3. [T][ ] last
+```
+
+## Test 32: Undo adding, marking, unmarking and sorting
+
+Aim: Confirm the single step restores each kind of mutation, including the
+completion flags and numbers that were visible before sorting.
+
+### Input
+
+```text
+todo first
+undo
+todo second
+mark 1
+undo
+mark 1
+unmark 1
+undo
+deadline pay fees /by 1/2/26
+sort
+undo
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Last change undone. Your list holds 0 tasks.
+[T][ ] second
+Bibi: Task 1 done. Look at us getting things done.
+Bibi: Last change undone. Your list holds 1 task.
+1. [T][ ] second
+Bibi: Task 1 done. Look at us getting things done.
+Bibi: Task 1 is open again.
+Bibi: Last change undone. Your list holds 1 task.
+1. [T][X] second
+[D][ ] pay fees (by: 01 Feb 2026)
+Bibi: Sorted, earliest first:
+1. [D][ ] pay fees (by: 01 Feb 2026)
+2. [T][X] second
+Bibi: Last change undone. Your list holds 2 tasks.
+1. [T][X] second
+2. [D][ ] pay fees (by: 01 Feb 2026)
+```
+
+## Test 33: Keep undo through rejection, viewing and no-op commands
+
+Aim: Confirm only an actual mutation replaces the single undo step, with
+strict argument validation and no redo after it is consumed.
+
+### Input
+
+```text
+todo Read Book
+todo   read   book
+mark 99
+list
+find BOOK
+hello!
+sort
+unmark 1
+undo
+list
+undo extra
+undo
+bye
+```
+
+### Expected output
+
+```text
+Bibi: You already have that one, as task 1: [T][ ] Read Book.
+Bibi: That task number does not exist: use a number from 1 to 1.
+1. [T][ ] Read Book
+Bibi: Here is what matches:
+1. [T][ ] Read Book
+Bibi: Hey. I'm here. Type help if you need the rundown.
+Bibi: Sorted, earliest first:
+1. [T][ ] Read Book
+Bibi: Task 1 is open again.
+Bibi: Last change undone. Your list holds 0 tasks.
+Bibi: Nothing on the list. I'll assume that's good news.
+Bibi: undo does not take anything after it, but I found 'extra'.
+Bibi: There is no change to undo in this session.
+```
+
 ## GUI checks
 
 These checks supplement the scripted console cases. Use a fresh save location.
@@ -857,3 +987,6 @@ These checks supplement the scripted console cases. Use a fresh save location.
    Confirm the warning states that the change happened in memory, the input clears,
    and a subsequent list contains the task once. A rejected command must instead
    remain editable and leave the tasks unchanged.
+7. Submit `undo` through the input after a task change. Confirm the restored list
+   appears with its numbers, the input clears, and a second undo remains editable
+   with an error. History recall of `undo` must not execute it until Enter is pressed.

@@ -28,8 +28,7 @@ public class UnmarkCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
-        Task task = tasks.get(taskNumber);
-        task.markIncomplete();
+        Task task = tasks.markIncomplete(taskNumber);
         ui.showMessage("Task " + taskNumber + " is open again.");
         ui.showDetails(task.toString());
         saveTasks(tasks, ui, storage);

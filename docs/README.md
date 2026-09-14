@@ -148,6 +148,21 @@ Sorting or removing a task can make numbers in older replies stale. Use `list`
 again before acting on an old entry. Confirmations show the affected task so you
 can check what changed; filtered results retain the full-list numbers.
 
+### Undoing one change
+
+```
+undo
+```
+
+`undo` restores the list before the most recent change: adding, removing, marking,
+unmarking, or sorting. It restores completion states and task order, including the
+numbers, and saves the restored list. There is **one undo step, for this session
+only**, and no redo. A second undo is rejected until you make another change.
+
+Viewing, searching, greetings, rejected commands, and operations that change nothing
+do not replace your undo step. A change that failed to save is still applied in memory
+and can be undone. Closing Bibi discards undo history; it is not written to the save file.
+
 ## Help, and leaving
 
 ```
@@ -197,6 +212,7 @@ in red so you can spot them when scrolling back:
 | `mark` | ticks a task off | `mark 2` |
 | `unmark` | reopens a task | `unmark 2` |
 | `remove` | deletes a task | `remove 2` |
+| `undo` | restores the most recent change once, in this session | `undo` |
 | `help` | lists the commands | `help` |
 | `bye` | closes Bibi | `bye` |
 | `hi`, `hello`, `hey`, `thanks` | replies briefly without changing tasks | `hello!` |

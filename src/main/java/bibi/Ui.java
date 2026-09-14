@@ -235,6 +235,7 @@ public class Ui {
                 "mark <number> - mark a task done. Example: mark 2",
                 "unmark <number> - reopen a task. Example: unmark 2",
                 "remove <number> - delete a task. Example: remove 2",
+                "undo - restore the last task change once this session; no redo. Example: undo",
                 "Session",
                 "help - show this reference. Example: help",
                 "bye - end the session. Example: bye",

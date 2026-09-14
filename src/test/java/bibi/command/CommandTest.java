@@ -149,6 +149,7 @@ public class CommandTest {
 
         assertTrue(said.contains("deadline <description> /by <time>"));
         assertTrue(said.contains("sort"));
+        assertTrue(said.contains("undo"));
     }
 
     @Test
