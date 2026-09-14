@@ -235,7 +235,11 @@ public class Ui {
     }
 
     /**
-     * Reports a problem with the user's command.
+     * Reports something the user needs to notice and act on.
+     *
+     * <p>Besides showing the message, this flags the reply as an error, so the
+     * GUI can style it apart from an ordinary confirmation. Rejected commands
+     * and failed reads and writes of the save file all come through here.
      *
      * @param message the explanation to show
      */
@@ -274,18 +278,22 @@ public class Ui {
      * @param exception the error that stopped it being read
      */
     public void showLoadError(Path filePath, IOException exception) {
-        showMessage("I could not read your saved tasks from " + filePath + " ("
+        showError("I could not read your saved tasks from " + filePath + " ("
                 + describeException(exception) + "). Starting with an empty list.");
     }
 
     /**
      * Reports that the task list could not be written to disk.
      *
+     * <p>Flagged as an error even though the command itself succeeded, because
+     * the user stands to lose this session's changes and must not mistake the
+     * reply for a routine confirmation.
+     *
      * @param filePath the file that could not be written
      * @param exception the error that stopped it being written
      */
     public void showSaveError(Path filePath, IOException exception) {
-        showMessage("I could not save your tasks to " + filePath + " (" + describeException(exception)
+        showError("I could not save your tasks to " + filePath + " (" + describeException(exception)
                 + "). Changes made in this session will be lost when Bibi closes.");
     }
 

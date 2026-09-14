@@ -185,23 +185,27 @@ public class UiTest {
     }
 
     @Test
-    public void showLoadError_anyFailure_namesTheFileAndTheCause() {
+    public void showLoadError_anyFailure_namesTheFileAndFlagsAnError() {
         Ui ui = createCapturingUi();
         ui.showLoadError(Path.of("data", "bibi.txt"), new NoSuchFileException("bibi.txt"));
 
-        String text = ui.takeCapturedReply().text();
-        assertTrue(text.contains("bibi.txt"));
-        assertTrue(text.contains("NoSuchFileException"));
+        Reply reply = ui.takeCapturedReply();
+        assertTrue(reply.isError());
+        assertTrue(reply.text().contains("bibi.txt"));
+        assertTrue(reply.text().contains("NoSuchFileException"));
     }
 
     @Test
-    public void showSaveError_anyFailure_warnsThatChangesAreAtRisk() {
+    public void showSaveError_anyFailure_warnsAndFlagsAnError() {
         Ui ui = createCapturingUi();
         ui.showSaveError(Path.of("data", "bibi.txt"), new IOException("disk full"));
 
-        String text = ui.takeCapturedReply().text();
-        assertTrue(text.contains("bibi.txt"));
-        assertTrue(text.contains("disk full"));
+        // The command itself worked, but losing the session's changes is not
+        // something the user should mistake for a routine confirmation.
+        Reply reply = ui.takeCapturedReply();
+        assertTrue(reply.isError());
+        assertTrue(reply.text().contains("bibi.txt"));
+        assertTrue(reply.text().contains("disk full"));
     }
 
     @Test
