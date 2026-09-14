@@ -28,7 +28,7 @@ import bibi.task.Todo;
  */
 public class CommandTest {
 
-    private static Ui capturing() {
+    private static Ui createCapturingUi() {
         Ui ui = new Ui();
         ui.startCapture();
         return ui;
@@ -36,7 +36,7 @@ public class CommandTest {
 
     private static String run(Command command, TaskList tasks, Storage storage)
             throws BibiException {
-        Ui ui = capturing();
+        Ui ui = createCapturingUi();
         command.execute(tasks, ui, storage);
         return ui.takeCapturedReply().text();
     }

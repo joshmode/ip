@@ -14,25 +14,25 @@ public class Event extends Task {
     private static final String MISSING_FIELD_MESSAGE =
             "An event needs a description, /from time, and /to time.";
 
-    private final TaskDateTime from;
-    private final TaskDateTime to;
+    private final TaskDateTime startTime;
+    private final TaskDateTime endTime;
 
     /**
      * Creates an event with a description, starting time, and ending time.
      *
      * @param description text describing the event
-     * @param from the event start date, in one of the accepted date formats
-     * @param to the event end date, in one of the accepted date formats
+     * @param startTimeText the event start date, in one of the accepted date formats
+     * @param endTimeText the event end date, in one of the accepted date formats
      * @throws BibiException if a field is blank, a date cannot be read, or the
      *     event would end before it starts
      */
-    public Event(String description, String from, String to) throws BibiException {
+    public Event(String description, String startTimeText, String endTimeText) throws BibiException {
         super(requireTaskText(description, MISSING_FIELD_MESSAGE));
-        this.from = TaskDateTime.parse(requireTaskText(from, MISSING_FIELD_MESSAGE));
-        this.to = TaskDateTime.parse(requireTaskText(to, MISSING_FIELD_MESSAGE));
+        this.startTime = TaskDateTime.parse(requireTaskText(startTimeText, MISSING_FIELD_MESSAGE));
+        this.endTime = TaskDateTime.parse(requireTaskText(endTimeText, MISSING_FIELD_MESSAGE));
 
         // Storing real dates rather than text makes this check possible at last.
-        if (this.to.isBefore(this.from)) {
+        if (endTime.isBefore(startTime)) {
             throw new BibiException("An event cannot end before it starts.");
         }
     }
@@ -51,7 +51,7 @@ public class Event extends Task {
      */
     @Override
     protected String getDetails() {
-        return " (from: " + from + " to: " + to + ")";
+        return " (from: " + startTime + " to: " + endTime + ")";
     }
 
     /**
@@ -59,8 +59,8 @@ public class Event extends Task {
      */
     @Override
     protected String getSaveFields() {
-        return " " + FIELD_SEPARATOR + " " + from.toStorageString()
-                + " " + FIELD_SEPARATOR + " " + to.toStorageString();
+        return " " + FIELD_SEPARATOR + " " + startTime.toStorageString()
+                + " " + FIELD_SEPARATOR + " " + endTime.toStorageString();
     }
 
     /**
@@ -71,7 +71,7 @@ public class Event extends Task {
      */
     @Override
     public Optional<TaskDateTime> getScheduledTime() {
-        return Optional.of(from);
+        return Optional.of(startTime);
     }
 
     /**
@@ -80,6 +80,6 @@ public class Event extends Task {
      */
     @Override
     public boolean occursOn(LocalDate queryDate) {
-        return !queryDate.isBefore(from.getDate()) && !queryDate.isAfter(to.getDate());
+        return !queryDate.isBefore(startTime.getDate()) && !queryDate.isAfter(endTime.getDate());
     }
 }

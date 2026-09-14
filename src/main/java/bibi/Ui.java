@@ -29,8 +29,8 @@ public class Ui {
     /** Divider printed around a block of output. */
     private static final String DIVIDER = "____________________________________________________________";
 
-    /** Prefix on lines spoken by Bibi. */
-    private static final String SPEAKER = "Bibi: ";
+    /** Prefix on each line Bibi speaks in the console. */
+    private static final String SPEAKER_PREFIX = "Bibi: ";
 
     private final Scanner scanner;
 
@@ -77,7 +77,7 @@ public class Ui {
         isCapturing = false;
 
         // Blank lines at either end are trimmed, but not the leading spaces of
-        // the first real line: showDetail indents its lines, and a reply that
+        // the first real line: showDetails indents its lines, and a reply that
         // opens with one would otherwise lose that indent.
         String text = capturedText.toString().stripTrailing();
         while (text.startsWith("\n")) {
@@ -143,7 +143,7 @@ public class Ui {
     public void showMessage(String message) {
         // The GUI puts Bibi's picture beside every reply, so the prefix that names
         // the speaker in the console would only be noise repeated down the window.
-        write(isCapturing ? message : SPEAKER + message);
+        write(isCapturing ? message : SPEAKER_PREFIX + message);
     }
 
     /**
@@ -156,7 +156,7 @@ public class Ui {
      *
      * @param details the lines to indent, shown in the order given
      */
-    public void showDetail(String... details) {
+    public void showDetails(String... details) {
         for (String detail : details) {
             write("  " + detail);
         }
@@ -212,7 +212,7 @@ public class Ui {
      */
     public void showHelp() {
         showMessage("Here is everything I know how to do:");
-        showDetail(
+        showDetails(
                 "todo <description>",
                 "deadline <description> /by <time>",
                 "event <description> /from <start> /to <end>",
@@ -261,7 +261,7 @@ public class Ui {
     public void showLoadWarnings(List<String> warnings) {
         showError("Some of the save file did not make sense to me:");
         for (String warning : warnings) {
-            showDetail(warning);
+            showDetails(warning);
         }
         showMessage("I have skipped those lines. They will leave the file the next time "
                 + "your list changes.");
@@ -273,9 +273,9 @@ public class Ui {
      * @param filePath the file that could not be read
      * @param exception the error that stopped it being read
      */
-    public void showLoadingError(Path filePath, IOException exception) {
+    public void showLoadError(Path filePath, IOException exception) {
         showMessage("I could not read your saved tasks from " + filePath + " ("
-                + describe(exception) + "). Starting with an empty list.");
+                + describeException(exception) + "). Starting with an empty list.");
     }
 
     /**
@@ -285,7 +285,7 @@ public class Ui {
      * @param exception the error that stopped it being written
      */
     public void showSaveError(Path filePath, IOException exception) {
-        showMessage("I could not save your tasks to " + filePath + " (" + describe(exception)
+        showMessage("I could not save your tasks to " + filePath + " (" + describeException(exception)
                 + "). Changes made in this session will be lost when Bibi closes.");
     }
 
@@ -308,7 +308,7 @@ public class Ui {
      * @param exception the file error to describe
      * @return the error type followed by any detail it carries
      */
-    private static String describe(IOException exception) {
+    private static String describeException(IOException exception) {
         return exception.getClass().getSimpleName() + ": " + exception.getMessage();
     }
 }

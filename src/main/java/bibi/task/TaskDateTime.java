@@ -33,7 +33,7 @@ public class TaskDateTime {
      * and making them so is not needed for anything here.
      */
     public static final Comparator<TaskDateTime> EARLIEST_FIRST =
-            Comparator.comparing(TaskDateTime::toComparable);
+            Comparator.comparing(TaskDateTime::toLocalDateTime);
 
     /** English is fixed so month names read the same on every machine. */
     private static final Locale FORMAT_LOCALE = Locale.ENGLISH;
@@ -175,7 +175,7 @@ public class TaskDateTime {
      * @return {@code true} when this value is the earlier of the two
      */
     public boolean isBefore(TaskDateTime other) {
-        return toComparable().isBefore(other.toComparable());
+        return toLocalDateTime().isBefore(other.toLocalDateTime());
     }
 
     /**
@@ -183,7 +183,7 @@ public class TaskDateTime {
      *
      * @return the date combined with its time, or with midnight when it has none
      */
-    private LocalDateTime toComparable() {
+    private LocalDateTime toLocalDateTime() {
         return LocalDateTime.of(date, time == null ? LocalTime.MIDNIGHT : time);
     }
 

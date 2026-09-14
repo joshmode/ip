@@ -158,7 +158,7 @@ public class Bibi {
         } catch (IOException exception) {
             // Reading failed outright, so continue with an empty list rather than
             // refusing to start. Saving later replaces the unreadable file.
-            ui.showLoadingError(storage.getFilePath(), exception);
+            ui.showLoadError(storage.getFilePath(), exception);
             return new TaskList();
         }
     }

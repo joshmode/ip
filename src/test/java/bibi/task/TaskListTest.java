@@ -130,12 +130,13 @@ public class TaskListTest {
 
         assertEquals("[T][ ] first", tasks.get(1).toString());
     }
-    private static Task deadline(String description, String by) throws BibiException {
-        return new Deadline(description, by);
+    private static Task deadline(String description, String dueTimeText) throws BibiException {
+        return new Deadline(description, dueTimeText);
     }
 
-    private static Task event(String description, String from, String to) throws BibiException {
-        return new Event(description, from, to);
+    private static Task event(String description, String startTimeText, String endTimeText)
+            throws BibiException {
+        return new Event(description, startTimeText, endTimeText);
     }
 
     @Test
@@ -211,46 +212,46 @@ public class TaskListTest {
     }
 
     @Test
-    public void findSameTask_identicalTodo_returnsItsNumber() throws BibiException {
+    public void findSameTaskNumber_identicalTodo_returnsItsNumber() throws BibiException {
         TaskList tasks = new TaskList(todo("first"), todo("read book"));
 
-        assertEquals(2, tasks.findSameTask(todo("read book")));
+        assertEquals(2, tasks.findSameTaskNumber(todo("read book")));
     }
 
     @Test
-    public void findSameTask_differingOnlyByCase_stillMatches() throws BibiException {
+    public void findSameTaskNumber_differingOnlyByCase_stillMatches() throws BibiException {
         TaskList tasks = new TaskList(todo("read book"));
 
-        assertEquals(1, tasks.findSameTask(todo("READ BOOK")));
+        assertEquals(1, tasks.findSameTaskNumber(todo("READ BOOK")));
     }
 
     @Test
-    public void findSameTask_sameDescriptionDifferentType_noMatch() throws BibiException {
+    public void findSameTaskNumber_sameDescriptionDifferentType_noMatch() throws BibiException {
         TaskList tasks = new TaskList(todo("pay fees"));
 
         // A ToDo and a deadline are different commitments even when worded alike.
-        assertEquals(0, tasks.findSameTask(deadline("pay fees", "2019-10-15")));
+        assertEquals(0, tasks.findSameTaskNumber(deadline("pay fees", "2019-10-15")));
     }
 
     @Test
-    public void findSameTask_sameDescriptionDifferentDate_noMatch() throws BibiException {
+    public void findSameTaskNumber_sameDescriptionDifferentDate_noMatch() throws BibiException {
         TaskList tasks = new TaskList(deadline("pay fees", "2019-10-15"));
 
-        assertEquals(0, tasks.findSameTask(deadline("pay fees", "2019-11-15")));
+        assertEquals(0, tasks.findSameTaskNumber(deadline("pay fees", "2019-11-15")));
     }
 
     @Test
-    public void findSameTask_completedTask_stillCountsAsTheSame() throws BibiException {
+    public void findSameTaskNumber_completedTask_stillCountsAsTheSame() throws BibiException {
         Task done = todo("read book");
         done.markComplete();
         TaskList tasks = new TaskList(done);
 
         // Ticking a task off does not make re-adding it a different task.
-        assertEquals(1, tasks.findSameTask(todo("read book")));
+        assertEquals(1, tasks.findSameTaskNumber(todo("read book")));
     }
 
     @Test
-    public void findSameTask_emptyList_returnsZero() throws BibiException {
-        assertEquals(0, new TaskList().findSameTask(todo("anything")));
+    public void findSameTaskNumber_emptyList_returnsZero() throws BibiException {
+        assertEquals(0, new TaskList().findSameTaskNumber(todo("anything")));
     }
 }

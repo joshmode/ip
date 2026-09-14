@@ -127,7 +127,7 @@ public class BibiTest {
 
         String response = bibi.getResponse("help").text();
 
-        // Ui.showDetail takes the whole list as varargs, so one missing entry
+        // Ui.showDetails takes the whole list as varargs, so one missing entry
         // would be a silently dropped argument rather than a missing call.
         for (String commandWord : new String[] {
             "todo", "deadline", "event", "list", "find", "on", "mark", "unmark", "remove",

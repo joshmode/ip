@@ -107,7 +107,7 @@ public class TaskList {
      * @param task the task being considered for adding
      * @return the one-based number of the matching task, or 0 when there is none
      */
-    public int findSameTask(Task task) {
+    public int findSameTaskNumber(Task task) {
         for (int index = 0; index < tasks.size(); index++) {
             if (tasks.get(index).isSameTask(task)) {
                 return index + 1;

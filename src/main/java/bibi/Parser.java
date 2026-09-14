@@ -139,11 +139,11 @@ public final class Parser {
      * @throws BibiException if the parameter appears more than once
      */
     private static void requireSingleUse(String text, String marker) throws BibiException {
-        long uses = Arrays.stream(text.split("\\s+"))
+        long useCount = Arrays.stream(text.split("\\s+"))
                 .filter(token -> token.equalsIgnoreCase(marker))
                 .count();
-        if (uses > 1) {
-            throw new BibiException("You used " + marker + " " + uses + " times, but it belongs "
+        if (useCount > 1) {
+            throw new BibiException("You used " + marker + " " + useCount + " times, but it belongs "
                     + "exactly once. I would not know which one you meant.");
         }
     }
@@ -165,8 +165,8 @@ public final class Parser {
         }
 
         String description = collapseSpaces(deadlineText.substring(0, byIndex));
-        String by = collapseSpaces(deadlineText.substring(byIndex + " /by ".length()));
-        return new Deadline(description, by);
+        String dueTimeText = collapseSpaces(deadlineText.substring(byIndex + " /by ".length()));
+        return new Deadline(description, dueTimeText);
     }
 
     /**
@@ -195,9 +195,9 @@ public final class Parser {
         }
 
         String description = collapseSpaces(eventText.substring(0, fromIndex));
-        String from = collapseSpaces(eventText.substring(fromIndex + " /from ".length(), toIndex));
-        String to = collapseSpaces(eventText.substring(toIndex + " /to ".length()));
-        return new Event(description, from, to);
+        String startTimeText = collapseSpaces(eventText.substring(fromIndex + " /from ".length(), toIndex));
+        String endTimeText = collapseSpaces(eventText.substring(toIndex + " /to ".length()));
+        return new Event(description, startTimeText, endTimeText);
     }
 
     /**

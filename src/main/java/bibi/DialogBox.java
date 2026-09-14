@@ -26,7 +26,7 @@ import javafx.scene.layout.Priority;
  * error cannot be mistaken for a confirmation at a glance.
  */
 public class DialogBox extends HBox {
-    private static final String DIALOG_BOX_FXML = "/view/DialogBox.fxml";
+    private static final String DIALOG_BOX_FXML_PATH = "/view/DialogBox.fxml";
 
     /** How much of the window's width one of the user's chips may occupy. */
     private static final double USER_CHIP_WIDTH_FRACTION = 0.75;
@@ -44,14 +44,14 @@ public class DialogBox extends HBox {
      */
     private DialogBox(String text) {
         try {
-            FXMLLoader loader = new FXMLLoader(DialogBox.class.getResource(DIALOG_BOX_FXML));
+            FXMLLoader loader = new FXMLLoader(DialogBox.class.getResource(DIALOG_BOX_FXML_PATH));
             // This object is both the root and the controller, which is what lets
             // a dialog box be created in code and still be laid out by FXML.
             loader.setRoot(this);
             loader.setController(this);
             loader.load();
         } catch (IOException exception) {
-            throw new IllegalStateException("Could not load " + DIALOG_BOX_FXML, exception);
+            throw new IllegalStateException("Could not load " + DIALOG_BOX_FXML_PATH, exception);
         }
 
         dialog.setText(text);

@@ -218,19 +218,19 @@ public class ParserTest {
 
     @Test
     public void parse_argumentAfterArgumentlessCommand_exceptionThrown() {
-        for (String command : new String[] {"list extra", "sort now", "help me", "bye now"}) {
-            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(command));
+        for (String input : new String[] {"list extra", "sort now", "help me", "bye now"}) {
+            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
             assertTrue(thrown.getMessage().contains("does not take anything after it"),
-                    "no complaint for: " + command);
+                    "no complaint for: " + input);
         }
     }
 
     @Test
     public void parse_taskNumberBelowOne_exceptionExplainsNumbering() {
-        for (String command : new String[] {"mark 0", "unmark -1", "remove -7"}) {
-            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(command));
+        for (String input : new String[] {"mark 0", "unmark -1", "remove -7"}) {
+            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
             assertTrue(thrown.getMessage().contains("Task numbers start at 1"),
-                    "no complaint for: " + command);
+                    "no complaint for: " + input);
         }
     }
 

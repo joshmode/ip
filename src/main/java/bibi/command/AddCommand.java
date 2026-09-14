@@ -31,7 +31,7 @@ public class AddCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
-        int duplicateNumber = tasks.findSameTask(task);
+        int duplicateNumber = tasks.findSameTaskNumber(task);
         if (duplicateNumber > 0) {
             throw new BibiException("You already have that one, as task " + duplicateNumber
                     + ": " + tasks.get(duplicateNumber) + ". Nothing changed.");
@@ -39,7 +39,7 @@ public class AddCommand extends Command {
 
         tasks.add(task);
         ui.showMessage("Logged. That is on your list now:");
-        ui.showDetail(task.toString());
+        ui.showDetails(task.toString());
         ui.showPlain("Your list holds " + Ui.describeCount(tasks.size()) + ".");
         saveTasks(tasks, ui, storage);
     }

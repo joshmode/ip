@@ -19,7 +19,7 @@ import javafx.util.Duration;
  * back is put on screen as a {@link DialogBox}.
  */
 public class MainWindow {
-    private static final String BIBI_ICON = "/images/DaBibi.png";
+    private static final String BIBI_ICON_PATH = "/images/DaBibi.png";
 
     /**
      * How long the goodbye stays on screen before the window closes. Long enough
@@ -38,7 +38,7 @@ public class MainWindow {
 
     private Bibi bibi;
 
-    private final Image bibiIcon = loadImage(BIBI_ICON);
+    private final Image bibiIcon = loadImage(BIBI_ICON_PATH);
 
     /**
      * Keeps the transcript scrolled to the newest message.

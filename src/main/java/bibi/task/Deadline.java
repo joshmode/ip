@@ -14,18 +14,18 @@ public class Deadline extends Task {
     private static final String MISSING_FIELD_MESSAGE =
             "A deadline needs both a description and a /by time.";
 
-    private final TaskDateTime by;
+    private final TaskDateTime dueTime;
 
     /**
      * Creates a deadline with a description and its required completion time.
      *
      * @param description text describing the deadline
-     * @param by the deadline date, in one of the accepted date formats
+     * @param dueTimeText the deadline date, in one of the accepted date formats
      * @throws BibiException if the description is blank or the date cannot be read
      */
-    public Deadline(String description, String by) throws BibiException {
+    public Deadline(String description, String dueTimeText) throws BibiException {
         super(requireTaskText(description, MISSING_FIELD_MESSAGE));
-        this.by = TaskDateTime.parse(requireTaskText(by, MISSING_FIELD_MESSAGE));
+        this.dueTime = TaskDateTime.parse(requireTaskText(dueTimeText, MISSING_FIELD_MESSAGE));
     }
 
     /**
@@ -42,7 +42,7 @@ public class Deadline extends Task {
      */
     @Override
     protected String getDetails() {
-        return " (by: " + by + ")";
+        return " (by: " + dueTime + ")";
     }
 
     /**
@@ -50,7 +50,7 @@ public class Deadline extends Task {
      */
     @Override
     protected String getSaveFields() {
-        return " " + FIELD_SEPARATOR + " " + by.toStorageString();
+        return " " + FIELD_SEPARATOR + " " + dueTime.toStorageString();
     }
 
     /**
@@ -58,7 +58,7 @@ public class Deadline extends Task {
      */
     @Override
     public Optional<TaskDateTime> getScheduledTime() {
-        return Optional.of(by);
+        return Optional.of(dueTime);
     }
 
     /**
@@ -66,6 +66,6 @@ public class Deadline extends Task {
      */
     @Override
     public boolean occursOn(LocalDate queryDate) {
-        return by.isOn(queryDate);
+        return dueTime.isOn(queryDate);
     }
 }
