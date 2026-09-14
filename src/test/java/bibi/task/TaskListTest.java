@@ -2,6 +2,7 @@ package bibi.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -149,10 +150,10 @@ public class TaskListTest {
 
         tasks.sortBySchedule();
 
-        assertEquals("[E][ ] orientation (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)",
+        assertEquals("[E][ ] orientation (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)",
                 tasks.get(1).toString());
-        assertEquals("[D][ ] pay fees (by: Oct 15 2019)", tasks.get(2).toString());
-        assertEquals("[D][ ] submit report (by: Dec 01 2019)", tasks.get(3).toString());
+        assertEquals("[D][ ] pay fees (by: 15 Oct 2019)", tasks.get(2).toString());
+        assertEquals("[D][ ] submit report (by: 01 Dec 2019)", tasks.get(3).toString());
     }
 
     @Test
@@ -163,7 +164,7 @@ public class TaskListTest {
 
         tasks.sortBySchedule();
 
-        assertEquals("[D][ ] pay fees (by: Oct 15 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] pay fees (by: 15 Oct 2019)", tasks.get(1).toString());
         assertEquals("[T][ ] borrow book", tasks.get(2).toString());
     }
 
@@ -176,8 +177,8 @@ public class TaskListTest {
         tasks.sortBySchedule();
 
         // The sort is stable, so tasks sharing a moment must not swap around.
-        assertEquals("[D][ ] first added (by: Oct 15 2019)", tasks.get(1).toString());
-        assertEquals("[D][ ] second added (by: Oct 15 2019)", tasks.get(2).toString());
+        assertEquals("[D][ ] first added (by: 15 Oct 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] second added (by: 15 Oct 2019)", tasks.get(2).toString());
     }
 
     @Test
@@ -209,7 +210,7 @@ public class TaskListTest {
         tasks.sortBySchedule();
 
         // A whole-day value counts as the start of its day, matching isBefore.
-        assertEquals("[D][ ] whole day (by: Oct 15 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] whole day (by: 15 Oct 2019)", tasks.get(1).toString());
     }
 
     @Test
@@ -254,5 +255,173 @@ public class TaskListTest {
     @Test
     public void findSameTaskNumber_emptyList_returnsZero() throws BibiException {
         assertEquals(0, new TaskList().findSameTaskNumber(todo("anything")));
+    }
+
+    @Test
+    public void undo_newListWithoutChanges_exceptionThrown() throws BibiException {
+        Task initial = todo("initial");
+        TaskList tasks = new TaskList(initial);
+        TaskList loadedTasks = new TaskList(List.of(initial));
+
+        BibiException thrown = assertThrows(BibiException.class, tasks::undo);
+
+        assertTrue(thrown.getMessage().contains("no change to undo in this session"));
+        assertThrows(BibiException.class, loadedTasks::undo);
+        assertThrows(BibiException.class, new TaskList()::undo);
+        assertEquals(List.of(initial), tasks.getTasks());
+    }
+
+    @Test
+    public void undo_addedTask_restoresPreviousList() throws BibiException {
+        Task initial = todo("initial");
+        TaskList tasks = new TaskList(initial);
+        tasks.add(todo("added"));
+
+        tasks.undo();
+
+        assertEquals(List.of(initial), tasks.getTasks());
+        assertSame(initial, tasks.get(1));
+    }
+
+    @Test
+    public void undo_removedTask_restoresPositionDatesAndCompletion() throws BibiException {
+        Task first = todo("first");
+        Task middle = event("camp", "2019-12-02 1800", "2019-12-03");
+        middle.markComplete();
+        Task last = deadline("last", "2019-12-04");
+        TaskList tasks = new TaskList(first, middle, last);
+        tasks.remove(2);
+
+        tasks.undo();
+
+        assertEquals(List.of(first, middle, last), tasks.getTasks());
+        assertEquals("E | 1 | camp | 2019-12-02 1800 | 2019-12-03", tasks.get(2).toFileFormat());
+    }
+
+    @Test
+    public void undo_markedTask_restoresIncompleteStatus() throws BibiException {
+        Task initial = todo("initial");
+        TaskList tasks = new TaskList(initial);
+
+        Task marked = tasks.markComplete(1);
+
+        assertSame(initial, marked);
+        assertTrue(marked.isComplete());
+
+        tasks.undo();
+
+        assertSame(initial, tasks.get(1));
+        assertFalse(initial.isComplete());
+    }
+
+    @Test
+    public void undo_unmarkedTask_restoresCompleteStatus() throws BibiException {
+        Task initial = todo("initial");
+        initial.markComplete();
+        TaskList tasks = new TaskList(initial);
+
+        Task reopened = tasks.markIncomplete(1);
+
+        assertSame(initial, reopened);
+        assertFalse(reopened.isComplete());
+
+        tasks.undo();
+
+        assertTrue(initial.isComplete());
+        assertEquals("T | 1 | initial", tasks.get(1).toFileFormat());
+    }
+
+    @Test
+    public void undo_sortedTasks_restoresOriginalOrderAndFlags() throws BibiException {
+        Task undated = todo("undated");
+        Task later = deadline("later", "2019-12-02");
+        later.markComplete();
+        Task sooner = deadline("sooner", "2019-10-15");
+        TaskList tasks = new TaskList(undated, later, sooner);
+        tasks.sortBySchedule();
+
+        assertEquals(List.of(sooner, later, undated), tasks.getTasks());
+
+        tasks.undo();
+
+        assertEquals(List.of(undated, later, sooner), tasks.getTasks());
+        assertTrue(later.isComplete());
+        assertFalse(sooner.isComplete());
+    }
+
+    @Test
+    public void undo_twoChanges_revertsOnlyLatestAndCannotRedo() throws BibiException {
+        Task first = todo("first");
+        TaskList tasks = new TaskList();
+        tasks.add(first);
+        tasks.add(todo("second"));
+
+        tasks.undo();
+
+        assertEquals(List.of(first), tasks.getTasks());
+        assertThrows(BibiException.class, tasks::undo);
+        assertEquals(List.of(first), tasks.getTasks());
+    }
+
+    @Test
+    public void undo_failedMutations_preservePreviousChange() throws BibiException {
+        TaskList tasks = new TaskList();
+        tasks.add(todo("added"));
+
+        assertThrows(BibiException.class, () -> tasks.remove(2));
+        assertThrows(BibiException.class, () -> tasks.markComplete(0));
+        assertThrows(BibiException.class, () -> tasks.markIncomplete(2));
+
+        tasks.undo();
+
+        assertTrue(tasks.isEmpty());
+    }
+
+    @Test
+    public void undo_noOpsAndQueries_preservePreviousChange() throws BibiException {
+        Task complete = todo("complete");
+        complete.markComplete();
+        Task incomplete = todo("incomplete");
+        TaskList tasks = new TaskList(complete, incomplete);
+        tasks.add(todo("added"));
+
+        tasks.markComplete(1);
+        tasks.markIncomplete(2);
+        tasks.sortBySchedule();
+        assertEquals(3, tasks.size());
+        assertEquals(1, tasks.findSameTaskNumber(todo("complete")));
+        assertSame(incomplete, tasks.get(2));
+
+        tasks.undo();
+
+        assertEquals(List.of(complete, incomplete), tasks.getTasks());
+        assertTrue(complete.isComplete());
+        assertFalse(incomplete.isComplete());
+    }
+
+    @Test
+    public void undo_onlyNoOpChanges_exceptionThrown() throws BibiException {
+        TaskList tasks = new TaskList(todo("already incomplete"));
+
+        tasks.markIncomplete(1);
+        tasks.sortBySchedule();
+
+        assertThrows(BibiException.class, tasks::undo);
+        assertEquals("[T][ ] already incomplete", tasks.get(1).toString());
+    }
+
+    @Test
+    public void undo_changeAfterUndo_canUndoNewChange() throws BibiException {
+        Task initial = todo("initial");
+        TaskList tasks = new TaskList(initial);
+        tasks.markComplete(1);
+        tasks.undo();
+
+        tasks.remove(1);
+        tasks.undo();
+
+        assertEquals(List.of(initial), tasks.getTasks());
+        assertFalse(initial.isComplete());
+        assertThrows(BibiException.class, tasks::undo);
     }
 }

@@ -13,6 +13,9 @@ import bibi.BibiException;
 public class TaskList {
     private final List<Task> tasks;
 
+    /** The state before the latest actual change, or {@code null} when undo is unavailable. */
+    private List<TaskState> previousState;
+
     /**
      * Creates a task list holding the tasks given, in the order given.
      *
@@ -46,6 +49,7 @@ public class TaskList {
      * @param task the task to store
      */
     public void add(Task task) {
+        rememberState();
         tasks.add(task);
     }
 
@@ -98,7 +102,79 @@ public class TaskList {
      * @throws BibiException if the task number does not exist
      */
     public Task remove(int taskNumber) throws BibiException {
-        return tasks.remove(toIndex(taskNumber));
+        int taskIndex = toIndex(taskNumber);
+        rememberState();
+        return tasks.remove(taskIndex);
+    }
+
+    /**
+     * Marks a task complete and remembers its previous state only when it changes.
+     *
+     * @param taskNumber one-based task number
+     * @return the task concerned, for the command's confirmation
+     * @throws BibiException if the task number does not exist
+     */
+    public Task markComplete(int taskNumber) throws BibiException {
+        Task task = get(taskNumber);
+        if (!task.isComplete()) {
+            rememberState();
+            task.markComplete();
+        }
+        return task;
+    }
+
+    /**
+     * Reopens a task and remembers its previous state only when it changes.
+     *
+     * @param taskNumber one-based task number
+     * @return the task concerned, for the command's confirmation
+     * @throws BibiException if the task number does not exist
+     */
+    public Task markIncomplete(int taskNumber) throws BibiException {
+        Task task = get(taskNumber);
+        if (task.isComplete()) {
+            rememberState();
+            task.markIncomplete();
+        }
+        return task;
+    }
+
+    /**
+     * Restores the list before its latest change in this session.
+     *
+     * <p>Undo is a single recovery step. Restoring a snapshot consumes it, so a
+     * second undo cannot redo the change or reach an earlier session.
+     *
+     * @throws BibiException if no change is available to undo
+     */
+    public void undo() throws BibiException {
+        if (previousState == null) {
+            throw new BibiException("There is no change to undo in this session. "
+                    + "Make a list change first, then use undo, for example: undo.");
+        }
+        tasks.clear();
+        for (TaskState state : previousState) {
+            if (state.isComplete()) {
+                state.task().markComplete();
+            } else {
+                state.task().markIncomplete();
+            }
+            tasks.add(state.task());
+        }
+        previousState = null;
+    }
+
+    /**
+     * Captures order and completion before a mutation replaces the undo step.
+     *
+     * <p>Task descriptions and dates are immutable, so retaining task references
+     * and copying their completion flags preserves the whole list without parsing
+     * save-file text or changing the persistence format.
+     */
+    private void rememberState() {
+        previousState = tasks.stream()
+                .map(task -> new TaskState(task, task.isComplete()))
+                .toList();
     }
 
     /**
@@ -127,7 +203,13 @@ public class TaskList {
      * at the end, keep the order the user added them in.
      */
     public void sortBySchedule() {
-        tasks.sort(TaskList::compareBySchedule);
+        List<Task> sortedTasks = new ArrayList<>(tasks);
+        sortedTasks.sort(TaskList::compareBySchedule);
+        if (!tasks.equals(sortedTasks)) {
+            rememberState();
+            tasks.clear();
+            tasks.addAll(sortedTasks);
+        }
     }
 
     /**
@@ -159,8 +241,22 @@ public class TaskList {
     private int toIndex(int taskNumber) throws BibiException {
         int taskIndex = taskNumber - 1;
         if (taskIndex < 0 || taskIndex >= tasks.size()) {
-            throw new BibiException("That task number does not exist.");
+            if (tasks.isEmpty()) {
+                throw new BibiException("That task number does not exist: the list is empty. "
+                        + "Add a task first. Use todo <description>, for example: todo read book.");
+            }
+            throw new BibiException("That task number does not exist: use a number from 1 to " + tasks.size()
+                    + ". Use list to see the current numbers, for example: list.");
         }
         return taskIndex;
+    }
+
+    /**
+     * Holds a task and its completion flag before the most recent change.
+     *
+     * @param task the task retained in its original list position
+     * @param isComplete the completion flag to restore
+     */
+    private record TaskState(Task task, boolean isComplete) {
     }
 }

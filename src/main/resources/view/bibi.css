@@ -1,22 +1,21 @@
 /*
  * Bibi's visual identity: the palette, the type, and the shape of things.
  *
- * The colours are taken from Bibi's own avatar so the app looks like the robot
- * it is, rather than like default JavaFX with a picture stuck on it. They are
- * declared once here as looked-up colours and referred to by name everywhere
- * else, so the whole app can be re-tinted from these six lines.
+ * A dark terminal palette keeps the transcript central. Yellow marks the input
+ * and primary action, with cyan for the user's commands and red for problems.
+ * The colours are declared once so each state keeps a consistent contrast.
  */
 
 .root {
-    -bibi-teal: #27a09c;
-    -bibi-teal-dark: #1d7c79;
-    -bibi-ink: #173e43;
-    -bibi-surface: #f5f8f8;
-    -bibi-line: #dde5e5;
-    -bibi-user: #4a7bc7;
+    -bibi-yellow: #f5df38;
+    -bibi-yellow-dark: #dcc42e;
+    -bibi-ink: #e8ebee;
+    -bibi-surface: #171a20;
+    -bibi-line: #454c58;
+    -bibi-cyan: #7ad9df;
 
     -fx-background-color: -bibi-surface;
-    -fx-font-family: "Segoe UI", "Helvetica Neue", "Arial", sans-serif;
+    -fx-font-family: "Consolas", "Menlo", "DejaVu Sans Mono", monospace;
     -fx-font-size: 13px;
 }
 
@@ -26,46 +25,75 @@
 .scroll-pane > .viewport {
     -fx-background-color: transparent;
     -fx-background: transparent;
+    -fx-padding: 0;
 }
 
 .scroll-bar:vertical {
-    -fx-background-color: transparent;
+    -fx-background-color: #111419;
 }
 
 .scroll-bar:vertical .thumb {
     -fx-background-color: -bibi-line;
-    -fx-background-radius: 4px;
+    -fx-background-radius: 0;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: -bibi-cyan;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: -bibi-ink;
+}
+
+.input-row {
+    -fx-background-color: #111419;
+    -fx-border-color: -bibi-line;
+    -fx-border-width: 1px 0 0 0;
 }
 
 .text-field {
-    -fx-background-color: white;
+    -fx-background-color: #111419;
     -fx-background-radius: 0;
-    -fx-border-color: -bibi-line;
-    -fx-border-width: 1px 0 0 0;
-    -fx-padding: 0 12px 0 12px;
+    -fx-border-color: transparent;
+    -fx-border-width: 1px;
+    -fx-padding: 10px 12px;
     -fx-text-fill: -bibi-ink;
-    -fx-prompt-text-fill: derive(-bibi-ink, 55%);
+    -fx-prompt-text-fill: #a5aebb;
+    -fx-highlight-fill: -bibi-yellow;
+    -fx-highlight-text-fill: #171a20;
 }
 
 .text-field:focused {
-    -fx-border-color: -bibi-teal;
-    -fx-border-width: 2px 0 0 0;
+    -fx-border-color: -bibi-yellow;
 }
 
 .button {
-    -fx-background-color: -bibi-teal;
+    -fx-background-color: -bibi-yellow;
     -fx-background-radius: 0;
-    -fx-text-fill: white;
+    -fx-text-fill: #171a20;
     -fx-font-weight: bold;
     -fx-cursor: hand;
+    -fx-padding: 8px 16px;
+    -fx-border-color: transparent;
+    -fx-border-width: 2px;
 }
 
 .button:hover {
-    -fx-background-color: -bibi-teal-dark;
+    -fx-background-color: -bibi-yellow-dark;
 }
 
 .button:pressed {
-    -fx-background-color: derive(-bibi-teal-dark, -15%);
+    -fx-background-color: derive(-bibi-yellow-dark, -15%);
+}
+
+.button:focused {
+    -fx-border-color: -bibi-cyan;
 }
 
 /*
@@ -76,36 +104,68 @@
 
 .bibi-row {
     -fx-alignment: top-left;
+    -fx-padding: 8px 12px;
 }
 
 .user-row {
     -fx-alignment: top-right;
 }
 
+/* Read-only text areas retain native selection and copying. Their height follows
+   the text, so only the surrounding transcript needs a scrollbar. */
+.transcript-text {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 1px;
+    -fx-padding: 2px;
+    -fx-highlight-fill: -bibi-yellow;
+    -fx-highlight-text-fill: #171a20;
+    -fx-display-caret: false;
+}
+
+.transcript-text .content {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+.transcript-text .scroll-bar {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+}
+
+.transcript-text:focused {
+    -fx-border-color: -bibi-cyan;
+}
+
 /* Bibi's replies are plain text across the width of the window. They are the
    content, so they get the room rather than a decorated container. */
 .bibi-text {
     -fx-text-fill: -bibi-ink;
-    -fx-line-spacing: 1px;
 }
 
 /* The user's own lines are short and already known to them, so they are marked
    rather than presented: a small tinted chip, tucked to the right. */
 .user-chip {
-    -fx-background-color: -bibi-user;
-    -fx-background-radius: 12px 12px 2px 12px;
-    -fx-text-fill: white;
-    -fx-padding: 5px 11px 5px 11px;
+    -fx-background-color: #242e37;
+    -fx-background-radius: 0;
+    -fx-border-color: #45616a;
+    -fx-text-fill: -bibi-cyan;
+    -fx-padding: 6px 10px;
 }
 
 /* An error has to be actionable at a glance, so it does not merely differ in
    colour: the rule down the left edge makes it findable when scrolling back. */
 .error-text {
-    -fx-text-fill: #8c2f20;
-    -fx-background-color: #fdeceaff;
-    -fx-background-radius: 3px;
-    -fx-border-color: #e06a55;
-    -fx-border-width: 0 0 0 3px;
+    -fx-text-fill: #ffb3ab;
+    -fx-background-color: #342126;
+    -fx-background-radius: 0;
+    -fx-border-color: #fb7669;
+    -fx-border-width: 1px 1px 1px 3px;
     -fx-padding: 7px 10px 7px 10px;
-    -fx-line-spacing: 1px;
 }

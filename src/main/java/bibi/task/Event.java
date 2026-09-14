@@ -33,7 +33,9 @@ public class Event extends Task {
 
         // Storing real dates rather than text makes this check possible at last.
         if (endTime.isBefore(startTime)) {
-            throw new BibiException("An event cannot end before it starts.");
+            throw new BibiException("An event cannot end before it starts. "
+                    + "Use event <description> /from <start> /to <end>, for example: "
+                    + "event study group /from 21/12/2026 1800 /to 21/12/2026 2000.");
         }
     }
 

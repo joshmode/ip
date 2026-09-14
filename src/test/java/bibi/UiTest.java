@@ -124,7 +124,7 @@ public class UiTest {
         ui.showWelcome();
 
         String text = ui.takeCapturedReply().text();
-        assertTrue(text.contains("Bibi online."));
+        assertTrue(text.contains("I'm Bibi."));
         assertTrue(text.contains("todo"));
         assertTrue(text.contains("help"));
     }
@@ -136,7 +136,7 @@ public class UiTest {
 
         String text = ui.takeCapturedReply().text();
         for (String command : new String[] {"todo", "deadline", "event", "list", "sort",
-            "find", "on", "mark", "unmark", "remove", "help", "bye"}) {
+            "find", "on", "mark", "unmark", "remove", "undo", "help", "bye", "hi", "hello", "hey", "thanks"}) {
             assertTrue(text.contains(command), "help omitted " + command);
         }
     }
@@ -154,7 +154,7 @@ public class UiTest {
         Ui ui = createCapturingUi();
         ui.showGoodbye();
 
-        assertTrue(ui.takeCapturedReply().text().contains("Powering down."));
+        assertTrue(ui.takeCapturedReply().text().contains("Your saved tasks will be here next time."));
     }
 
     @Test
@@ -206,6 +206,29 @@ public class UiTest {
         assertTrue(reply.isError());
         assertTrue(reply.text().contains("bibi.txt"));
         assertTrue(reply.text().contains("disk full"));
+        assertTrue(reply.text().contains("The change is applied in memory but isn't saved."));
+        assertTrue(reply.text().contains("Don't repeat it."));
+    }
+
+    @Test
+    public void showHelp_always_explainsDatesNumberingAndKeyboard() {
+        Ui ui = createCapturingUi();
+        ui.showHelp();
+
+        String text = ui.takeCapturedReply().text();
+        for (String group : new String[] {"Add", "View", "Update", "Session"}) {
+            assertTrue(text.contains("  " + group + "\n"), "help omitted group " + group);
+        }
+        assertTrue(text.indexOf("Add\n") < text.indexOf("View\n"));
+        assertTrue(text.indexOf("View\n") < text.indexOf("Update\n"));
+        assertTrue(text.indexOf("Update\n") < text.indexOf("Session\n"));
+        assertTrue(text.contains("d/M/yy uses 00-99 for 2000-2099."));
+        assertTrue(text.contains("Numeric dates are always day first."));
+        assertTrue(text.contains("Existing yyyy-MM-dd input still works."));
+        assertTrue(text.contains("Sort and remove can change them"));
+        assertTrue(text.contains("Up/Down recall commands without sending"));
+        assertTrue(text.contains("restores your draft"));
+        assertTrue(text.contains("Ctrl+C (Cmd+C on macOS)"));
     }
 
     @Test

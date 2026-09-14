@@ -67,6 +67,15 @@ public abstract class Task {
     }
 
     /**
+     * Reports whether this task has been completed.
+     *
+     * @return {@code true} when the task is complete
+     */
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    /**
      * Reports whether this task's description contains the supplied keyword.
      *
      * <p>The comparison ignores case, so searching for "book" finds a task

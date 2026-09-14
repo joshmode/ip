@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -28,6 +30,9 @@ public class MainWindow {
      */
     private static final Duration GOODBYE_PAUSE = Duration.seconds(1.5);
 
+    /** How close to the newest output the user must be for new replies to follow automatically. */
+    private static final double SCROLL_FOLLOW_DISTANCE = 40.0;
+
     @FXML
     private ScrollPane scrollPane;
 
@@ -40,6 +45,7 @@ public class MainWindow {
     private Bibi bibi;
 
     private final Image bibiIcon = loadImage(BIBI_ICON_PATH);
+    private final CommandHistory commandHistory = new CommandHistory();
 
     /**
      * Creates the controller. The FXML loader calls this itself, so it must stay
@@ -50,13 +56,14 @@ public class MainWindow {
     }
 
     /**
-     * Keeps the transcript scrolled to the newest message.
+     * Enables history navigation within the command input.
      *
      * <p>Called by the FXML loader once the window's parts have been created.
      */
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        // Inspect selection before the text field's default arrow handling clears it.
+        userInput.addEventFilter(KeyEvent.KEY_PRESSED, this::handleHistoryKey);
     }
 
     /**
@@ -70,10 +77,11 @@ public class MainWindow {
     public void setBibi(Bibi bibi) {
         this.bibi = bibi;
         dialogContainer.getChildren().add(DialogBox.forBibi(bibi.getGreeting(), bibiIcon));
+        Platform.runLater(userInput::requestFocus);
     }
 
     /**
-     * Answers whatever the user has typed, then clears the input box.
+     * Answers the input, keeping rejected commands available for correction.
      *
      * <p>Wired to both the send button and the Enter key by the FXML.
      */
@@ -86,18 +94,84 @@ public class MainWindow {
 
         String input = userInput.getText();
         if (input.isBlank()) {
+            userInput.requestFocus();
             return;
         }
 
+        double scrollOffset = getScrollOffset();
+        boolean shouldFollow = getScrollRange() - scrollOffset <= SCROLL_FOLLOW_DISTANCE;
         Reply reply = bibi.getResponse(input);
+        commandHistory.add(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.forUser(input),
                 DialogBox.forBibi(reply, bibiIcon));
-        userInput.clear();
+        if (!bibi.isLastCommandRejected()) {
+            userInput.clear();
+        }
+        userInput.requestFocus();
+        userInput.positionCaret(userInput.getLength());
+        restoreScrollPosition(scrollOffset, shouldFollow);
 
         if (bibi.isExitRequested()) {
             closeAfterGoodbye();
         }
+    }
+
+    /**
+     * Recalls commands only for unmodified arrow keys in the input field.
+     *
+     * <p>Selection and modified keys keep their ordinary editing behavior. No
+     * event handler on the transcript can accidentally recall or execute a command.
+     *
+     * @param event the key pressed while editing the input
+     */
+    private void handleHistoryKey(KeyEvent event) {
+        if (event.isAltDown() || event.isControlDown() || event.isMetaDown() || event.isShiftDown()
+                || userInput.getSelection().getLength() > 0) {
+            return;
+        }
+        if (event.getCode() == KeyCode.UP) {
+            userInput.setText(commandHistory.recallPrevious(userInput.getText()));
+        } else if (event.getCode() == KeyCode.DOWN) {
+            userInput.setText(commandHistory.recallNext(userInput.getText()));
+        } else {
+            return;
+        }
+        userInput.positionCaret(userInput.getLength());
+        event.consume();
+    }
+
+    /**
+     * Returns the height of transcript content outside the visible viewport.
+     */
+    private double getScrollRange() {
+        return Math.max(0, dialogContainer.getHeight() - scrollPane.getViewportBounds().getHeight());
+    }
+
+    /**
+     * Returns the reading position in pixels so appending text cannot shift older output.
+     */
+    private double getScrollOffset() {
+        double valueRange = scrollPane.getVmax() - scrollPane.getVmin();
+        return valueRange == 0 ? 0
+                : (scrollPane.getVvalue() - scrollPane.getVmin()) / valueRange * getScrollRange();
+    }
+
+    /**
+     * Restores the reading position after the new replies have been laid out.
+     *
+     * @param scrollOffset the previous distance from the beginning of the transcript
+     * @param shouldFollow whether the user was close enough to the bottom to follow new output
+     */
+    private void restoreScrollPosition(double scrollOffset, boolean shouldFollow) {
+        Platform.runLater(() -> {
+            scrollPane.applyCss();
+            scrollPane.layout();
+            double scrollRange = getScrollRange();
+            double fraction = shouldFollow || scrollRange == 0 ? 1 : scrollOffset / scrollRange;
+            scrollPane.setVvalue(scrollPane.getVmin()
+                    + fraction * (scrollPane.getVmax() - scrollPane.getVmin()));
+        });
     }
 
     /**

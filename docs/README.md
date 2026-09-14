@@ -1,7 +1,7 @@
 # Bibi User Guide
 
-Bibi is a small filing robot for the things you would rather not hold in your head.
-Tell it what needs doing, and it keeps the list — between sessions, without being asked.
+Bibi keeps track of what needs doing, with a dry sense of humor and a dependable memory.
+Tell it what needs doing, and it keeps the list between sessions. Doing it is still yours.
 
 ![Bibi in use](Ui.png)
 
@@ -19,7 +19,23 @@ Bibi saves your tasks to `data/bibi.txt` beside wherever you started it, so a fr
 folder gives you a fresh list.
 
 > **Tip:** type in the box at the bottom and press <kbd>Enter</kbd>, or click **Send**.
-> Everything is a short typed command — there is nothing to click through. 🤖
+> Everything is a short typed command, with keyboard shortcuts to keep things moving.
+
+### Using the keyboard and transcript
+
+- **Enter** submits the input; focus returns to the input after submission.
+- **Up / Down** in the input recalls this session's commands without running them.
+  Your unfinished draft returns when you move Down past the newest command.
+- A rejected command stays in the input so you can correct it. Blank input is ignored.
+- Select text in any previous command or reply, then use **Ctrl+C** (or **Cmd+C** on macOS)
+  to copy it. Selection shortcuts act on the focused text field, not on the task list.
+- New output follows the transcript when you are near the bottom. If you scroll up to
+  read, your position stays put; scroll back down when you are ready.
+
+Commands and `/by`, `/from`, `/to` markers ignore capitalization. Extra separator
+whitespace is fine; descriptions keep their capitalization, with whitespace runs
+collapsed to single spaces. For dates starting with a digit, a space after a marker
+is optional: `deadline return book /by21/12/2026` also works.
 
 ## Adding things to do
 
@@ -35,15 +51,15 @@ For example:
 
 ```
 todo buy a birthday present
-deadline submit CS2103T iP /by 2026-09-18 2359
-event tutorial /from 2026-09-15 1400 /to 2026-09-15 1500
+deadline submit CS2103T iP /by 18/9/2026 2359
+event tutorial /from 15/9/2026 14:00 /to 15/9/2026 15:00
 ```
 
 Bibi confirms each one and tells you how long your list is:
 
 ```
-Logged. That is on your list now:
-  [D][ ] submit CS2103T iP (by: Sep 18 2026 11:59PM)
+Added. Remembering it is my job. Doing it is still yours:
+  [D][ ] submit CS2103T iP (by: 18 Sep 2026 11:59PM)
 Your list holds 1 task.
 ```
 
@@ -54,12 +70,27 @@ them by day.
 
 | Form | Example |
 |------|---------|
-| `yyyy-MM-dd` | `2026-09-18` |
-| `d/M/yyyy` | `18/9/2026` |
-| either, plus a 24-hour time | `18/9/2026 2359` |
+| `d/M/yyyy` | `21/12/2026`, `1/2/2026` |
+| `d-M-yyyy` | `21-12-2026` |
+| `d.M.yyyy` | `21.12.2026` |
+| `d MMM yyyy` or `d MMMM yyyy` | `21 Dec 2026`, `21 December 2026` |
+| `d/M/yy` | `21/12/26` |
+| existing ISO form, `yyyy-MM-dd` | `2026-12-21` |
 
-A date without a time means the whole day. A date that does not exist — `2026-02-30`,
-say — is refused rather than quietly shifted, and an event may not end before it starts.
+Numeric dates with the day first always mean **day/month/year**: `03/04/2026` is
+3 April, never March 4. Two-digit years `00`–`99` mean **2000–2099**.
+
+Any date may have a time: `1800`, `18:00`, `6 pm`, or `6:00 pm`. Month names and
+AM/PM are case-insensitive, and extra spacing between date/time parts is accepted.
+`12 am` means midnight; `12 pm` means noon.
+
+Bibi displays dates as `21 Dec 2026` and timed dates as `21 Dec 2026 6:00PM`.
+A date without a time stays date-only. Past dates are accepted. Impossible dates
+such as `31/04/2026`, invalid times, and events ending before they start are rejected.
+Leap days must belong to leap years. Phrases such as `next Tuesday` are not supported.
+
+Existing save files still load. Saved dates keep their ISO `yyyy-MM-dd` form, with
+`HHmm` only when a time was supplied.
 
 ## Seeing your list
 
@@ -70,7 +101,7 @@ list
 Each task shows its kind and whether it is done:
 
 ```
-1. [D][X] submit CS2103T iP (by: Sep 18 2026 11:59PM)
+1. [D][X] submit CS2103T iP (by: 18 Sep 2026 11:59PM)
 2. [T][ ] buy a birthday present
 ```
 
@@ -93,7 +124,7 @@ looked away would leave those numbers pointing at the wrong tasks.
 
 ```
 find book
-on 2026-09-18
+on 18/9/2026
 ```
 
 - `find` searches descriptions and ignores case, so `find BOOK` finds "read book".
@@ -113,6 +144,25 @@ remove 2
 Numbers come from the most recent listing. `mark` ticks a task off, `unmark` reopens it,
 and `remove` takes it off the list for good.
 
+Sorting or removing a task can make numbers in older replies stale. Use `list`
+again before acting on an old entry. Confirmations show the affected task so you
+can check what changed; filtered results retain the full-list numbers.
+
+### Undoing one change
+
+```
+undo
+```
+
+`undo` restores the list before the most recent change: adding, removing, marking,
+unmarking, or sorting. It restores completion states and task order, including the
+numbers, and saves the restored list. There is **one undo step, for this session
+only**, and no redo. A second undo is rejected until you make another change.
+
+Viewing, searching, greetings, rejected commands, and operations that change nothing
+do not replace your undo step. A change that failed to save is still applied in memory
+and can be undone. Closing Bibi discards undo history; it is not written to the save file.
+
 ## Help, and leaving
 
 ```
@@ -120,7 +170,16 @@ help
 bye
 ```
 
-`help` lists every command. `bye` closes Bibi — your tasks are already saved.
+`help` groups the commands, examples, date formats, and keyboard shortcuts.
+`bye` closes Bibi. Changes are saved after each task-changing command; watch for
+a save warning if a write could not finish.
+
+### A quick hello
+
+`hi`, `hello`, `hey`, and `thanks` get short replies. Capitalization and harmless
+punctuation such as `HELLO!` are fine. These work only as complete standalone inputs;
+`todo say hello` still adds a task. Bibi does not collect missing arguments through
+follow-up questions.
 
 ## When something goes wrong
 
@@ -133,23 +192,30 @@ in red so you can spot them when scrolling back:
   complaining about an unreadable date.
 - **A task you already have** is pointed at by number, and nothing is changed.
 - **A damaged save file** is reported line by line; the lines Bibi *could* read are kept.
+- **An invalid task number** explains the current range, or that the list is empty.
+- **A failed save** warns that the command already changed the list in memory. Do not
+  repeat the operation: check the file location and permissions before another save.
+  Unsaved changes can be lost when Bibi closes. In the GUI, an applied command clears
+  the input even if saving failed; a validation rejection stays available for editing.
 
 ## Command summary
 
 | Command | Does | Example |
 |---------|------|---------|
 | `todo` | adds an undated task | `todo buy a present` |
-| `deadline` | adds a task due by a date | `deadline report /by 2026-09-18` |
-| `event` | adds a task with a start and end | `event camp /from 2026-09-15 /to 2026-09-17` |
+| `deadline` | adds a task due by a date | `deadline report /by 18/9/2026` |
+| `event` | adds a task with a start and end | `event camp /from 15/9/2026 /to 17/9/2026` |
 | `list` | shows everything | `list` |
 | `sort` | orders by date, undated last | `sort` |
 | `find` | searches descriptions | `find book` |
-| `on` | shows what falls on a date | `on 2026-09-18` |
+| `on` | shows what falls on a date | `on 18/9/2026` |
 | `mark` | ticks a task off | `mark 2` |
 | `unmark` | reopens a task | `unmark 2` |
 | `remove` | deletes a task | `remove 2` |
+| `undo` | restores the most recent change once, in this session | `undo` |
 | `help` | lists the commands | `help` |
 | `bye` | closes Bibi | `bye` |
+| `hi`, `hello`, `hey`, `thanks` | replies briefly without changing tasks | `hello!` |
 
 ## Running without the window
 

@@ -20,6 +20,8 @@ import bibi.command.HelpCommand;
 import bibi.command.ListCommand;
 import bibi.command.MarkCommand;
 import bibi.command.OnCommand;
+import bibi.command.SocialCommand;
+import bibi.command.UndoCommand;
 import bibi.command.UnmarkCommand;
 import bibi.task.TaskList;
 import bibi.task.Todo;
@@ -35,6 +37,7 @@ public class ParserTest {
         assertInstanceOf(ListCommand.class, Parser.parse("list"));
         assertInstanceOf(HelpCommand.class, Parser.parse("help"));
         assertInstanceOf(ExitCommand.class, Parser.parse("bye"));
+        assertInstanceOf(UndoCommand.class, Parser.parse("undo"));
     }
 
     @Test
@@ -120,7 +123,7 @@ public class ParserTest {
         BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("remind me"));
         // The message now names the word it could not place, which is the part
         // that helps a user who simply mistyped.
-        assertTrue(thrown.getMessage().contains("I don't understand 'remind'"));
+        assertTrue(thrown.getMessage().contains("I don't recognize 'remind'"));
     }
 
     @Test
@@ -132,14 +135,15 @@ public class ParserTest {
     @Test
     public void parse_todoWithoutDescription_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("todo"));
-        assertTrue(thrown.getMessage().contains("Use todo followed by a description."));
+        assertTrue(thrown.getMessage().contains("A task needs a description. Use todo <description>"));
     }
 
     @Test
     public void parse_deadlineWithoutByMarker_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () ->
                 Parser.parse("deadline return book"));
-        assertTrue(thrown.getMessage().startsWith("Use deadline <description> /by <time>"));
+        assertTrue(thrown.getMessage().startsWith("I need a due date marked with /by. "
+                + "Use deadline <description> /by <time>"));
     }
 
     @Test
@@ -152,14 +156,17 @@ public class ParserTest {
         BibiException thrown = assertThrows(BibiException.class, () ->
                 Parser.parse("event camp /from 2019-08-10"));
         assertTrue(thrown.getMessage()
-                .startsWith("Use event <description> /from <start> /to <end>"));
+                .startsWith("I need both /from and /to dates for an event. "
+                + "Use event <description> /from <start> /to <end>"));
     }
 
     @Test
     public void parse_eventEndingBeforeItStarts_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () ->
                 Parser.parse("event camp /from 2019-08-12 /to 2019-08-10"));
-        assertEquals("An event cannot end before it starts.", thrown.getMessage());
+        assertEquals("An event cannot end before it starts. "
+                + "Use event <description> /from <start> /to <end>, for example: "
+                + "event study group /from 21/12/2026 1800 /to 21/12/2026 2000.", thrown.getMessage());
     }
 
     @Test
@@ -189,7 +196,7 @@ public class ParserTest {
         command.execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
 
         assertEquals(1, tasks.size());
-        assertEquals("[D][ ] return book (by: Dec 02 2019 6:00PM)", tasks.get(1).toString());
+        assertEquals("[D][ ] return book (by: 02 Dec 2019 6:00PM)", tasks.get(1).toString());
     }
 
     @Test
@@ -232,7 +239,7 @@ public class ParserTest {
 
     @Test
     public void parse_argumentAfterArgumentlessCommand_exceptionThrown() {
-        for (String input : new String[] {"list extra", "sort now", "help me", "bye now"}) {
+        for (String input : new String[] {"list extra", "sort now", "undo now", "help me", "bye now"}) {
             BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
             assertTrue(thrown.getMessage().contains("does not take anything after it"),
                     "no complaint for: " + input);
@@ -256,8 +263,8 @@ public class ParserTest {
         Parser.parse("deadline return book /BY 2019-10-15").execute(tasks, new Ui(), storage);
         Parser.parse("event camp /From 2019-08-10 /TO 2019-08-12").execute(tasks, new Ui(), storage);
 
-        assertEquals("[D][ ] return book (by: Oct 15 2019)", tasks.get(1).toString());
-        assertEquals("[E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)", tasks.get(2).toString());
+        assertEquals("[D][ ] return book (by: 15 Oct 2019)", tasks.get(1).toString());
+        assertEquals("[E][ ] camp (from: 10 Aug 2019 to: 12 Aug 2019)", tasks.get(2).toString());
     }
 
     @Test
@@ -268,7 +275,7 @@ public class ParserTest {
         Parser.parse("deadline return book\t/by\t2019-10-15")
                 .execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
 
-        assertEquals("[D][ ] return book (by: Oct 15 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] return book (by: 15 Oct 2019)", tasks.get(1).toString());
     }
 
     @Test
@@ -283,7 +290,109 @@ public class ParserTest {
         Parser.parse("event " + place + " trip /from 2019-08-06 /to 2019-08-07")
                 .execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
 
-        assertEquals("[E][ ] " + place + " trip (from: Aug 06 2019 to: Aug 07 2019)",
+        assertEquals("[E][ ] " + place + " trip (from: 06 Aug 2019 to: 07 Aug 2019)",
                 tasks.get(1).toString());
+    }
+
+    @Test
+    public void parse_standaloneSocialWords_matchesCaseAndPunctuation() throws BibiException {
+        for (String input : new String[] {"hi", "HELLO!", "  Hey?!  ", "Thanks...", "hello !"}) {
+            assertInstanceOf(SocialCommand.class, Parser.parse(input));
+            assertFalse(Parser.parse(input).isExit());
+        }
+    }
+
+    @Test
+    public void parse_socialWordWithOtherText_notConversation() throws BibiException {
+        assertInstanceOf(AddCommand.class, Parser.parse("todo say hello and thanks!"));
+        for (String input : new String[] {"hi there", "thanks for helping", "hey todo book", "highlight"}) {
+            assertThrows(BibiException.class, () -> Parser.parse(input));
+        }
+    }
+
+    @Test
+    public void parse_compactMarkers_buildsTheSameDatedTasks(@TempDir Path tempDir) throws BibiException {
+        TaskList tasks = new TaskList();
+        Storage storage = new Storage(tempDir.resolve("bibi.txt"));
+
+        Parser.parse("DEADLINE  return book /BY21/12/2026").execute(tasks, new Ui(), storage);
+        Parser.parse("event camp /From21/12/2026 1800 /TO22/12/2026 0800")
+                .execute(tasks, new Ui(), storage);
+
+        assertEquals("[D][ ] return book (by: 21 Dec 2026)", tasks.get(1).toString());
+        assertEquals("[E][ ] camp (from: 21 Dec 2026 6:00PM to: 22 Dec 2026 8:00AM)",
+                tasks.get(2).toString());
+    }
+
+    @Test
+    public void parse_compactMarkerRepeated_rejectedBeforeChoosingADate() {
+        BibiException deadlineError = assertThrows(BibiException.class, () ->
+                Parser.parse("deadline book /by21/12/2026 /BY 22/12/2026"));
+        BibiException fromError = assertThrows(BibiException.class, () ->
+                Parser.parse("event camp /from21/12/2026 /from22/12/2026 /to23/12/2026"));
+        BibiException toError = assertThrows(BibiException.class, () ->
+                Parser.parse("event camp /from21/12/2026 /to22/12/2026 /TO23/12/2026"));
+
+        assertTrue(deadlineError.getMessage().contains("You used /by 2 times"));
+        assertTrue(fromError.getMessage().contains("You used /from 2 times"));
+        assertTrue(toError.getMessage().contains("You used /to 2 times"));
+    }
+
+    @Test
+    public void parse_markerPrefixInDescription_keepsTheWholeWord(@TempDir Path tempDir) throws BibiException {
+        TaskList tasks = new TaskList();
+        Storage storage = new Storage(tempDir.resolve("bibi.txt"));
+
+        Parser.parse("deadline check /bypass /by2pass route /by21/12/2026").execute(tasks, new Ui(), storage);
+        Parser.parse("event check /fromage and /tomato /from21/12/2026 /to22/12/2026")
+                .execute(tasks, new Ui(), storage);
+
+        assertEquals("[D][ ] check /bypass /by2pass route (by: 21 Dec 2026)", tasks.get(1).toString());
+        assertEquals("[E][ ] check /fromage and /tomato (from: 21 Dec 2026 to: 22 Dec 2026)",
+                tasks.get(2).toString());
+    }
+
+    @Test
+    public void parse_dateMarkerWithoutDescription_namesMissingDescription() {
+        for (String input : new String[] {"deadline /by21/12/2026", "event /from21/12/2026 /to22/12/2026"}) {
+            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
+
+            assertTrue(thrown.getMessage().startsWith("A task needs a description."));
+            assertTrue(thrown.getMessage().contains("for example:"));
+        }
+    }
+
+    @Test
+    public void parse_dateMarkerWithoutValue_namesMissingValue() {
+        BibiException deadlineError = assertThrows(BibiException.class, () ->
+                Parser.parse("deadline return book /by"));
+        BibiException fromError = assertThrows(BibiException.class, () ->
+                Parser.parse("event camp /from /to21/12/2026"));
+        BibiException toError = assertThrows(BibiException.class, () ->
+                Parser.parse("event camp /from21/12/2026 /to"));
+
+        assertEquals("I need a due date after /by. Use deadline <description> /by <time>, "
+                + "for example: deadline return book /by 21/12/2026.", deadlineError.getMessage());
+        assertTrue(fromError.getMessage().startsWith("I need a date after /from."));
+        assertTrue(toError.getMessage().startsWith("I need a date after /to."));
+    }
+
+    @Test
+    public void parse_normalizedDescription_keepsCaseAndDuplicateMeaning(@TempDir Path tempDir)
+            throws BibiException {
+        TaskList tasks = new TaskList();
+        Storage storage = new Storage(tempDir.resolve("bibi.txt"));
+        Parser.parse("todo  Read\t  Book!").execute(tasks, new Ui(), storage);
+
+        assertEquals("[T][ ] Read Book!", tasks.get(1).toString());
+        assertThrows(BibiException.class, () ->
+                Parser.parse("todo read book!").execute(tasks, new Ui(), storage));
+        assertEquals(1, tasks.size());
+
+        Ui ui = new Ui();
+        ui.startCapture();
+        Parser.parse("FiNd  READ\t   BOOK").execute(tasks, ui, storage);
+
+        assertTrue(ui.takeCapturedReply().text().contains("1. [T][ ] Read Book!"));
     }
 }
