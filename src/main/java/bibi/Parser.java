@@ -1,6 +1,5 @@
 package bibi;
 
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +13,7 @@ import bibi.command.HelpCommand;
 import bibi.command.ListCommand;
 import bibi.command.MarkCommand;
 import bibi.command.OnCommand;
+import bibi.command.SocialCommand;
 import bibi.command.SortCommand;
 import bibi.command.UnmarkCommand;
 import bibi.task.Deadline;
@@ -40,22 +40,35 @@ public final class Parser {
     /** The commands that take no argument at all. */
     private static final String COMMANDS_WITHOUT_ARGUMENTS = "list, sort, help and bye";
 
+    private static final String USAGE_TODO = "Use todo <description>, for example: todo read book.";
+    private static final String USAGE_DEADLINE = "Use deadline <description> /by <time>, "
+            + "for example: deadline return book /by 21/12/2026.";
+    private static final String USAGE_EVENT = "Use event <description> /from <start> /to <end>, "
+            + "for example: event project meeting /from 21/12/2026 1400 /to 21/12/2026 1600.";
+
+    /** Matches only complete social inputs, so task descriptions never become conversation. */
+    private static final Pattern SOCIAL_INPUT = Pattern.compile("(?i)(hi|hello|hey|thanks)\\s*[.!?,]*");
+
     /**
-     * Finds {@code /by} standing as a word of its own, in any case, with any
-     * whitespace on either side.
+     * Finds {@code /by} after whitespace or at the start, in any case. A date
+     * beginning with a numeric date or a day and month name may follow
+     * immediately, but words such as {@code /bypass} stay in the description.
      *
      * <p>The markers are found in the text as typed rather than in a lowercased
      * copy. Lowercasing can change the length of a string, as a dotted capital
      * I does by becoming two characters, and a position found in the copy would
      * then cut the original in the wrong place.
      */
-    private static final Pattern BY_MARKER = Pattern.compile("\\s/by\\s", Pattern.CASE_INSENSITIVE);
+    private static final Pattern BY_MARKER = Pattern.compile("(?<!\\S)/by(?=\\s|[0-9]+(?:[./-]|\\s+[A-Za-z])|$)",
+            Pattern.CASE_INSENSITIVE);
 
     /** Finds {@code /from} in the same way as {@code BY_MARKER}. */
-    private static final Pattern FROM_MARKER = Pattern.compile("\\s/from\\s", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FROM_MARKER = Pattern.compile("(?<!\\S)/from(?=\\s|[0-9]+(?:[./-]|\\s+[A-Za-z])|$)",
+            Pattern.CASE_INSENSITIVE);
 
     /** Finds {@code /to} in the same way as {@code BY_MARKER}. */
-    private static final Pattern TO_MARKER = Pattern.compile("\\s/to\\s", Pattern.CASE_INSENSITIVE);
+    private static final Pattern TO_MARKER = Pattern.compile("(?<!\\S)/to(?=\\s|[0-9]+(?:[./-]|\\s+[A-Za-z])|$)",
+            Pattern.CASE_INSENSITIVE);
 
     /**
      * Hides the constructor, because this class holds only static helpers and
@@ -75,6 +88,11 @@ public final class Parser {
         String input = fullCommand.strip();
         if (input.isEmpty()) {
             throw new BibiException("Please enter a command.");
+        }
+
+        Matcher socialMatch = SOCIAL_INPUT.matcher(input);
+        if (socialMatch.matches()) {
+            return new SocialCommand(socialMatch.group(1).equalsIgnoreCase("thanks"));
         }
 
         // Splitting on any run of whitespace means a tab or a double space
@@ -101,7 +119,7 @@ public final class Parser {
                 requireNoArgument(argument, "help");
                 yield new HelpCommand();
             }
-            case "todo" -> new AddCommand(new Todo(collapseSpaces(argument)));
+            case "todo" -> new AddCommand(new Todo(requireDescription(collapseSpaces(argument), USAGE_TODO)));
             case "deadline" -> new AddCommand(parseDeadline(argument));
             case "event" -> new AddCommand(parseEvent(argument));
             case "mark" -> new MarkCommand(parseTaskNumber(argument, "mark"));
@@ -113,8 +131,8 @@ public final class Parser {
             case "on" -> new OnCommand(TaskDateTime.parse(argument).getDate());
             // Pointing at help, rather than listing the commands here as well,
             // keeps the full list in one place.
-            default -> throw new BibiException("I don't understand '" + parts[0] + "'. "
-                    + "Type help to see every command I know.");
+            default -> throw new BibiException("I don't recognize '" + parts[0] + "'. "
+                    + "Check the command word, or type help for examples.");
         };
     }
 
@@ -133,7 +151,8 @@ public final class Parser {
             throws BibiException {
         if (!argument.isEmpty()) {
             throw new BibiException(commandWord + " does not take anything after it, but I found '"
-                    + argument + "'. " + COMMANDS_WITHOUT_ARGUMENTS + " are used on their own.");
+                    + argument + "'. " + COMMANDS_WITHOUT_ARGUMENTS + " are used on their own. "
+                    + "Use " + commandWord + ", for example: " + commandWord + ".");
         }
     }
 
@@ -155,17 +174,33 @@ public final class Parser {
      * Checks that a parameter such as {@code /by} was supplied exactly once.
      *
      * @param text the text being parsed
-     * @param marker the parameter to count, for example {@code /by}
+     * @param markerPattern the pattern used to find the parameter
+     * @param marker the parameter to name, for example {@code /by}
+     * @param usage the valid command form and example
      * @throws BibiException if the parameter appears more than once
      */
-    private static void requireSingleUse(String text, String marker) throws BibiException {
-        long useCount = Arrays.stream(text.split("\\s+"))
-                .filter(token -> token.equalsIgnoreCase(marker))
-                .count();
+    private static void requireSingleUse(String text, Pattern markerPattern, String marker, String usage)
+            throws BibiException {
+        long useCount = markerPattern.matcher(text).results().count();
         if (useCount > 1) {
             throw new BibiException("You used " + marker + " " + useCount + " times, but it belongs "
-                    + "exactly once. I would not know which one you meant.");
+                    + "exactly once. I can't tell which one you meant. " + usage);
         }
+    }
+
+    /**
+     * Rejects a missing description with the syntax for the task being added.
+     *
+     * @param description the normalized task description
+     * @param usage the valid command form and example
+     * @return the description when it is present
+     * @throws BibiException if the description is empty
+     */
+    private static String requireDescription(String description, String usage) throws BibiException {
+        if (description.isEmpty()) {
+            throw new BibiException("A task needs a description. " + usage);
+        }
+        return description;
     }
 
     /**
@@ -176,16 +211,19 @@ public final class Parser {
      * @throws BibiException if the text is missing required information
      */
     private static Deadline parseDeadline(String deadlineText) throws BibiException {
-        requireSingleUse(deadlineText, "/by");
+        requireSingleUse(deadlineText, BY_MARKER, "/by", USAGE_DEADLINE);
 
         Matcher byMatch = BY_MARKER.matcher(deadlineText);
         if (!byMatch.find()) {
-            throw new BibiException("Use deadline <description> /by <time>, "
-                    + "for example: deadline return book /by 2019-10-15");
+            throw new BibiException("I need a due date marked with /by. " + USAGE_DEADLINE);
         }
 
-        String description = collapseSpaces(deadlineText.substring(0, byMatch.start()));
+        String description = requireDescription(collapseSpaces(deadlineText.substring(0, byMatch.start())),
+                USAGE_DEADLINE);
         String dueTimeText = collapseSpaces(deadlineText.substring(byMatch.end()));
+        if (dueTimeText.isEmpty()) {
+            throw new BibiException("I need a due date after /by. " + USAGE_DEADLINE);
+        }
         return new Deadline(description, dueTimeText);
     }
 
@@ -198,8 +236,8 @@ public final class Parser {
      * @throws BibiException if the text is missing required information
      */
     private static Event parseEvent(String eventText) throws BibiException {
-        requireSingleUse(eventText, "/from");
-        requireSingleUse(eventText, "/to");
+        requireSingleUse(eventText, FROM_MARKER, "/from", USAGE_EVENT);
+        requireSingleUse(eventText, TO_MARKER, "/to", USAGE_EVENT);
 
         Matcher fromMatch = FROM_MARKER.matcher(eventText);
         Matcher toMatch = TO_MARKER.matcher(eventText);
@@ -208,18 +246,20 @@ public final class Parser {
 
         if (hasFrom && hasTo && toMatch.start() < fromMatch.start()) {
             throw new BibiException("The /to came before the /from. "
-                    + "Use event <description> /from <start> /to <end>.");
+                    + USAGE_EVENT);
         }
-        // The last condition also refuses a /to that shares its leading space
-        // with the end of the /from, which would leave no room for a start.
-        if (!hasFrom || !hasTo || toMatch.start() < fromMatch.end()) {
-            throw new BibiException("Use event <description> /from <start> /to <end>, for example: "
-                    + "event project meeting /from 2019-08-06 1400 /to 2019-08-06 1600");
+        if (!hasFrom || !hasTo) {
+            throw new BibiException("I need both /from and /to dates for an event. " + USAGE_EVENT);
         }
 
-        String description = collapseSpaces(eventText.substring(0, fromMatch.start()));
+        String description = requireDescription(collapseSpaces(eventText.substring(0, fromMatch.start())),
+                USAGE_EVENT);
         String startTimeText = collapseSpaces(eventText.substring(fromMatch.end(), toMatch.start()));
         String endTimeText = collapseSpaces(eventText.substring(toMatch.end()));
+        if (startTimeText.isEmpty() || endTimeText.isEmpty()) {
+            String missingMarker = startTimeText.isEmpty() ? "/from" : "/to";
+            throw new BibiException("I need a date after " + missingMarker + ". " + USAGE_EVENT);
+        }
         return new Event(description, startTimeText, endTimeText);
     }
 
@@ -264,7 +304,8 @@ public final class Parser {
         // wrong with the number itself, not merely that no such task exists.
         if (taskNumber < 1) {
             throw new BibiException("Task numbers start at 1, so " + taskNumber
-                    + " cannot refer to a task. Use list to see the numbers.");
+                    + " cannot refer to a task. Use list to see the numbers. Use " + commandWord
+                    + " <number>, for example: " + commandWord + " 1.");
         }
         return taskNumber;
     }

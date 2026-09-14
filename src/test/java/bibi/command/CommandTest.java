@@ -54,7 +54,7 @@ public class CommandTest {
         String said = run(new AddCommand(new Todo("read book")), tasks, storage);
 
         assertEquals(1, tasks.size());
-        assertTrue(said.contains("Logged."));
+        assertTrue(said.contains("Added."));
         assertTrue(said.contains("1 task"));
         assertEquals("T | 0 | read book", Files.readString(storage.getFilePath()).strip());
     }
@@ -76,7 +76,7 @@ public class CommandTest {
             throws BibiException {
         String said = run(new ListCommand(), new TaskList(), storageIn(tempDir));
 
-        assertTrue(said.contains("Your list is empty"));
+        assertTrue(said.contains("Nothing on the list"));
         assertTrue(said.contains("todo"));
     }
 
@@ -99,7 +99,7 @@ public class CommandTest {
 
         String said = run(new MarkCommand(1), tasks, storage);
 
-        assertTrue(said.contains("ticked off"));
+        assertTrue(said.contains("Task 1 done."));
         assertTrue(said.contains("[T][X] read book"));
         assertEquals("[T][X] read book", tasks.get(1).toString());
         assertEquals("T | 1 | read book", Files.readString(storage.getFilePath()).strip());
@@ -158,7 +158,7 @@ public class CommandTest {
 
         String said = run(command, new TaskList(), storageIn(tempDir));
 
-        assertTrue(said.contains("Powering down."));
+        assertTrue(said.contains("See you."));
         assertTrue(command.isExit());
     }
 
@@ -255,7 +255,25 @@ public class CommandTest {
         String said = run(new AddCommand(new Todo("read book")), tasks, new Storage(inTheWay));
 
         assertEquals(1, tasks.size());
-        assertTrue(said.contains("Logged."));
+        assertTrue(said.contains("Added."));
         assertTrue(said.contains("is a folder"));
+        assertTrue(said.contains("The change is applied in memory but isn't saved."));
+        assertTrue(said.contains("Don't repeat it."));
+    }
+
+    @Test
+    public void socialCommand_greetingOrThanks_repliesWithoutSavingOrChangingTasks(@TempDir Path tempDir)
+            throws BibiException {
+        TaskList tasks = new TaskList(new Todo("say hello"));
+        Storage storage = storageIn(tempDir);
+
+        String greeting = run(new SocialCommand(false), tasks, storage);
+        String thanks = run(new SocialCommand(true), tasks, storage);
+
+        assertEquals("Hey. I'm here. Type help if you need the rundown.", greeting);
+        assertEquals("You're welcome. You handle the doing; I'll handle the remembering.", thanks);
+        assertEquals(1, tasks.size());
+        assertEquals("[T][ ] say hello", tasks.get(1).toString());
+        assertFalse(Files.exists(storage.getFilePath()));
     }
 }

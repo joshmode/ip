@@ -19,12 +19,12 @@ bye
 ### Expected output
 
 ```text
-Bibi: Logged. That is on your list now:
+Bibi: Added. Remembering it is my job. Doing it is still yours:
 [T][ ] borrow book
 Your list holds 1 task.
 Bibi: Here is everything on your list:
 1. [T][ ] borrow book
-Bibi: Powering down.
+Bibi: See you.
 ```
 
 ## Test 2: Add and list a deadline
@@ -86,7 +86,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Task 1 ticked off. Nice work.
+Bibi: Task 1 done. Look at us getting things done.
   [T][X] join sports club
 1. [T][X] join sports club
 Bibi: Task 1 is open again.
@@ -109,8 +109,8 @@ bye
 ### Expected output
 
 ```text
-Bibi: Use deadline <description> /by <time>, for example:
-Bibi: Use event <description> /from <start> /to <end>, for example:
+Bibi: I need a due date marked with /by. Use deadline <description> /by <time>, for example:
+Bibi: I need both /from and /to dates for an event. Use event <description> /from <start> /to <end>, for example:
 ```
 
 ## Test 6: Reject empty, unknown, and incomplete commands
@@ -131,8 +131,8 @@ bye
 
 ```text
 Bibi: Please enter a command.
-Bibi: I don't understand 'remind'. Type help to see every command I know.
-Bibi: Use todo followed by a description.
+Bibi: I don't recognize 'remind'. Check the command word, or type help for examples.
+Bibi: A task needs a description. Use todo <description>, for example: todo read book.
 Bibi: 'two' is not a task number.
 ```
 
@@ -156,8 +156,8 @@ bye
 ### Expected output
 
 ```text
-Bibi: Task 1 ticked off. Nice work.
-Bibi: Powering down.
+Bibi: Task 1 done. Look at us getting things done.
+Bibi: See you.
 Bibi: Picked up where we left off: 3 tasks restored.
 Bibi: Here is everything on your list:
 1. [T][X] read book
@@ -179,8 +179,8 @@ bye
 ### Expected output
 
 ```text
-Bibi: Your list is empty.
-Bibi: Powering down.
+Bibi: Nothing on the list. I'll assume that's good news.
+Bibi: See you.
 ```
 
 ## Test 9: Restore a task list written earlier
@@ -240,12 +240,12 @@ bye
 
 ```text
 Bibi: Picked up where we left off: 2 tasks restored.
-Bibi: Some of the save file did not make sense to me:
+Bibi: I couldn't read these lines in the save file:
   Line 2: expected at least type, status, and description separated by '|'.
   Line 3: unknown task type 'X'.
   Line 4: status '2' should be 1 (done) or 0 (not done).
   Line 5: expected 5 fields but found 3, for example: E | 0 | project meeting | 2019-08-06 1400 | 2019-08-06 1600
-Bibi: I have skipped those lines. They will leave the file the next time your list changes.
+Bibi: I've skipped those lines. They will leave the file the next time your list changes.
 Bibi: Here is everything on your list:
 1. [T][X] read book
 2. [T][ ] join sports club
@@ -267,7 +267,7 @@ bye
 
 ```text
 Bibi: Task text cannot contain '|' because that character separates the fields in the save file.
-Bibi: Your list is empty.
+Bibi: Nothing on the list. I'll assume that's good news.
 ```
 
 ## Test 12: Understand dates and times in several formats
@@ -318,7 +318,7 @@ bye
 Bibi: I could not read the date 'next Tuesday'. Use yyyy-MM-dd, d/M/yyyy, d-M-yyyy, d.M.yyyy, d MMM yyyy, d MMMM yyyy or d/M/yy (00-99 means 2000-2099). Add an optional time such as 1800, 18:00, 6 pm or 6:00 pm; for example 15/10/2019 or 2/12/2019 1800.
 Bibi: I could not read the date '2019-13-45'.
 Bibi: An event cannot end before it starts.
-Bibi: Your list is empty.
+Bibi: Nothing on the list. I'll assume that's good news.
 ```
 
 ## Test 14: Report saved tasks whose dates predate this format
@@ -344,7 +344,7 @@ bye
 
 ```text
 Bibi: Picked up where we left off: 1 task restored.
-Bibi: Some of the save file did not make sense to me:
+Bibi: I couldn't read these lines in the save file:
   Line 2: I could not read the date 'Sunday'.
 Bibi: Here is everything on your list:
 1. [T][ ] read book
@@ -393,7 +393,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Here is everything I know how to do:
+Bibi: Here's the rundown:
   todo <description>
   deadline <description> /by <time>
   event <description> /from <start> /to <end>
@@ -406,7 +406,11 @@ Bibi: Here is everything I know how to do:
   remove <number>
   help
   bye
-Bibi: Powering down.
+  hi, hello, hey or thanks
+  d/M/yy uses 00-99 for 2000-2099. Numeric dates are always day first.
+  Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.
+  Numbers come from the full list, including find/on results.
+Bibi: See you.
 ```
 
 ## Test 17: Find tasks by keyword
@@ -471,7 +475,7 @@ Bibi: Here is everything on your list:
 2. [D][ ] pay fees (by: 15 Oct 2019)
 3. [D][ ] submit report (by: 01 Dec 2019)
 4. [T][ ] borrow book
-Bibi: Powering down.
+Bibi: See you.
 ```
 
 ## Test 19: Sort an empty list
@@ -490,7 +494,7 @@ bye
 
 ```text
 Bibi: Nothing to sort yet, your list is empty.
-Bibi: Powering down.
+Bibi: See you.
 ```
 
 ## Test 20: Reject a parameter given twice
@@ -512,7 +516,7 @@ bye
 ```text
 Bibi: You used /by 2 times, but it belongs exactly once.
 Bibi: You used /to 2 times, but it belongs exactly once.
-Bibi: Your list is empty.
+Bibi: Nothing on the list. I'll assume that's good news.
 ```
 
 ## Test 21: Reject stray text after a command that takes none
@@ -533,7 +537,7 @@ bye
 ```text
 Bibi: list does not take anything after it, but I found 'extra'.
 Bibi: sort does not take anything after it, but I found 'now'.
-Bibi: Powering down.
+Bibi: See you.
 ```
 
 ## Test 22: Refuse to add the same task twice
@@ -555,9 +559,9 @@ bye
 ### Expected output
 
 ```text
-Bibi: Logged. That is on your list now:
+Bibi: Added. Remembering it is my job. Doing it is still yours:
 Bibi: You already have that one, as task 1: [T][ ] read book.
-Bibi: Logged. That is on your list now:
+Bibi: Added. Remembering it is my job. Doing it is still yours:
 Bibi: You already have that one, as task 2: [D][ ] pay fees (by: 15 Oct 2019).
 Bibi: Here is everything on your list:
 1. [T][ ] read book
@@ -588,7 +592,7 @@ Bibi: Task 1 is off the list:
 Your list holds 1 task.
 Bibi: Here is everything on your list:
 1. [T][ ] join sports club
-Bibi: That task number does not exist.
+Bibi: That task number does not exist: use a number from 1 to 1.
 ```
 
 ## Test 24: Read parameters typed in capitals
@@ -611,6 +615,36 @@ bye
 Bibi: Here is everything on your list:
 1. [D][ ] return book (by: 15 Oct 2019)
 2. [E][ ] camp (from: 10 Aug 2019 to: 12 Aug 2019)
+```
+
+## Test 25: Accept standalone greetings without changing task text
+
+Aim: Confirm that social inputs ignore case and punctuation only when the whole
+input is a greeting or thanks, and that ordinary descriptions keep their meaning.
+
+### Input
+
+```text
+HI!
+hello
+Hey?
+THANKS.
+todo say hello and thanks
+hello read book
+list
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Hey. I'm here. Type help if you need the rundown.
+Bibi: Hey. I'm here. Type help if you need the rundown.
+Bibi: Hey. I'm here. Type help if you need the rundown.
+Bibi: You're welcome. You handle the doing; I'll handle the remembering.
+[T][ ] say hello and thanks
+Bibi: I don't recognize 'hello'. Check the command word, or type help for examples.
+1. [T][ ] say hello and thanks
 ```
 
 ## Test 26: Accept the additional day-first formats
@@ -717,5 +751,84 @@ Bibi: I could not read the date '21 Dec 2026 18:60'.
 Bibi: I could not read the date '21 Dec 2026 0 am'.
 Bibi: I could not read the date '21 Dec 2026 13 pm'.
 Bibi: An event cannot end before it starts.
-Bibi: Your list is empty.
+Bibi: Nothing on the list. I'll assume that's good news.
+```
+
+## Test 29: Accept compact markers without weakening validation
+
+Aim: Confirm compact date markers, preserved description capitalization and
+normalization, duplicate rejection, and repeated or missing marker guidance.
+
+### Input
+
+```text
+DEADLINE   Read   Book /BY21/12/2026 6 pm
+deadline read book /by 21 December 2026 1800
+event Trip /FROM21/12/2026 /TO22/12/2026
+deadline repeat /by21/12/2026 /by22/12/2026
+event repeat /from21/12/2026 /to22/12/2026 /to23/12/2026
+deadline missing /by
+deadline /by21/12/2026
+event missing /from /to22/12/2026
+event missing /from21/12/2026 /to
+list
+bye
+```
+
+### Expected output
+
+```text
+[D][ ] Read Book (by: 21 Dec 2026 6:00PM)
+Bibi: You already have that one, as task 1: [D][ ] Read Book (by: 21 Dec 2026 6:00PM).
+[E][ ] Trip (from: 21 Dec 2026 to: 22 Dec 2026)
+Bibi: You used /by 2 times, but it belongs exactly once.
+Bibi: You used /to 2 times, but it belongs exactly once.
+Bibi: I need a due date after /by. Use deadline <description> /by <time>, for example:
+Bibi: A task needs a description. Use deadline <description> /by <time>, for example:
+Bibi: I need a date after /from. Use event <description> /from <start> /to <end>, for example:
+Bibi: I need a date after /to. Use event <description> /from <start> /to <end>, for example:
+1. [D][ ] Read Book (by: 21 Dec 2026 6:00PM)
+2. [E][ ] Trip (from: 21 Dec 2026 to: 22 Dec 2026)
+```
+
+## Test 30: Keep task targeting after filtering, sorting and removal
+
+Aim: Confirm new date forms leave the full-list numbering convention unchanged.
+
+### Input
+
+```text
+todo Read Book
+deadline Return Book /by 21/12/26
+deadline Pay Fees /by 1.2.2026
+find BOOK
+mark 2
+sort
+on 21 December 2026
+remove 1
+find book
+unmark 1
+bye
+```
+
+### Expected output
+
+```text
+1. [T][ ] Read Book
+2. [D][ ] Return Book (by: 21 Dec 2026)
+Bibi: Task 2 done. Look at us getting things done.
+  [D][X] Return Book (by: 21 Dec 2026)
+Bibi: Sorted, earliest first:
+1. [D][ ] Pay Fees (by: 01 Feb 2026)
+2. [D][X] Return Book (by: 21 Dec 2026)
+3. [T][ ] Read Book
+Bibi: Here is what you have on 21 Dec 2026:
+2. [D][X] Return Book (by: 21 Dec 2026)
+Bibi: Task 1 is off the list:
+  [D][ ] Pay Fees (by: 01 Feb 2026)
+Your list holds 2 tasks.
+1. [D][X] Return Book (by: 21 Dec 2026)
+2. [T][ ] Read Book
+Bibi: Task 1 is open again.
+  [D][ ] Return Book (by: 21 Dec 2026)
 ```

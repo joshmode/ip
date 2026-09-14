@@ -159,7 +159,12 @@ public class TaskList {
     private int toIndex(int taskNumber) throws BibiException {
         int taskIndex = taskNumber - 1;
         if (taskIndex < 0 || taskIndex >= tasks.size()) {
-            throw new BibiException("That task number does not exist.");
+            if (tasks.isEmpty()) {
+                throw new BibiException("That task number does not exist: the list is empty. "
+                        + "Add a task first. Use todo <description>, for example: todo read book.");
+            }
+            throw new BibiException("That task number does not exist: use a number from 1 to " + tasks.size()
+                    + ". Use list to see the current numbers, for example: list.");
         }
         return taskIndex;
     }

@@ -151,7 +151,10 @@ public class TaskTest {
     public void newEvent_endingBeforeItStarts_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () ->
                 new Event("camp", "2019-08-12", "2019-08-10"));
-        assertEquals("An event cannot end before it starts.", thrown.getMessage());
+        assertEquals("An event cannot end before it starts. "
+                + "Use event <description> /from <start> /to <end>, "
+                + "for example: event study group /from 21/12/2026 1800 /to 21/12/2026 2000.",
+                thrown.getMessage());
     }
 
     @Test

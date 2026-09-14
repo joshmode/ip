@@ -205,10 +205,10 @@ public class Ui {
      * updating one list rather than several.
      */
     public void showWelcome() {
-        showMessage("Bibi online. Hand me anything you would rather not hold in your head.");
+        showMessage("I'm Bibi. Alright, I'm here. What are we putting off today?");
         showMessage("Add work with todo, deadline or event.");
         showMessage("Type help to see everything else I can do.");
-        showMessage("Dates look like 2019-10-15 or 2/12/2019 1800.");
+        showMessage("Dates go day first: 21/12/2026 or 21 Dec 2026 6 pm.");
     }
 
     /**
@@ -218,27 +218,40 @@ public class Ui {
      * the reply to an unknown command both point here instead.
      */
     public void showHelp() {
-        showMessage("Here is everything I know how to do:");
+        showMessage("Here's the rundown:");
         showDetails(
-                "todo <description>",
-                "deadline <description> /by <time>",
-                "event <description> /from <start> /to <end>",
-                "list",
-                "sort",
-                "find <keyword>",
-                "on <date>",
-                "mark <number>",
-                "unmark <number>",
-                "remove <number>",
-                "help",
-                "bye");
+                "Add",
+                "todo <description> - add an undated task. Example: todo read book",
+                "deadline <description> /by <time> - add a due date.",
+                "Example: deadline return book /by 21/12/2026 1800",
+                "event <description> /from <start> /to <end> - add a time span.",
+                "Example: event study group /from 21/12/2026 1800 /to 21/12/2026 2000",
+                "View",
+                "list - show all tasks and their current numbers. Example: list",
+                "sort - save tasks in date order, undated last. Example: sort",
+                "find <keyword> - find description text, ignoring case. Example: find book",
+                "on <date> - show deadlines and events on a day. Example: on 21/12/2026",
+                "Update",
+                "mark <number> - mark a task done. Example: mark 2",
+                "unmark <number> - reopen a task. Example: unmark 2",
+                "remove <number> - delete a task. Example: remove 2",
+                "Session",
+                "help - show this reference. Example: help",
+                "bye - end the session. Example: bye",
+                "hi, hello, hey or thanks - a quick reply. Example: hey!",
+                "Dates: d/M/yyyy, d-M-yyyy, d.M.yyyy, d MMM yyyy or d MMMM yyyy.",
+                "d/M/yy uses 00-99 for 2000-2099. Numeric dates are always day first.",
+                "Existing yyyy-MM-dd input still works. Examples: 1/2/2026, 21 December 2026, 21/12/26.",
+                "Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.",
+                "Numbers come from the full list, including find/on results. Sort and remove can change them;",
+                "use list for current numbers before acting on an older reply.");
     }
 
     /**
      * Prints the parting message.
      */
     public void showGoodbye() {
-        showMessage("Powering down. Everything is filed and will be here next time.");
+        showMessage("See you. Your saved tasks will be here next time.");
     }
 
     /**
@@ -270,11 +283,11 @@ public class Ui {
      * @param warnings one explanation per skipped line
      */
     public void showLoadWarnings(List<String> warnings) {
-        showError("Some of the save file did not make sense to me:");
+        showError("I couldn't read these lines in the save file:");
         for (String warning : warnings) {
             showDetails(warning);
         }
-        showMessage("I have skipped those lines. They will leave the file the next time "
+        showMessage("I've skipped those lines. They will leave the file the next time "
                 + "your list changes.");
     }
 
@@ -285,7 +298,7 @@ public class Ui {
      * @param exception the error that stopped it being read
      */
     public void showLoadError(Path filePath, IOException exception) {
-        showError("I could not read your saved tasks from " + filePath + " ("
+        showError("I couldn't read your saved tasks from " + filePath + " ("
                 + describeException(exception) + "). Starting with an empty list.");
     }
 
@@ -300,8 +313,10 @@ public class Ui {
      * @param exception the error that stopped it being written
      */
     public void showSaveError(Path filePath, IOException exception) {
-        showError("I could not save your tasks to " + filePath + " (" + describeException(exception)
-                + "). Changes made in this session will be lost when Bibi closes.");
+        showError("I couldn't save your tasks to " + filePath + " (" + describeException(exception)
+                + "). The change is applied in memory but isn't saved. Don't repeat it. "
+                + "Keep Bibi open and fix the file problem; "
+                + "changes may be lost if you close before a successful save.");
     }
 
     /**

@@ -20,7 +20,8 @@ public class ListCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         if (tasks.isEmpty()) {
-            ui.showMessage("Your list is empty. Add something with todo, deadline or event.");
+            ui.showMessage("Nothing on the list. I'll assume that's good news. "
+                    + "Add something with todo, deadline or event.");
             return;
         }
 

@@ -24,7 +24,7 @@ public class BibiTest {
 
         String response = bibi.getResponse("todo borrow book").text();
 
-        assertTrue(response.contains("Logged. That is on your list now:"));
+        assertTrue(response.contains("Added. Remembering it is my job. Doing it is still yours:"));
         assertTrue(response.contains("[T][ ] borrow book"));
         // Singular, because "1 tasks" is the kind of wrongness users notice.
         assertTrue(response.contains("Your list holds 1 task."));
@@ -45,7 +45,7 @@ public class BibiTest {
 
         // The GUI has nowhere useful to send an exception, so a rejected command
         // has to come back as ordinary words.
-        assertTrue(bibi.getResponse("blah").text().contains("I don't understand 'blah'"));
+        assertTrue(bibi.getResponse("blah").text().contains("I don't recognize 'blah'"));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class BibiTest {
 
         // Each call starts a fresh capture, so nothing from the first reply may
         // leak into the second.
-        assertFalse(response.contains("Logged."));
+        assertFalse(response.contains("Added."));
         assertTrue(response.contains("1. [T][ ] borrow book"));
     }
 
@@ -80,7 +80,7 @@ public class BibiTest {
 
         String farewell = bibi.getResponse("bye").text();
 
-        assertTrue(farewell.contains("Powering down."));
+        assertTrue(farewell.contains("See you."));
         assertTrue(bibi.isExitRequested());
     }
 
@@ -90,7 +90,7 @@ public class BibiTest {
 
         String greeting = bibi.getGreeting().text();
 
-        assertTrue(greeting.contains("Bibi online."));
+        assertTrue(greeting.contains("I'm Bibi."));
         // The banner is drawn out of spaced letters and only lines up in a
         // fixed-width font, so the GUI leaves it to the console.
         assertFalse(greeting.contains("B B B B"));
@@ -117,7 +117,7 @@ public class BibiTest {
         Bibi bibi = new Bibi(saveFile);
         String greeting = bibi.getGreeting().text();
 
-        assertTrue(greeting.contains("Some of the save file did not make sense to me:"));
+        assertTrue(greeting.contains("I couldn't read these lines in the save file:"));
         assertTrue(bibi.getResponse("list").text().contains("1. [T][ ] borrow book"));
     }
 
@@ -131,7 +131,7 @@ public class BibiTest {
         // would be a silently dropped argument rather than a missing call.
         for (String commandWord : new String[] {
             "todo", "deadline", "event", "list", "sort", "find", "on", "mark", "unmark",
-            "remove", "help", "bye"}) {
+            "remove", "help", "bye", "hi", "hello", "hey", "thanks"}) {
             assertTrue(response.contains(commandWord), "help omitted " + commandWord);
         }
     }

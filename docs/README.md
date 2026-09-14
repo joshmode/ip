@@ -1,7 +1,7 @@
 # Bibi User Guide
 
-Bibi is a small filing robot for the things you would rather not hold in your head.
-Tell it what needs doing, and it keeps the list — between sessions, without being asked.
+Bibi keeps track of what needs doing, with a dry sense of humor and a dependable memory.
+Tell it what needs doing, and it keeps the list between sessions. Doing it is still yours.
 
 ![Bibi in use](Ui.png)
 
@@ -20,6 +20,11 @@ folder gives you a fresh list.
 
 > **Tip:** type in the box at the bottom and press <kbd>Enter</kbd>, or click **Send**.
 > Everything is a short typed command — there is nothing to click through. 🤖
+
+Commands and `/by`, `/from`, `/to` markers ignore capitalization. Extra separator
+whitespace is fine; descriptions keep their capitalization, with whitespace runs
+collapsed to single spaces. For dates starting with a digit, a space after a marker
+is optional: `deadline return book /by21/12/2026` also works.
 
 ## Adding things to do
 
@@ -42,7 +47,7 @@ event tutorial /from 15/9/2026 14:00 /to 15/9/2026 15:00
 Bibi confirms each one and tells you how long your list is:
 
 ```
-Logged. That is on your list now:
+Added. Remembering it is my job. Doing it is still yours:
   [D][ ] submit CS2103T iP (by: 18 Sep 2026 11:59PM)
 Your list holds 1 task.
 ```
@@ -128,6 +133,10 @@ remove 2
 Numbers come from the most recent listing. `mark` ticks a task off, `unmark` reopens it,
 and `remove` takes it off the list for good.
 
+Sorting or removing a task can make numbers in older replies stale. Use `list`
+again before acting on an old entry. Confirmations show the affected task so you
+can check what changed; filtered results retain the full-list numbers.
+
 ## Help, and leaving
 
 ```
@@ -135,7 +144,16 @@ help
 bye
 ```
 
-`help` lists every command. `bye` closes Bibi — your tasks are already saved.
+`help` groups the commands, examples, and date formats.
+`bye` closes Bibi. Changes are saved after each task-changing command; watch for
+a save warning if a write could not finish.
+
+### A quick hello
+
+`hi`, `hello`, `hey`, and `thanks` get short replies. Capitalization and harmless
+punctuation such as `HELLO!` are fine. These work only as complete standalone inputs;
+`todo say hello` still adds a task. Bibi does not collect missing arguments through
+follow-up questions.
 
 ## When something goes wrong
 
@@ -148,6 +166,10 @@ in red so you can spot them when scrolling back:
   complaining about an unreadable date.
 - **A task you already have** is pointed at by number, and nothing is changed.
 - **A damaged save file** is reported line by line; the lines Bibi *could* read are kept.
+- **An invalid task number** explains the current range, or that the list is empty.
+- **A failed save** warns that the command already changed the list in memory. Do not
+  repeat the operation: check the file location and permissions before another save.
+  Unsaved changes can be lost when Bibi closes.
 
 ## Command summary
 
@@ -165,6 +187,7 @@ in red so you can spot them when scrolling back:
 | `remove` | deletes a task | `remove 2` |
 | `help` | lists the commands | `help` |
 | `bye` | closes Bibi | `bye` |
+| `hi`, `hello`, `hey`, `thanks` | replies briefly without changing tasks | `hello!` |
 
 ## Running without the window
 
