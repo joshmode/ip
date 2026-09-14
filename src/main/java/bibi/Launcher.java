@@ -14,6 +14,13 @@ import javafx.application.Application;
  */
 public class Launcher {
     /**
+     * Hides the constructor, because this class only holds {@code main} and is
+     * never instantiated.
+     */
+    private Launcher() {
+    }
+
+    /**
      * Starts the JavaFX application.
      *
      * @param args command-line arguments, which are handed straight to JavaFX

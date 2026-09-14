@@ -42,6 +42,14 @@ public class MainWindow {
     private final Image bibiIcon = loadImage(BIBI_ICON_PATH);
 
     /**
+     * Creates the controller. The FXML loader calls this itself, so it must stay
+     * public and take no arguments; the window's parts are filled in afterwards,
+     * before {@link #initialize()} runs.
+     */
+    public MainWindow() {
+    }
+
+    /**
      * Keeps the transcript scrolled to the newest message.
      *
      * <p>Called by the FXML loader once the window's parts have been created.

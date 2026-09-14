@@ -24,6 +24,13 @@ public class Main extends Application {
     private final Bibi bibi = new Bibi(Bibi.DEFAULT_SAVE_FILE_PATH);
 
     /**
+     * Creates the application. JavaFX builds it itself when {@link Launcher}
+     * starts the GUI, so it must stay public and take no arguments.
+     */
+    public Main() {
+    }
+
+    /**
      * Builds and shows the main window.
      *
      * @param stage the window JavaFX provides for the application
