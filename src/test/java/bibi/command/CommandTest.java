@@ -190,7 +190,7 @@ public class CommandTest {
         String said = run(new SortCommand(), tasks, storage);
 
         assertTrue(said.contains("Sorted, earliest first:"));
-        assertEquals("[D][ ] sooner (by: Oct 15 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] sooner (by: 15 Oct 2019)", tasks.get(1).toString());
         assertEquals("[T][ ] undated", tasks.get(3).toString());
         assertTrue(Files.readString(storage.getFilePath()).startsWith("D | 0 | sooner"));
     }
@@ -240,7 +240,7 @@ public class CommandTest {
         TaskList tasks = new TaskList(new Todo("undated"));
 
         assertTrue(run(new OnCommand(LocalDate.of(2019, 10, 15)), tasks, storageIn(tempDir))
-                .contains("Nothing on Oct 15 2019"));
+                .contains("Nothing on 15 Oct 2019"));
     }
 
     @Test

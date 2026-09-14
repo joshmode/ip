@@ -189,7 +189,7 @@ public class ParserTest {
         command.execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
 
         assertEquals(1, tasks.size());
-        assertEquals("[D][ ] return book (by: Dec 02 2019 6:00PM)", tasks.get(1).toString());
+        assertEquals("[D][ ] return book (by: 02 Dec 2019 6:00PM)", tasks.get(1).toString());
     }
 
     @Test
@@ -256,8 +256,8 @@ public class ParserTest {
         Parser.parse("deadline return book /BY 2019-10-15").execute(tasks, new Ui(), storage);
         Parser.parse("event camp /From 2019-08-10 /TO 2019-08-12").execute(tasks, new Ui(), storage);
 
-        assertEquals("[D][ ] return book (by: Oct 15 2019)", tasks.get(1).toString());
-        assertEquals("[E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)", tasks.get(2).toString());
+        assertEquals("[D][ ] return book (by: 15 Oct 2019)", tasks.get(1).toString());
+        assertEquals("[E][ ] camp (from: 10 Aug 2019 to: 12 Aug 2019)", tasks.get(2).toString());
     }
 
     @Test
@@ -268,7 +268,7 @@ public class ParserTest {
         Parser.parse("deadline return book\t/by\t2019-10-15")
                 .execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
 
-        assertEquals("[D][ ] return book (by: Oct 15 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] return book (by: 15 Oct 2019)", tasks.get(1).toString());
     }
 
     @Test
@@ -283,7 +283,7 @@ public class ParserTest {
         Parser.parse("event " + place + " trip /from 2019-08-06 /to 2019-08-07")
                 .execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
 
-        assertEquals("[E][ ] " + place + " trip (from: Aug 06 2019 to: Aug 07 2019)",
+        assertEquals("[E][ ] " + place + " trip (from: 06 Aug 2019 to: 07 Aug 2019)",
                 tasks.get(1).toString());
     }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.Arrays;
@@ -38,29 +39,34 @@ public class TaskDateTime {
     /** English is fixed so month names read the same on every machine. */
     private static final Locale FORMAT_LOCALE = Locale.ENGLISH;
 
-    /** Shown to the user, for example {@code Oct 15 2019}. */
+    /** Shown to the user, for example {@code 15 Oct 2019}. */
     private static final DateTimeFormatter DISPLAY_DATE =
-            DateTimeFormatter.ofPattern("MMM dd yyyy", FORMAT_LOCALE);
+            DateTimeFormatter.ofPattern("dd MMM yyyy", FORMAT_LOCALE);
 
     /** Shown to the user after the date, for example {@code 6:00PM}. */
     private static final DateTimeFormatter DISPLAY_TIME =
             DateTimeFormatter.ofPattern("h:mma", FORMAT_LOCALE);
+
+    /** Date patterns shared by whole-day and timed input; two-digit years mean 2000-2099. */
+    private static final List<String> DATE_PATTERNS = List.of(
+            "uuuu-MM-dd", "d/M/uuuu", "d-M-uuuu", "d.M.uuuu", "d MMM uuuu", "d MMMM uuuu", "d/M/uu");
 
     /**
      * Input formats that include a time of day, tried before the date-only
      * formats so that {@code 2/12/2019 1800} is not mistaken for a bad date.
      */
     private static final List<DateTimeFormatter> DATE_TIME_FORMATS =
-            strictFormats("uuuu-MM-dd HHmm", "d/M/uuuu HHmm");
+            createDateTimeFormats();
 
     /** Input formats that give a date only. The first is also the saved form. */
     private static final List<DateTimeFormatter> DATE_FORMATS =
-            strictFormats("uuuu-MM-dd", "d/M/uuuu");
+            strictFormats(DATE_PATTERNS.toArray(String[]::new));
 
     /** Guidance repeated wherever a date fails to parse. */
     private static final String FORMAT_HELP =
-            "Use yyyy-MM-dd or d/M/yyyy, optionally followed by a 24-hour time, "
-            + "for example 2019-10-15 or 2/12/2019 1800.";
+            "Use yyyy-MM-dd, d/M/yyyy, d-M-yyyy, d.M.yyyy, d MMM yyyy, d MMMM yyyy or d/M/yy "
+            + "(00-99 means 2000-2099). Add an optional time such as 1800, 18:00, 6 pm or 6:00 pm; "
+            + "for example 15/10/2019 or 2/12/2019 1800.";
 
     private final LocalDate date;
 
@@ -96,8 +102,22 @@ public class TaskDateTime {
      */
     private static List<DateTimeFormatter> strictFormats(String... patterns) {
         return Arrays.stream(patterns)
-                .map(pattern -> DateTimeFormatter.ofPattern(pattern, FORMAT_LOCALE)
+                .map(pattern -> new DateTimeFormatterBuilder().parseCaseInsensitive()
+                        .appendPattern(pattern).toFormatter(FORMAT_LOCALE)
                         .withResolverStyle(ResolverStyle.STRICT))
+                .toList();
+    }
+
+    /**
+     * Builds every supported date and time combination so adding a date format
+     * never leaves timed tasks using a smaller set of accepted dates.
+     *
+     * @return strict formatters for all accepted date and time combinations
+     */
+    private static List<DateTimeFormatter> createDateTimeFormats() {
+        return DATE_PATTERNS.stream()
+                .flatMap(pattern -> strictFormats(pattern + " HHmm", pattern + " H:mm",
+                        pattern + " h a", pattern + " h:mm a").stream())
                 .toList();
     }
 
@@ -113,10 +133,12 @@ public class TaskDateTime {
      * @throws BibiException if the text matches none of the accepted formats
      */
     public static TaskDateTime parse(String text) throws BibiException {
-        if (text == null || text.isBlank()) {
+        String trimmedText = text == null ? "" : text.replaceAll("(?U)\\s+", " ").trim();
+        if (trimmedText.isEmpty()) {
             throw new BibiException("A date is missing. " + FORMAT_HELP);
         }
-        String trimmedText = text.trim();
+        // A space before AM/PM is optional for typing, but fixed for the formatters.
+        trimmedText = trimmedText.replaceAll("(?i)(\\d) *([ap]m)$", "$1 $2");
 
         for (DateTimeFormatter format : DATE_TIME_FORMATS) {
             try {
@@ -140,7 +162,7 @@ public class TaskDateTime {
      * Returns a plain date in the same display form used by tasks.
      *
      * @param date the date to format
-     * @return the date as {@code Oct 15 2019}
+     * @return the date as {@code 15 Oct 2019}
      */
     public static String formatDate(LocalDate date) {
         return date.format(DISPLAY_DATE);
@@ -212,7 +234,7 @@ public class TaskDateTime {
     /**
      * Returns the form shown to the user.
      *
-     * @return {@code Oct 15 2019}, or {@code Dec 02 2019 6:00PM} when a time is set
+     * @return {@code 15 Oct 2019}, or {@code 02 Dec 2019 6:00PM} when a time is set
      */
     @Override
     public String toString() {

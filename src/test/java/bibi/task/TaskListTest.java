@@ -149,10 +149,10 @@ public class TaskListTest {
 
         tasks.sortBySchedule();
 
-        assertEquals("[E][ ] orientation (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)",
+        assertEquals("[E][ ] orientation (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)",
                 tasks.get(1).toString());
-        assertEquals("[D][ ] pay fees (by: Oct 15 2019)", tasks.get(2).toString());
-        assertEquals("[D][ ] submit report (by: Dec 01 2019)", tasks.get(3).toString());
+        assertEquals("[D][ ] pay fees (by: 15 Oct 2019)", tasks.get(2).toString());
+        assertEquals("[D][ ] submit report (by: 01 Dec 2019)", tasks.get(3).toString());
     }
 
     @Test
@@ -163,7 +163,7 @@ public class TaskListTest {
 
         tasks.sortBySchedule();
 
-        assertEquals("[D][ ] pay fees (by: Oct 15 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] pay fees (by: 15 Oct 2019)", tasks.get(1).toString());
         assertEquals("[T][ ] borrow book", tasks.get(2).toString());
     }
 
@@ -176,8 +176,8 @@ public class TaskListTest {
         tasks.sortBySchedule();
 
         // The sort is stable, so tasks sharing a moment must not swap around.
-        assertEquals("[D][ ] first added (by: Oct 15 2019)", tasks.get(1).toString());
-        assertEquals("[D][ ] second added (by: Oct 15 2019)", tasks.get(2).toString());
+        assertEquals("[D][ ] first added (by: 15 Oct 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] second added (by: 15 Oct 2019)", tasks.get(2).toString());
     }
 
     @Test
@@ -209,7 +209,7 @@ public class TaskListTest {
         tasks.sortBySchedule();
 
         // A whole-day value counts as the start of its day, matching isBefore.
-        assertEquals("[D][ ] whole day (by: Oct 15 2019)", tasks.get(1).toString());
+        assertEquals("[D][ ] whole day (by: 15 Oct 2019)", tasks.get(1).toString());
     }
 
     @Test

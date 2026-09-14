@@ -35,15 +35,15 @@ For example:
 
 ```
 todo buy a birthday present
-deadline submit CS2103T iP /by 2026-09-18 2359
-event tutorial /from 2026-09-15 1400 /to 2026-09-15 1500
+deadline submit CS2103T iP /by 18/9/2026 2359
+event tutorial /from 15/9/2026 14:00 /to 15/9/2026 15:00
 ```
 
 Bibi confirms each one and tells you how long your list is:
 
 ```
 Logged. That is on your list now:
-  [D][ ] submit CS2103T iP (by: Sep 18 2026 11:59PM)
+  [D][ ] submit CS2103T iP (by: 18 Sep 2026 11:59PM)
 Your list holds 1 task.
 ```
 
@@ -54,12 +54,27 @@ them by day.
 
 | Form | Example |
 |------|---------|
-| `yyyy-MM-dd` | `2026-09-18` |
-| `d/M/yyyy` | `18/9/2026` |
-| either, plus a 24-hour time | `18/9/2026 2359` |
+| `d/M/yyyy` | `21/12/2026`, `1/2/2026` |
+| `d-M-yyyy` | `21-12-2026` |
+| `d.M.yyyy` | `21.12.2026` |
+| `d MMM yyyy` or `d MMMM yyyy` | `21 Dec 2026`, `21 December 2026` |
+| `d/M/yy` | `21/12/26` |
+| existing ISO form, `yyyy-MM-dd` | `2026-12-21` |
 
-A date without a time means the whole day. A date that does not exist — `2026-02-30`,
-say — is refused rather than quietly shifted, and an event may not end before it starts.
+Numeric dates with the day first always mean **day/month/year**: `03/04/2026` is
+3 April, never March 4. Two-digit years `00`–`99` mean **2000–2099**.
+
+Any date may have a time: `1800`, `18:00`, `6 pm`, or `6:00 pm`. Month names and
+AM/PM are case-insensitive, and extra spacing between date/time parts is accepted.
+`12 am` means midnight; `12 pm` means noon.
+
+Bibi displays dates as `21 Dec 2026` and timed dates as `21 Dec 2026 6:00PM`.
+A date without a time stays date-only. Past dates are accepted. Impossible dates
+such as `31/04/2026`, invalid times, and events ending before they start are rejected.
+Leap days must belong to leap years. Phrases such as `next Tuesday` are not supported.
+
+Existing save files still load. Saved dates keep their ISO `yyyy-MM-dd` form, with
+`HHmm` only when a time was supplied.
 
 ## Seeing your list
 
@@ -70,7 +85,7 @@ list
 Each task shows its kind and whether it is done:
 
 ```
-1. [D][X] submit CS2103T iP (by: Sep 18 2026 11:59PM)
+1. [D][X] submit CS2103T iP (by: 18 Sep 2026 11:59PM)
 2. [T][ ] buy a birthday present
 ```
 
@@ -93,7 +108,7 @@ looked away would leave those numbers pointing at the wrong tasks.
 
 ```
 find book
-on 2026-09-18
+on 18/9/2026
 ```
 
 - `find` searches descriptions and ignores case, so `find BOOK` finds "read book".
@@ -139,12 +154,12 @@ in red so you can spot them when scrolling back:
 | Command | Does | Example |
 |---------|------|---------|
 | `todo` | adds an undated task | `todo buy a present` |
-| `deadline` | adds a task due by a date | `deadline report /by 2026-09-18` |
-| `event` | adds a task with a start and end | `event camp /from 2026-09-15 /to 2026-09-17` |
+| `deadline` | adds a task due by a date | `deadline report /by 18/9/2026` |
+| `event` | adds a task with a start and end | `event camp /from 15/9/2026 /to 17/9/2026` |
 | `list` | shows everything | `list` |
 | `sort` | orders by date, undated last | `sort` |
 | `find` | searches descriptions | `find book` |
-| `on` | shows what falls on a date | `on 2026-09-18` |
+| `on` | shows what falls on a date | `on 18/9/2026` |
 | `mark` | ticks a task off | `mark 2` |
 | `unmark` | reopens a task | `unmark 2` |
 | `remove` | deletes a task | `remove 2` |

@@ -31,15 +31,15 @@ public class TaskTest {
 
     @Test
     public void toString_deadlineWithAndWithoutTime_showsTheDate() throws BibiException {
-        assertEquals("[D][ ] return book (by: Oct 15 2019)",
+        assertEquals("[D][ ] return book (by: 15 Oct 2019)",
                 new Deadline("return book", "2019-10-15").toString());
-        assertEquals("[D][ ] return book (by: Dec 02 2019 6:00PM)",
+        assertEquals("[D][ ] return book (by: 02 Dec 2019 6:00PM)",
                 new Deadline("return book", "2/12/2019 1800").toString());
     }
 
     @Test
     public void toString_event_showsBothEnds() throws BibiException {
-        assertEquals("[E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)",
+        assertEquals("[E][ ] camp (from: 10 Aug 2019 to: 12 Aug 2019)",
                 new Event("camp", "2019-08-10", "2019-08-12").toString());
     }
 
@@ -78,6 +78,18 @@ public class TaskTest {
         assertTrue(event.occursOn(LocalDate.of(2019, 8, 11)));
         assertTrue(event.occursOn(LocalDate.of(2019, 8, 12)));
         assertFalse(event.occursOn(LocalDate.of(2019, 8, 13)));
+    }
+
+    @Test
+    public void occursOn_overnightEventWithNewDateFormats_matchesBothDays() throws BibiException {
+        Event event = new Event("night shift", "21 Dec 2026 11:30 pm", "22/12/26 12:30 am");
+
+        assertFalse(event.occursOn(LocalDate.of(2026, 12, 20)));
+        assertTrue(event.occursOn(LocalDate.of(2026, 12, 21)));
+        assertTrue(event.occursOn(LocalDate.of(2026, 12, 22)));
+        assertFalse(event.occursOn(LocalDate.of(2026, 12, 23)));
+        assertEquals("[E][ ] night shift (from: 21 Dec 2026 11:30PM to: 22 Dec 2026 12:30AM)",
+                event.toString());
     }
 
     @Test
@@ -144,7 +156,7 @@ public class TaskTest {
 
     @Test
     public void newEvent_startingAndEndingAtTheSameMoment_allowed() throws BibiException {
-        assertEquals("[E][ ] camp (from: Aug 10 2019 to: Aug 10 2019)",
+        assertEquals("[E][ ] camp (from: 10 Aug 2019 to: 10 Aug 2019)",
                 new Event("camp", "2019-08-10", "2019-08-10").toString());
     }
 }

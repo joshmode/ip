@@ -64,6 +64,32 @@ public class StorageTest {
     }
 
     @Test
+    public void saveThenLoad_newDateInputs_keepsExistingSaveFormat(@TempDir Path tempDir)
+            throws IOException, BibiException {
+        Path file = tempDir.resolve("bibi.txt");
+        Storage storage = new Storage(file);
+        List<Task> tasks = List.of(
+                new Deadline("return book", "21 December 2026 6 pm"),
+                new Deadline("pay fees", "1/2/26"),
+                new Event("night shift", "21-12-2026 23:30", "22.12.2026 12:30 am"));
+
+        storage.save(tasks);
+        Storage.LoadReport restored = storage.load();
+
+        assertEquals(List.of(
+                "D | 0 | return book | 2026-12-21 1800",
+                "D | 0 | pay fees | 2026-02-01",
+                "E | 0 | night shift | 2026-12-21 2330 | 2026-12-22 0030"),
+                Files.readAllLines(file));
+        assertTrue(restored.warnings().isEmpty());
+        assertEquals(List.of(
+                "[D][ ] return book (by: 21 Dec 2026 6:00PM)",
+                "[D][ ] pay fees (by: 01 Feb 2026)",
+                "[E][ ] night shift (from: 21 Dec 2026 11:30PM to: 22 Dec 2026 12:30AM)"),
+                restored.tasks().stream().map(Task::toString).toList());
+    }
+
+    @Test
     public void save_missingParentFolder_folderCreated(@TempDir Path tempDir)
             throws IOException, BibiException {
         Path file = tempDir.resolve("data").resolve("nested").resolve("bibi.txt");

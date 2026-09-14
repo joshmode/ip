@@ -42,9 +42,9 @@ bye
 ### Expected output
 
 ```text
-[D][ ] return book (by: Oct 15 2019)
+[D][ ] return book (by: 15 Oct 2019)
 Your list holds 1 task.
-1. [D][ ] return book (by: Oct 15 2019)
+1. [D][ ] return book (by: 15 Oct 2019)
 ```
 
 ## Test 3: Add and list an event
@@ -62,9 +62,9 @@ bye
 ### Expected output
 
 ```text
-[E][ ] project meeting (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
+[E][ ] project meeting (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
 Your list holds 1 task.
-1. [E][ ] project meeting (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
+1. [E][ ] project meeting (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
 ```
 
 ## Test 4: Mark and unmark a task
@@ -161,8 +161,8 @@ Bibi: Powering down.
 Bibi: Picked up where we left off: 3 tasks restored.
 Bibi: Here is everything on your list:
 1. [T][X] read book
-2. [D][ ] return book (by: Jun 06 2019)
-3. [E][ ] project meeting (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
+2. [D][ ] return book (by: 06 Jun 2019)
+3. [E][ ] project meeting (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
 ```
 
 ## Test 8: Start with no save file
@@ -208,8 +208,8 @@ bye
 ```text
 Bibi: Picked up where we left off: 4 tasks restored.
 1. [T][X] read book
-2. [D][ ] return book (by: Jun 06 2019)
-3. [E][ ] project meeting (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
+2. [D][ ] return book (by: 06 Jun 2019)
+3. [E][ ] project meeting (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
 4. [T][X] join sports club
 ```
 
@@ -288,13 +288,13 @@ bye
 ### Expected output
 
 ```text
-[D][ ] return book (by: Dec 02 2019 6:00PM)
-[D][ ] submit essay (by: Oct 15 2019)
-[E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)
+[D][ ] return book (by: 02 Dec 2019 6:00PM)
+[D][ ] submit essay (by: 15 Oct 2019)
+[E][ ] camp (from: 10 Aug 2019 to: 12 Aug 2019)
 Bibi: Here is everything on your list:
-1. [D][ ] return book (by: Dec 02 2019 6:00PM)
-2. [D][ ] submit essay (by: Oct 15 2019)
-3. [E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)
+1. [D][ ] return book (by: 02 Dec 2019 6:00PM)
+2. [D][ ] submit essay (by: 15 Oct 2019)
+3. [E][ ] camp (from: 10 Aug 2019 to: 12 Aug 2019)
 ```
 
 ## Test 13: Reject dates that cannot be understood
@@ -315,7 +315,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: I could not read the date 'next Tuesday'. Use yyyy-MM-dd or d/M/yyyy, optionally followed by a 24-hour time, for example 2019-10-15 or 2/12/2019 1800.
+Bibi: I could not read the date 'next Tuesday'. Use yyyy-MM-dd, d/M/yyyy, d-M-yyyy, d.M.yyyy, d MMM yyyy, d MMMM yyyy or d/M/yy (00-99 means 2000-2099). Add an optional time such as 1800, 18:00, 6 pm or 6:00 pm; for example 15/10/2019 or 2/12/2019 1800.
 Bibi: I could not read the date '2019-13-45'.
 Bibi: An event cannot end before it starts.
 Bibi: Your list is empty.
@@ -371,11 +371,11 @@ bye
 ### Expected output
 
 ```text
-Bibi: Here is what you have on Aug 11 2019:
-2. [D][ ] return book (by: Aug 11 2019)
-3. [E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)
-4. [E][ ] party (from: Aug 11 2019 7:00PM to: Aug 11 2019 11:00PM)
-Bibi: Nothing on Dec 25 2019. Enjoy the quiet.
+Bibi: Here is what you have on 11 Aug 2019:
+2. [D][ ] return book (by: 11 Aug 2019)
+3. [E][ ] camp (from: 10 Aug 2019 to: 12 Aug 2019)
+4. [E][ ] party (from: 11 Aug 2019 7:00PM to: 11 Aug 2019 11:00PM)
+Bibi: Nothing on 25 Dec 2019. Enjoy the quiet.
 Bibi: I could not read the date 'someday'.
 ```
 
@@ -433,7 +433,7 @@ bye
 ```text
 Bibi: Here is what matches:
 1. [T][X] read book
-2. [D][ ] return Book (by: Jun 06 2019)
+2. [D][ ] return Book (by: 06 Jun 2019)
 Bibi: Here is what matches:
 3. [T][ ] join sports club
 Bibi: Nothing matches 'zzz'.
@@ -462,14 +462,14 @@ bye
 
 ```text
 Bibi: Sorted, earliest first:
-1. [E][ ] orientation (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
-2. [D][ ] pay fees (by: Oct 15 2019)
-3. [D][ ] submit report (by: Dec 01 2019)
+1. [E][ ] orientation (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
+2. [D][ ] pay fees (by: 15 Oct 2019)
+3. [D][ ] submit report (by: 01 Dec 2019)
 4. [T][ ] borrow book
 Bibi: Here is everything on your list:
-1. [E][ ] orientation (from: Aug 06 2019 2:00PM to: Aug 06 2019 4:00PM)
-2. [D][ ] pay fees (by: Oct 15 2019)
-3. [D][ ] submit report (by: Dec 01 2019)
+1. [E][ ] orientation (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
+2. [D][ ] pay fees (by: 15 Oct 2019)
+3. [D][ ] submit report (by: 01 Dec 2019)
 4. [T][ ] borrow book
 Bibi: Powering down.
 ```
@@ -558,10 +558,10 @@ bye
 Bibi: Logged. That is on your list now:
 Bibi: You already have that one, as task 1: [T][ ] read book.
 Bibi: Logged. That is on your list now:
-Bibi: You already have that one, as task 2: [D][ ] pay fees (by: Oct 15 2019).
+Bibi: You already have that one, as task 2: [D][ ] pay fees (by: 15 Oct 2019).
 Bibi: Here is everything on your list:
 1. [T][ ] read book
-2. [D][ ] pay fees (by: Oct 15 2019)
+2. [D][ ] pay fees (by: 15 Oct 2019)
 ```
 
 ## Test 23: Remove a task
@@ -609,6 +609,113 @@ bye
 
 ```text
 Bibi: Here is everything on your list:
-1. [D][ ] return book (by: Oct 15 2019)
-2. [E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)
+1. [D][ ] return book (by: 15 Oct 2019)
+2. [E][ ] camp (from: 10 Aug 2019 to: 12 Aug 2019)
+```
+
+## Test 26: Accept the additional day-first formats
+
+Aim: Confirm all new date forms, day/month interpretation and two-digit years,
+with date-only values still shown without a time.
+
+### Input
+
+```text
+deadline slash /by 21/12/2026
+deadline short /by 1/2/2026
+deadline hyphen /by 21-12-2026
+deadline dotted /by 21.12.2026
+deadline named /by 21 Dec 2026
+deadline full month /by 21 December 2026
+deadline short year /by 21/12/26
+deadline ambiguous /by 03/04/2026
+deadline year zero /by 1/1/00
+deadline year ninety nine /by 31/12/99
+list
+bye
+```
+
+### Expected output
+
+```text
+1. [D][ ] slash (by: 21 Dec 2026)
+2. [D][ ] short (by: 01 Feb 2026)
+3. [D][ ] hyphen (by: 21 Dec 2026)
+4. [D][ ] dotted (by: 21 Dec 2026)
+5. [D][ ] named (by: 21 Dec 2026)
+6. [D][ ] full month (by: 21 Dec 2026)
+7. [D][ ] short year (by: 21 Dec 2026)
+8. [D][ ] ambiguous (by: 03 Apr 2026)
+9. [D][ ] year zero (by: 01 Jan 2000)
+10. [D][ ] year ninety nine (by: 31 Dec 2099)
+```
+
+## Test 27: Accept timed dates and an overnight event
+
+Aim: Confirm optional time forms, capitalization, whitespace, leap days,
+midnight/noon, and inclusive date filtering for an event crossing midnight.
+
+### Input
+
+```text
+deadline four digits /by 21/12/2026 1800
+deadline colon /by 21-12-2026 18:00
+deadline hour /by 21.12.2026 6 pm
+deadline named /by 21   dEcEmBeR   2026  6:00   PM
+deadline midnight /by 29/2/24 12 am
+deadline noon /by 29/2/2024 12:00 pm
+event night shift /from 21 Dec 2026 11:30 pm /to 22/12/26 12:30 am
+list
+on 22/12/26
+bye
+```
+
+### Expected output
+
+```text
+1. [D][ ] four digits (by: 21 Dec 2026 6:00PM)
+2. [D][ ] colon (by: 21 Dec 2026 6:00PM)
+3. [D][ ] hour (by: 21 Dec 2026 6:00PM)
+4. [D][ ] named (by: 21 Dec 2026 6:00PM)
+5. [D][ ] midnight (by: 29 Feb 2024 12:00AM)
+6. [D][ ] noon (by: 29 Feb 2024 12:00PM)
+7. [E][ ] night shift (from: 21 Dec 2026 11:30PM to: 22 Dec 2026 12:30AM)
+Bibi: Here is what you have on 22 Dec 2026:
+7. [E][ ] night shift (from: 21 Dec 2026 11:30PM to: 22 Dec 2026 12:30AM)
+```
+
+## Test 28: Reject impossible dates, invalid times, and month-first input
+
+Aim: Confirm that more accepted formats never normalize invalid values or
+introduce numeric month-first fallback.
+
+### Input
+
+```text
+deadline impossible /by 31/04/2026
+deadline leap /by 29/2/2023
+deadline century /by 29 February 2100
+deadline month first /by 12/21/2026
+deadline hour /by 21/12/2026 24:00
+deadline minute /by 21 Dec 2026 18:60
+deadline am /by 21 Dec 2026 0 am
+deadline pm /by 21 Dec 2026 13 pm
+event backwards /from 22/12/2026 1 am /to 21/12/2026 11 pm
+list
+bye
+```
+
+### Expected output
+
+```text
+Bibi: I could not read the date '31/04/2026'.
+Bibi: I could not read the date '29/2/2023'.
+Bibi: I could not read the date '29 February 2100'.
+Bibi: I could not read the date '12/21/2026'.
+Bibi: I could not read the date '21/12/2026 24:00'.
+Bibi: I could not read the date '21 Dec 2026 18:60'.
+Bibi: I could not read the date '21 Dec 2026 0 am'.
+Bibi: I could not read the date '21 Dec 2026 13 pm'.
+Bibi: An event cannot end before it starts.
+Bibi: Your list is empty.
 ```
