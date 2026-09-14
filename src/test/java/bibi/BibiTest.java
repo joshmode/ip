@@ -130,8 +130,8 @@ public class BibiTest {
         // Ui.showDetails takes the whole list as varargs, so one missing entry
         // would be a silently dropped argument rather than a missing call.
         for (String commandWord : new String[] {
-            "todo", "deadline", "event", "list", "find", "on", "mark", "unmark", "remove",
-            "help", "bye"}) {
+            "todo", "deadline", "event", "list", "sort", "find", "on", "mark", "unmark",
+            "remove", "help", "bye"}) {
             assertTrue(response.contains(commandWord), "help omitted " + commandWord);
         }
     }

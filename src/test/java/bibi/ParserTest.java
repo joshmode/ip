@@ -22,6 +22,7 @@ import bibi.command.MarkCommand;
 import bibi.command.OnCommand;
 import bibi.command.UnmarkCommand;
 import bibi.task.TaskList;
+import bibi.task.Todo;
 
 /**
  * Tests that typed input is turned into the right command, and that malformed
@@ -40,6 +41,7 @@ public class ParserTest {
     public void parse_mixedCaseCommandWord_stillMatched() throws BibiException {
         assertInstanceOf(ListCommand.class, Parser.parse("LIST"));
         assertInstanceOf(ExitCommand.class, Parser.parse("Bye"));
+        assertInstanceOf(AddCommand.class, Parser.parse("ToDo read book"));
     }
 
     @Test
@@ -79,8 +81,18 @@ public class ParserTest {
     }
 
     @Test
-    public void parse_findKeywordWithSpaces_keptWhole() throws BibiException {
-        assertInstanceOf(FindCommand.class, Parser.parse("find sports club"));
+    public void parse_findKeywordWithSpaces_keptWhole(@TempDir Path tempDir) throws BibiException {
+        TaskList tasks = new TaskList(new Todo("join sports club"), new Todo("book club"));
+        Ui ui = new Ui();
+        ui.startCapture();
+
+        Parser.parse("find sports club").execute(tasks, ui, new Storage(tempDir.resolve("bibi.txt")));
+        String said = ui.takeCapturedReply().text();
+
+        // The whole phrase is the keyword, so a task sharing only one of its
+        // words must not match.
+        assertTrue(said.contains("1. [T][ ] join sports club"));
+        assertFalse(said.contains("book club"));
     }
 
     @Test
@@ -234,12 +246,6 @@ public class ParserTest {
             assertTrue(thrown.getMessage().contains("Task numbers start at 1"),
                     "no complaint for: " + input);
         }
-    }
-
-    @Test
-    public void parse_commandWordInAnyCase_recognized() throws BibiException {
-        assertInstanceOf(ListCommand.class, Parser.parse("LIST"));
-        assertInstanceOf(AddCommand.class, Parser.parse("ToDo read book"));
     }
 
     @Test
