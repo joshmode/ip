@@ -24,7 +24,8 @@ public class UndoCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
         tasks.undo();
-        ui.showMessage("Last change undone. Your list holds " + Ui.describeCount(tasks.size()) + ".");
+        ui.showMessage("Fickle, aren't ya? Last change undone. Your list holds "
+                + Ui.describeCount(tasks.size()) + ".");
         showAllTasks(tasks, ui);
         saveTasks(tasks, ui, storage);
     }

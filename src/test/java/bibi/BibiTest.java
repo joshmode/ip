@@ -146,7 +146,7 @@ public class BibiTest {
 
         String response = bibi.getResponse("sort").text();
 
-        assertTrue(response.contains("Sorted, earliest first:"));
+        assertTrue(response.contains("Sorted it, but not your life. Earliest first:"));
         assertTrue(response.contains("1. [D][ ] pay fees"));
         assertTrue(response.contains("2. [D][ ] submit report"));
         // The undated task goes last, not first.

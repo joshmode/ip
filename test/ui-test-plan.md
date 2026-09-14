@@ -89,7 +89,7 @@ bye
 Bibi: Task 1 done. Look at us getting things done.
   [T][X] join sports club
 1. [T][X] join sports club
-Bibi: Task 1 is open again.
+Bibi: We're not making progress, huh? Task 1 is open again.
   [T][ ] join sports club
 1. [T][ ] join sports club
 ```
@@ -514,7 +514,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Sorted, earliest first:
+Bibi: Sorted it, but not your life. Earliest first:
 1. [E][ ] orientation (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
 2. [D][ ] pay fees (by: 15 Oct 2019)
 3. [D][ ] submit report (by: 01 Dec 2019)
@@ -636,7 +636,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Task 1 is off the list:
+Bibi: Eeeeesh, another one bites the dust. Task 1 is off the list:
   [T][ ] read book
 Your list holds 1 task.
 Bibi: Here is everything on your list:
@@ -867,18 +867,18 @@ bye
 2. [D][ ] Return Book (by: 21 Dec 2026)
 Bibi: Task 2 done. Look at us getting things done.
   [D][X] Return Book (by: 21 Dec 2026)
-Bibi: Sorted, earliest first:
+Bibi: Sorted it, but not your life. Earliest first:
 1. [D][ ] Pay Fees (by: 01 Feb 2026)
 2. [D][X] Return Book (by: 21 Dec 2026)
 3. [T][ ] Read Book
 Bibi: Here is what you have on 21 Dec 2026:
 2. [D][X] Return Book (by: 21 Dec 2026)
-Bibi: Task 1 is off the list:
+Bibi: Eeeeesh, another one bites the dust. Task 1 is off the list:
   [D][ ] Pay Fees (by: 01 Feb 2026)
 Your list holds 2 tasks.
 1. [D][X] Return Book (by: 21 Dec 2026)
 2. [T][ ] Read Book
-Bibi: Task 1 is open again.
+Bibi: We're not making progress, huh? Task 1 is open again.
   [D][ ] Return Book (by: 21 Dec 2026)
 ```
 
@@ -911,10 +911,10 @@ bye
 ### Expected output
 
 ```text
-Bibi: Task 2 is off the list:
+Bibi: Eeeeesh, another one bites the dust. Task 2 is off the list:
   [D][X] return book (by: 21 Dec 2026 6:00PM)
 Your list holds 2 tasks.
-Bibi: Last change undone. Your list holds 3 tasks.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 3 tasks.
 1. [T][ ] first
 2. [D][X] return book (by: 21 Dec 2026 6:00PM)
 3. [T][ ] last
@@ -952,20 +952,20 @@ bye
 ### Expected output
 
 ```text
-Bibi: Last change undone. Your list holds 0 tasks.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 0 tasks.
 [T][ ] second
 Bibi: Task 1 done. Look at us getting things done.
-Bibi: Last change undone. Your list holds 1 task.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 1 task.
 1. [T][ ] second
 Bibi: Task 1 done. Look at us getting things done.
-Bibi: Task 1 is open again.
-Bibi: Last change undone. Your list holds 1 task.
+Bibi: We're not making progress, huh? Task 1 is open again.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 1 task.
 1. [T][X] second
 [D][ ] pay fees (by: 01 Feb 2026)
-Bibi: Sorted, earliest first:
+Bibi: Sorted it, but not your life. Earliest first:
 1. [D][ ] pay fees (by: 01 Feb 2026)
 2. [T][X] second
-Bibi: Last change undone. Your list holds 2 tasks.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 2 tasks.
 1. [T][X] second
 2. [D][ ] pay fees (by: 01 Feb 2026)
 ```
@@ -1002,10 +1002,10 @@ Bibi: That task number does not exist: use a number from 1 to 1.
 Bibi: Here is what matches:
 1. [T][ ] Read Book
 Bibi: Hey. I'm here. Type help if you need the rundown.
-Bibi: Sorted, earliest first:
+Bibi: Sorted it, but not your life. Earliest first:
 1. [T][ ] Read Book
-Bibi: Task 1 is open again.
-Bibi: Last change undone. Your list holds 0 tasks.
+Bibi: We're not making progress, huh? Task 1 is open again.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 0 tasks.
 Bibi: Nothing on the list. I'll assume that's good news.
 Bibi: undo does not take anything after it, but I found 'extra'.
 Bibi: There is no change to undo in this session.

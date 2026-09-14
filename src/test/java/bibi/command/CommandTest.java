@@ -214,7 +214,7 @@ public class CommandTest {
 
         String said = run(new SortCommand(), tasks, storage);
 
-        assertTrue(said.contains("Sorted, earliest first:"));
+        assertTrue(said.contains("Sorted it, but not your life. Earliest first:"));
         assertEquals("[D][ ] sooner (by: 15 Oct 2019)", tasks.get(1).toString());
         assertEquals("[T][ ] undated", tasks.get(3).toString());
         assertTrue(Files.readString(storage.getFilePath()).startsWith("D | 0 | sooner"));

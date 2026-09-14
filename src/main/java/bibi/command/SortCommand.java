@@ -30,7 +30,7 @@ public class SortCommand extends Command {
 
         tasks.sortBySchedule();
 
-        ui.showMessage("Sorted, earliest first:");
+        ui.showMessage("Sorted it, but not your life. Earliest first:");
         showAllTasks(tasks, ui);
         saveTasks(tasks, ui, storage);
     }
