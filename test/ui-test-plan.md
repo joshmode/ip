@@ -19,7 +19,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Added. Remembering it is my job. Doing it is still yours:
+Bibi: Added. Do or do not. There is no try:
 [T][ ] borrow book
 Your list holds 1 task.
 Bibi: Here is everything on your list:
@@ -561,7 +561,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Added. Remembering it is my job. Doing it is still yours:
+Bibi: Added. Do or do not. There is no try:
 Bibi: You already have that one, as task 1: [T][ ] read book.
 Bibi: Added. Remembering it is my job. Doing it is still yours:
 Bibi: You already have that one, as task 2: [D][ ] pay fees (by: 15 Oct 2019).

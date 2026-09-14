@@ -162,4 +162,26 @@ public class TaskTest {
         assertEquals("[E][ ] camp (from: 10 Aug 2019 to: 10 Aug 2019)",
                 new Event("camp", "2019-08-10", "2019-08-10").toString());
     }
+
+    @Test
+    public void describeAddition_eachType_hasItsOwnWording() throws BibiException {
+        assertEquals("Added. Do or do not. There is no try:",
+                new Todo("read book").describeAddition());
+        assertEquals("Added. Remembering it is my job. Doing it is still yours:",
+                new Deadline("return book", "2019-06-06").describeAddition());
+        assertEquals("Added. It starts on time. Whether you do is your business:",
+                new Event("camp", "2019-08-10", "2019-08-12").describeAddition());
+    }
+
+    @Test
+    public void describeAddition_everyType_endsWithAColon() throws BibiException {
+        // The task itself is printed on the line below, so a line that trailed
+        // off with a full stop would read as though nothing followed it.
+        for (Task task : new Task[] {new Todo("read book"),
+            new Deadline("return book", "2019-06-06"),
+            new Event("camp", "2019-08-10", "2019-08-12")}) {
+            assertTrue(task.describeAddition().endsWith(":"),
+                    "no colon on: " + task.describeAddition());
+        }
+    }
 }

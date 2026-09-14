@@ -63,6 +63,10 @@ Added. Remembering it is my job. Doing it is still yours:
 Your list holds 1 task.
 ```
 
+Each kind gets its own confirmation, so you can tell at a glance which one you
+just added — a ToDo waits on you alone, a deadline runs out, and an event happens
+whether or not you are ready for it.
+
 ### Writing dates
 
 Dates are real dates, not free text, which is what lets Bibi sort them and search
