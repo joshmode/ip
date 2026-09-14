@@ -590,3 +590,25 @@ Bibi: Here is everything on your list:
 1. [T][ ] join sports club
 Bibi: That task number does not exist.
 ```
+
+## Test 24: Read parameters typed in capitals
+
+Aim: Confirm that /by, /from and /to are recognized in any case, as the command
+words already are.
+
+### Input
+
+```text
+DEADLINE return book /BY 2019-10-15
+event camp /From 2019-08-10 /TO 2019-08-12
+list
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Here is everything on your list:
+1. [D][ ] return book (by: Oct 15 2019)
+2. [E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)
+```

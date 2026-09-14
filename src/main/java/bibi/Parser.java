@@ -2,6 +2,8 @@ package bibi;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import bibi.command.AddCommand;
 import bibi.command.Command;
@@ -37,6 +39,23 @@ import bibi.task.Todo;
 public final class Parser {
     /** The commands that take no argument at all. */
     private static final String COMMANDS_WITHOUT_ARGUMENTS = "list, sort, help and bye";
+
+    /**
+     * Finds {@code /by} standing as a word of its own, in any case, with any
+     * whitespace on either side.
+     *
+     * <p>The markers are found in the text as typed rather than in a lowercased
+     * copy. Lowercasing can change the length of a string, as a dotted capital
+     * I does by becoming two characters, and a position found in the copy would
+     * then cut the original in the wrong place.
+     */
+    private static final Pattern BY_MARKER = Pattern.compile("\\s/by\\s", Pattern.CASE_INSENSITIVE);
+
+    /** Finds {@code /from} in the same way as {@code BY_MARKER}. */
+    private static final Pattern FROM_MARKER = Pattern.compile("\\s/from\\s", Pattern.CASE_INSENSITIVE);
+
+    /** Finds {@code /to} in the same way as {@code BY_MARKER}. */
+    private static final Pattern TO_MARKER = Pattern.compile("\\s/to\\s", Pattern.CASE_INSENSITIVE);
 
     /**
      * Hides the constructor, because this class holds only static helpers and
@@ -158,14 +177,14 @@ public final class Parser {
     private static Deadline parseDeadline(String deadlineText) throws BibiException {
         requireSingleUse(deadlineText, "/by");
 
-        int byIndex = deadlineText.toLowerCase(Locale.ROOT).indexOf(" /by ");
-        if (byIndex < 0) {
+        Matcher byMatch = BY_MARKER.matcher(deadlineText);
+        if (!byMatch.find()) {
             throw new BibiException("Use deadline <description> /by <time>, "
                     + "for example: deadline return book /by 2019-10-15");
         }
 
-        String description = collapseSpaces(deadlineText.substring(0, byIndex));
-        String dueTimeText = collapseSpaces(deadlineText.substring(byIndex + " /by ".length()));
+        String description = collapseSpaces(deadlineText.substring(0, byMatch.start()));
+        String dueTimeText = collapseSpaces(deadlineText.substring(byMatch.end()));
         return new Deadline(description, dueTimeText);
     }
 
@@ -181,22 +200,25 @@ public final class Parser {
         requireSingleUse(eventText, "/from");
         requireSingleUse(eventText, "/to");
 
-        String normalizedText = eventText.toLowerCase(Locale.ROOT);
-        int fromIndex = normalizedText.indexOf(" /from ");
-        int toIndex = normalizedText.indexOf(" /to ");
+        Matcher fromMatch = FROM_MARKER.matcher(eventText);
+        Matcher toMatch = TO_MARKER.matcher(eventText);
+        boolean hasFrom = fromMatch.find();
+        boolean hasTo = toMatch.find();
 
-        if (fromIndex >= 0 && toIndex >= 0 && toIndex < fromIndex) {
+        if (hasFrom && hasTo && toMatch.start() < fromMatch.start()) {
             throw new BibiException("The /to came before the /from. "
                     + "Use event <description> /from <start> /to <end>.");
         }
-        if (fromIndex < 0 || toIndex < fromIndex + " /from ".length()) {
+        // The last condition also refuses a /to that shares its leading space
+        // with the end of the /from, which would leave no room for a start.
+        if (!hasFrom || !hasTo || toMatch.start() < fromMatch.end()) {
             throw new BibiException("Use event <description> /from <start> /to <end>, for example: "
                     + "event project meeting /from 2019-08-06 1400 /to 2019-08-06 1600");
         }
 
-        String description = collapseSpaces(eventText.substring(0, fromIndex));
-        String startTimeText = collapseSpaces(eventText.substring(fromIndex + " /from ".length(), toIndex));
-        String endTimeText = collapseSpaces(eventText.substring(toIndex + " /to ".length()));
+        String description = collapseSpaces(eventText.substring(0, fromMatch.start()));
+        String startTimeText = collapseSpaces(eventText.substring(fromMatch.end(), toMatch.start()));
+        String endTimeText = collapseSpaces(eventText.substring(toMatch.end()));
         return new Event(description, startTimeText, endTimeText);
     }
 

@@ -241,4 +241,43 @@ public class ParserTest {
         assertInstanceOf(ListCommand.class, Parser.parse("LIST"));
         assertInstanceOf(AddCommand.class, Parser.parse("ToDo read book"));
     }
+
+    @Test
+    public void parse_markersInAnyCase_accepted(@TempDir Path tempDir) throws BibiException {
+        TaskList tasks = new TaskList();
+        Storage storage = new Storage(tempDir.resolve("bibi.txt"));
+
+        Parser.parse("deadline return book /BY 2019-10-15").execute(tasks, new Ui(), storage);
+        Parser.parse("event camp /From 2019-08-10 /TO 2019-08-12").execute(tasks, new Ui(), storage);
+
+        assertEquals("[D][ ] return book (by: Oct 15 2019)", tasks.get(1).toString());
+        assertEquals("[E][ ] camp (from: Aug 10 2019 to: Aug 12 2019)", tasks.get(2).toString());
+    }
+
+    @Test
+    public void parse_tabsAroundMarker_accepted(@TempDir Path tempDir) throws BibiException {
+        // A tab is whitespace just as a space is, so it sets the marker apart
+        // equally well.
+        TaskList tasks = new TaskList();
+        Parser.parse("deadline return book\t/by\t2019-10-15")
+                .execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
+
+        assertEquals("[D][ ] return book (by: Oct 15 2019)", tasks.get(1).toString());
+    }
+
+    @Test
+    public void parse_dottedCapitalInDescription_datesReadCorrectly(@TempDir Path tempDir)
+            throws BibiException {
+        // A dotted capital I lowercases to two characters, so positions found in
+        // a lowercased copy of the input would cut the original in the wrong place.
+        // It is built from its code point so the test does not depend on the
+        // encoding this source file is read in.
+        String place = (char) 0x130 + "zmir";
+        TaskList tasks = new TaskList();
+        Parser.parse("event " + place + " trip /from 2019-08-06 /to 2019-08-07")
+                .execute(tasks, new Ui(), new Storage(tempDir.resolve("bibi.txt")));
+
+        assertEquals("[E][ ] " + place + " trip (from: Aug 06 2019 to: Aug 07 2019)",
+                tasks.get(1).toString());
+    }
 }
