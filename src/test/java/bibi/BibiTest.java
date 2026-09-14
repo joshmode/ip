@@ -135,6 +135,7 @@ public class BibiTest {
             assertTrue(response.contains(commandWord), "help omitted " + commandWord);
         }
     }
+
     @Test
     public void getResponse_sort_reordersAndPersists(@TempDir Path tempDir) {
         Path saveFile = tempDir.resolve("bibi.txt");

@@ -216,7 +216,7 @@ public class TaskDateTime {
      */
     @Override
     public String toString() {
-        String shownDate = date.format(DISPLAY_DATE);
+        String shownDate = formatDate(date);
         return time == null ? shownDate : shownDate + " " + time.format(DISPLAY_TIME);
     }
 }

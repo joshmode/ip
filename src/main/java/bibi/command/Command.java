@@ -22,7 +22,6 @@ public abstract class Command {
     protected Command() {
     }
 
-
     /**
      * Carries out this command.
      *

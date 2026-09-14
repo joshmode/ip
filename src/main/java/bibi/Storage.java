@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import bibi.task.Deadline;
 import bibi.task.Event;
@@ -25,7 +26,26 @@ import bibi.task.Todo;
  * chooses to hold its tasks. The caller decides where the file lives.
  */
 public class Storage {
+    /**
+     * Splits a saved line into fields, dropping the spaces that pad each
+     * separator so the fields come back exactly as the user typed them.
+     *
+     * <p>The separator is quoted because {@code |} means "or" in a regular
+     * expression; quoting keeps the split correct whatever the separator is.
+     */
+    private static final Pattern FIELD_SEPARATOR_PATTERN =
+            Pattern.compile("\\s*" + Pattern.quote(Task.FIELD_SEPARATOR) + "\\s*");
+
     private final Path filePath;
+
+    /**
+     * Holds the outcome of reading the save file.
+     *
+     * @param tasks the tasks that were understood
+     * @param warnings one message for each line that had to be skipped
+     */
+    public record LoadReport(List<Task> tasks, List<String> warnings) {
+    }
 
     /**
      * Creates storage that reads and writes the supplied save file.
@@ -78,16 +98,7 @@ public class Storage {
     }
 
     /**
-     * Holds the outcome of reading the save file.
-     *
-     * @param tasks the tasks that were understood
-     * @param warnings one message for each line that had to be skipped
-     */
-    public record LoadReport(List<Task> tasks, List<String> warnings) {
-    }
-
-    /**
-     * Reads the saved tasks back into a task list.
+     * Reads the saved tasks back.
      *
      * <p>A missing save file is normal rather than an error: someone running a
      * fresh copy of the project simply starts with an empty list. A damaged line
@@ -140,18 +151,12 @@ public class Storage {
      * @return the task described by the line
      * @throws BibiException if the line does not describe a valid task
      */
-    private Task parseTask(String line) throws BibiException {
-        // Split on the separator and drop the spaces padding it, so the fields
-        // come back exactly as the user typed them.
-        String[] fields = line.trim().split("\\s*\\" + Task.FIELD_SEPARATOR + "\\s*");
+    private static Task parseTask(String line) throws BibiException {
+        String[] fields = FIELD_SEPARATOR_PATTERN.split(line.trim());
         if (fields.length < 3) {
             throw new BibiException("expected at least type, status, and description "
                     + "separated by '" + Task.FIELD_SEPARATOR + "'.");
         }
-
-        // The check above is what makes the three fixed reads below safe; the
-        // per-type checks that follow cover the optional date fields.
-        assert fields.length >= 3 : "parseTask read fewer than three fields from: " + line;
 
         String typeCode = fields[0].toUpperCase(Locale.ROOT);
         boolean isComplete = parseStatus(fields[1]);

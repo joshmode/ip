@@ -48,7 +48,7 @@ public class TaskDateTimeTest {
     }
 
     @Test
-    public void parse_unrecognisedText_exceptionThrown() {
+    public void parse_unrecognizedText_exceptionThrown() {
         BibiException thrown = assertThrows(BibiException.class, () ->
                 TaskDateTime.parse("next Tuesday"));
         assertTrue(thrown.getMessage().contains("next Tuesday"));

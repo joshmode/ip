@@ -14,7 +14,6 @@ public class ExitCommand extends Command {
     public ExitCommand() {
     }
 
-
     /**
      * Shows the parting message.
      */

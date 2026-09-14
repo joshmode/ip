@@ -14,7 +14,6 @@ public class HelpCommand extends Command {
     public HelpCommand() {
     }
 
-
     /**
      * Shows every command Bibi understands.
      */

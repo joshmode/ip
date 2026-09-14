@@ -141,11 +141,11 @@ public final class Parser {
      * Replaces runs of whitespace inside text with single spaces.
      *
      * <p>Applied to text the user typed freely, so that "read    book" and
-     * "read book" are stored as the same description and are recognised as
+     * "read book" are stored as the same description and are recognized as
      * duplicates of each other.
      *
      * @param text the text to tidy
-     * @return the text with its inner spacing normalised
+     * @return the text with its inner spacing normalized
      */
     private static String collapseSpaces(String text) {
         return text.replaceAll("\\s+", " ").strip();

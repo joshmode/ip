@@ -22,6 +22,15 @@ public class TaskListTest {
         return new Todo(description);
     }
 
+    private static Task deadline(String description, String dueTimeText) throws BibiException {
+        return new Deadline(description, dueTimeText);
+    }
+
+    private static Task event(String description, String startTimeText, String endTimeText)
+            throws BibiException {
+        return new Event(description, startTimeText, endTimeText);
+    }
+
     @Test
     public void newList_noArguments_empty() {
         TaskList tasks = new TaskList();
@@ -129,14 +138,6 @@ public class TaskListTest {
         source[0] = todo("swapped in");
 
         assertEquals("[T][ ] first", tasks.get(1).toString());
-    }
-    private static Task deadline(String description, String dueTimeText) throws BibiException {
-        return new Deadline(description, dueTimeText);
-    }
-
-    private static Task event(String description, String startTimeText, String endTimeText)
-            throws BibiException {
-        return new Event(description, startTimeText, endTimeText);
     }
 
     @Test

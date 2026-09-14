@@ -14,7 +14,6 @@ public class ListCommand extends Command {
     public ListCommand() {
     }
 
-
     /**
      * Shows every task in order, or reports that the list is empty.
      */

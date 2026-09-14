@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private static final String MAIN_WINDOW_FXML_PATH = "/view/MainWindow.fxml";
     private static final String STYLESHEET_PATH = "/view/bibi.css";
+    private static final double MIN_WINDOW_HEIGHT = 400.0;
+    private static final double MIN_WINDOW_WIDTH = 450.0;
 
     /** The same Bibi the console uses, pointed at the same save file. */
     private final Bibi bibi = new Bibi(Bibi.DEFAULT_SAVE_FILE_PATH);
@@ -46,11 +48,11 @@ public class Main extends Application {
             stage.setScene(scene);
 
             // The name belongs in the title bar and the taskbar, not only in the
-            // greeting, so the window is recognisable when it is not in front.
+            // greeting, so the window is recognizable when it is not in front.
             stage.setTitle("Bibi");
             stage.getIcons().add(MainWindow.loadImage(MainWindow.BIBI_ICON_PATH));
-            stage.setMinHeight(400.0);
-            stage.setMinWidth(450.0);
+            stage.setMinHeight(MIN_WINDOW_HEIGHT);
+            stage.setMinWidth(MIN_WINDOW_WIDTH);
 
             // Done after loading, because the controller only exists once the
             // FXML has been read.
