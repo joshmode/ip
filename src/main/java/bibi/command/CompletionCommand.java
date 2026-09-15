@@ -10,9 +10,9 @@ import bibi.task.TaskList;
  * Changes whether one task counts as done.
  *
  * <p>Ticking a task off and reopening it are the same piece of work: look the
- * numbered task up, set its completion, show what it now looks like, and save.
- * Only the state being asked for and the words used to confirm it differ, so
- * those are all a subclass supplies.
+ * numbered task up, set its completion, show what it now looks like, and save
+ * if that changed anything. Only the state being asked for and the words used
+ * to confirm it differ, so those are all a subclass supplies.
  *
  * <p>The task is shown, not only its number, so the user can see at a glance
  * that the task they meant is the one that changed.
@@ -30,7 +30,8 @@ public abstract class CompletionCommand extends Command {
     }
 
     /**
-     * Sets the numbered task's completion, confirms it, and saves the list.
+     * Sets the numbered task's completion, confirms it, and saves the list if
+     * the task was not already in the state asked for.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
@@ -40,12 +41,12 @@ public abstract class CompletionCommand extends Command {
         // change from a command that asked for the state the task was already
         // in. Reporting the second as though something had happened is how a
         // user comes to believe they ticked off a task they did not.
-        boolean wasAlreadyThere = tasks.get(taskNumber).isComplete() == shouldComplete;
+        boolean wasAlreadyInThatState = tasks.get(taskNumber).isComplete() == shouldComplete;
         Task task = shouldComplete
                 ? tasks.markComplete(taskNumber)
                 : tasks.markIncomplete(taskNumber);
 
-        ui.showMessage(wasAlreadyThere
+        ui.showMessage(wasAlreadyInThatState
                 ? describeUnchanged(taskNumber)
                 : describeChange(taskNumber));
         ui.showDetails(task.toString());
@@ -54,7 +55,7 @@ public abstract class CompletionCommand extends Command {
         // put the warning about losing unsaved work under a line that has just
         // said nothing happened, which leaves the user with two replies that
         // cannot both be true.
-        if (!wasAlreadyThere) {
+        if (!wasAlreadyInThatState) {
             saveTasks(tasks, ui, storage);
         }
     }
