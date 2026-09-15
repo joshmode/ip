@@ -174,7 +174,7 @@ The use was **widespread rather than localized**. It is therefore declared here,
 in full, rather than annotated next to individual lines — which is what the
 course reuse policy asks for when assistance is not confined to a few places.
 The codebase was extensively parsed and/or altered by agentic AI, at the author's
-sole behest. 
+sole behest.
 
 #### What the assistants were used for
 
@@ -191,7 +191,7 @@ The product decisions were made by the author in conversation with the tools, no
 handed to them: what each command should do, how strict the input handling should
 be, what the error messages should say, how the window should look, and what
 Bibi's voice should be. Assistant proposals and diffs were thoroughly checked prior
-to commit. Baseline code was written and developed by hand. All design decisions and 
+to commit. Baseline code was written and developed by hand. All design decisions and
 specifications are solely attributed to the author.
 
 Every change was verified before merging: `./gradlew checkstyleMain checkstyleTest
