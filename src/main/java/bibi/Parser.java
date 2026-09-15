@@ -74,6 +74,12 @@ public final class Parser {
     private static final Pattern TO_MARKER = Pattern.compile("(?<!\\S)/to(?=\\s|[0-9]+(?:[./-]|\\s+[A-Za-z])|$)",
             Pattern.CASE_INSENSITIVE);
 
+    /** Matches a task number written as digits above zero, whatever its length. */
+    private static final Pattern DIGITS_ABOVE_ZERO = Pattern.compile("\\+?\\d+");
+
+    /** Matches a task number written as negative digits, whatever its length. */
+    private static final Pattern DIGITS_BELOW_ONE = Pattern.compile("-\\d+");
+
     /**
      * Hides the constructor, because this class holds only static helpers and
      * is never meant to be instantiated.
@@ -326,6 +332,17 @@ public final class Parser {
         try {
             taskNumber = Integer.parseInt(numberText);
         } catch (NumberFormatException notANumber) {
+            // A run of digits too long to fit an int is still a number, so
+            // calling it "not a task number" would tell the user something
+            // untrue. Which end it overflows decides which explanation fits.
+            if (DIGITS_BELOW_ONE.matcher(numberText).matches()) {
+                throw belowOneException(numberText, commandWord);
+            }
+            if (DIGITS_ABOVE_ZERO.matcher(numberText).matches()) {
+                throw new BibiException("Task numbers do not go as high as " + numberText
+                        + ". Use list to see the numbers. Use " + commandWord
+                        + " <number>, for example: " + commandWord + " 1.");
+            }
             throw new BibiException("'" + numberText + "' is not a task number. Use "
                     + commandWord + " followed by one number, for example: " + commandWord + " 2");
         }
@@ -333,10 +350,24 @@ public final class Parser {
         // Caught here rather than in TaskList so the message can say what is
         // wrong with the number itself, not merely that no such task exists.
         if (taskNumber < 1) {
-            throw new BibiException("Task numbers start at 1, so " + taskNumber
-                    + " cannot refer to a task. Use list to see the numbers. Use " + commandWord
-                    + " <number>, for example: " + commandWord + " 1.");
+            throw belowOneException(String.valueOf(taskNumber), commandWord);
         }
         return taskNumber;
+    }
+
+    /**
+     * Builds the complaint about a task number that is below the first one.
+     *
+     * <p>Takes the number as text because it is raised both for a number that
+     * parsed and for one too large and negative to parse at all.
+     *
+     * @param numberText the number as the user wrote it
+     * @param commandWord the command word, used in the message
+     * @return the exception to throw
+     */
+    private static BibiException belowOneException(String numberText, String commandWord) {
+        return new BibiException("Task numbers start at 1, so " + numberText
+                + " cannot refer to a task. Use list to see the numbers. Use " + commandWord
+                + " <number>, for example: " + commandWord + " 1.");
     }
 }

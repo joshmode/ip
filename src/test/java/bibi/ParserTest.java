@@ -266,6 +266,29 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_taskNumberTooLargeForAnInt_exceptionSaysItIsOutOfRange() {
+        // The digits are a number, just not one a task can have, so the reply
+        // must not claim they are not a number at all.
+        BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("mark 99999999999"));
+        assertTrue(thrown.getMessage().contains("Task numbers do not go as high as 99999999999"));
+        assertFalse(thrown.getMessage().contains("is not a task number"));
+    }
+
+    @Test
+    public void parse_negativeTaskNumberTooLargeForAnInt_exceptionExplainsNumbering() {
+        BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("mark -99999999999"));
+        assertTrue(thrown.getMessage().contains("Task numbers start at 1, so -99999999999"));
+    }
+
+    @Test
+    public void parse_taskNumberThatIsNotDigits_exceptionSaysSo() {
+        for (String input : new String[] {"mark two", "mark 1.5", "mark 1a", "mark --"}) {
+            BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
+            assertTrue(thrown.getMessage().contains("is not a task number"), "no complaint for: " + input);
+        }
+    }
+
+    @Test
     public void parse_taskNumberBelowOne_exceptionExplainsNumbering() {
         for (String input : new String[] {"mark 0", "unmark -1", "remove -7"}) {
             BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse(input));
