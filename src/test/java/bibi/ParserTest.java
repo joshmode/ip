@@ -187,6 +187,16 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_onWithoutADate_exceptionNamesTheCommandForm() {
+        // The date parser alone would say only that a date is missing, which
+        // leaves out the one thing the user needs: how to ask the question.
+        BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("on"));
+        assertEquals("I need a date to look up. Use on <date>, for example: on 21/12/2026.",
+                thrown.getMessage());
+        assertThrows(BibiException.class, () -> Parser.parse("on    "));
+    }
+
+    @Test
     public void parse_addCommand_taskIsBuiltFromTheInput(@TempDir Path tempDir)
             throws BibiException {
         // The parser is responsible for building the task, so executing the

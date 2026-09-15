@@ -1015,6 +1015,30 @@ Bibi: undo does not take anything after it, but I found 'extra'.
 Bibi: There is no change to undo in this session.
 ```
 
+## Test 34: Ask for the missing argument of a lookup command
+
+Aim: Confirm that `on` and `find` without an argument name the command form and an
+example, rather than explaining only what a date or a keyword is.
+
+### Input
+
+```text
+deadline return book /by 21/12/2026
+on
+find
+on 21/12/2026
+bye
+```
+
+### Expected output
+
+```text
+Bibi: I need a date to look up. Use on <date>, for example: on 21/12/2026.
+Bibi: Use find followed by a keyword, for example: find book
+Bibi: Here is what you have on 21 Dec 2026:
+1. [D][ ] return book (by: 21 Dec 2026)
+```
+
 ## GUI checks
 
 These checks supplement the scripted console cases. Use a fresh save location.
