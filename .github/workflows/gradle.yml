@@ -34,6 +34,21 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle', 'gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
+      # On a cache miss the wrapper fetches the Gradle distribution and gives up
+      # after a single attempt, so a dropped connection reds the whole run. Retry
+      # just the download: re-running the checks below would hide a real failure.
+      - name: Download the Gradle distribution
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            if ./gradlew --version; then
+              exit 0
+            fi
+            echo "Gradle distribution fetch failed (attempt ${attempt} of 3)."
+            sleep 15
+          done
+          exit 1
+
       # bash on every platform, so the one ./gradlew line works on Windows too
       # rather than needing a separate gradlew.bat step.
       - name: Build and run checks
