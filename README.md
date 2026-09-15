@@ -2,9 +2,11 @@
 
 [![Java CI](https://github.com/joshmode/ip/actions/workflows/gradle.yml/badge.svg)](https://github.com/joshmode/ip/actions/workflows/gradle.yml)
 
-Bibi is your friendly neighbourhood clanker! 
+Bibi is a small, dependable task keeper with a dry sense of humor.
 
-Use me to log your tasks _simply_ and _safely_. Privacy and confidentiality is at the core of our work. Created as part of CS2103T 26/27.
+Log your ToDos, deadlines and events _simply_ and _safely_. Everything stays in a
+plain text file beside the app — nothing is uploaded, and nothing leaves your
+machine. Created as part of CS2103T 26/27.
 
 📖 **[Read the User Guide](https://joshmode.github.io/ip/)** — or see [`docs/README.md`](docs/README.md).
 
@@ -125,6 +127,21 @@ java -cp "bibi.jar" bibi.Bibi
 Bibi creates its `data/bibi.txt` save file relative to the folder the command is
 run in, so copying the JAR into an empty folder gives it a fresh task list, and
 running it there again restores what was saved.
+
+### A note on macOS and Apple Silicon
+
+The fat JAR bundles JavaFX's native libraries for Windows, Linux and Intel macOS.
+The two macOS builds ship libraries under identical filenames, so only one set
+survives packaging, and it is the Intel one.
+
+Windows and Linux need nothing extra. On an Apple Silicon Mac, if the window
+fails to open with an `UnsatisfiedLinkError`, either run the JAR under an Intel
+(x86_64) JDK through Rosetta, or use the text interface, which needs no native
+libraries at all:
+
+```
+java -cp "bibi.jar" bibi.Bibi
+```
 
 ## Acknowledgements
 

@@ -18,6 +18,12 @@ java -jar bibi.jar
 Bibi saves your tasks to `data/bibi.txt` beside wherever you started it, so a fresh
 folder gives you a fresh list.
 
+> **On an Apple Silicon Mac**, if the window does not open and you see an
+> `UnsatisfiedLinkError`, the bundled graphics libraries are the Intel ones. Run the
+> JAR under an Intel (x86_64) JDK through Rosetta, or use the text interface, which
+> needs no graphics libraries: `java -cp bibi.jar bibi.Bibi`. Windows and Linux need
+> nothing extra.
+
 > **Tip:** type in the box at the bottom and press <kbd>Enter</kbd>, or click **Send**.
 > Everything is a short typed command, with keyboard shortcuts to keep things moving.
 
