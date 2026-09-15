@@ -39,7 +39,10 @@ import bibi.task.Todo;
  */
 public final class Parser {
     /** The commands that take no argument at all. */
-    private static final String COMMANDS_WITHOUT_ARGUMENTS = "list, sort, undo, help and bye";
+    private static final String COMMANDS_WITHOUT_ARGUMENTS = "list, sort, undo and bye";
+
+    /** The only argument {@code help} accepts, which asks for the worked examples. */
+    private static final String EXAMPLES_FLAG = "--examples";
 
     private static final String USAGE_TODO = "Use todo <description>, for example: todo read book.";
     private static final String USAGE_DEADLINE = "Use deadline <description> /by <time>, "
@@ -70,6 +73,12 @@ public final class Parser {
     /** Finds {@code /to} in the same way as {@code BY_MARKER}. */
     private static final Pattern TO_MARKER = Pattern.compile("(?<!\\S)/to(?=\\s|[0-9]+(?:[./-]|\\s+[A-Za-z])|$)",
             Pattern.CASE_INSENSITIVE);
+
+    /** Matches a task number written as digits above zero, whatever its length. */
+    private static final Pattern DIGITS_ABOVE_ZERO = Pattern.compile("\\+?\\d+");
+
+    /** Matches a task number written as negative digits, whatever its length. */
+    private static final Pattern DIGITS_BELOW_ONE = Pattern.compile("-\\d+");
 
     /**
      * Hides the constructor, because this class holds only static helpers and
@@ -116,10 +125,7 @@ public final class Parser {
                 requireNoArgument(argument, "sort");
                 yield new SortCommand();
             }
-            case "help" -> {
-                requireNoArgument(argument, "help");
-                yield new HelpCommand();
-            }
+            case "help" -> new HelpCommand(parseExamplesFlag(argument));
             case "undo" -> {
                 requireNoArgument(argument, "undo");
                 yield new UndoCommand();
@@ -159,6 +165,31 @@ public final class Parser {
                     + argument + "'. " + COMMANDS_WITHOUT_ARGUMENTS + " are used on their own. "
                     + "Use " + commandWord + ", for example: " + commandWord + ".");
         }
+    }
+
+    /**
+     * Reads the optional flag that may follow {@code help}.
+     *
+     * <p>{@code help} is the one command with an optional argument, so it is
+     * checked here rather than through {@link #requireNoArgument}. Anything else
+     * is still rejected, for the same reason: a user who typed a flag Bibi does
+     * not have should be told so, not shown the short help as though they had
+     * typed nothing.
+     *
+     * @param argument whatever followed the command word
+     * @return {@code true} when the user asked for the worked examples
+     * @throws BibiException if the argument is anything but the examples flag
+     */
+    private static boolean parseExamplesFlag(String argument) throws BibiException {
+        if (argument.isEmpty()) {
+            return false;
+        }
+        if (argument.equalsIgnoreCase(EXAMPLES_FLAG)) {
+            return true;
+        }
+        throw new BibiException("help takes nothing or " + EXAMPLES_FLAG + " after it, but I found '"
+                + argument + "'. Use help for the command list, or help " + EXAMPLES_FLAG
+                + " for examples and date formats.");
     }
 
     /**
@@ -301,6 +332,17 @@ public final class Parser {
         try {
             taskNumber = Integer.parseInt(numberText);
         } catch (NumberFormatException notANumber) {
+            // A run of digits too long to fit an int is still a number, so
+            // calling it "not a task number" would tell the user something
+            // untrue. Which end it overflows decides which explanation fits.
+            if (DIGITS_BELOW_ONE.matcher(numberText).matches()) {
+                throw belowOneException(numberText, commandWord);
+            }
+            if (DIGITS_ABOVE_ZERO.matcher(numberText).matches()) {
+                throw new BibiException("Task numbers do not go as high as " + numberText
+                        + ". Use list to see the numbers. Use " + commandWord
+                        + " <number>, for example: " + commandWord + " 1.");
+            }
             throw new BibiException("'" + numberText + "' is not a task number. Use "
                     + commandWord + " followed by one number, for example: " + commandWord + " 2");
         }
@@ -308,10 +350,24 @@ public final class Parser {
         // Caught here rather than in TaskList so the message can say what is
         // wrong with the number itself, not merely that no such task exists.
         if (taskNumber < 1) {
-            throw new BibiException("Task numbers start at 1, so " + taskNumber
-                    + " cannot refer to a task. Use list to see the numbers. Use " + commandWord
-                    + " <number>, for example: " + commandWord + " 1.");
+            throw belowOneException(String.valueOf(taskNumber), commandWord);
         }
         return taskNumber;
+    }
+
+    /**
+     * Builds the complaint about a task number that is below the first one.
+     *
+     * <p>Takes the number as text because it is raised both for a number that
+     * parsed and for one too large and negative to parse at all.
+     *
+     * @param numberText the number as the user wrote it
+     * @param commandWord the command word, used in the message
+     * @return the exception to throw
+     */
+    private static BibiException belowOneException(String numberText, String commandWord) {
+        return new BibiException("Task numbers start at 1, so " + numberText
+                + " cannot refer to a task. Use list to see the numbers. Use " + commandWord
+                + " <number>, for example: " + commandWord + " 1.");
     }
 }

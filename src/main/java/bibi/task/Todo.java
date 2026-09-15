@@ -39,4 +39,13 @@ public class Todo extends Task {
     protected String getSaveFields() {
         return "";
     }
+
+    /**
+     * Returns a confirmation that nothing but the user will move this task on,
+     * since a ToDo has no date to force the issue.
+     */
+    @Override
+    public String describeAddition() {
+        return "Added. Do or do not. There is no try:";
+    }
 }

@@ -156,6 +156,18 @@ public abstract class Task {
     protected abstract String getSaveFields();
 
     /**
+     * Returns the line that introduces this task when it is added.
+     *
+     * <p>Each type gets its own wording because the three ask different things
+     * of the user: a ToDo waits on them alone, a deadline runs out, and an event
+     * happens whether or not they are ready. The line ends with a colon because
+     * the task itself is shown on the line below it.
+     *
+     * @return the confirmation line, ending with a colon
+     */
+    public abstract String describeAddition();
+
+    /**
      * Returns this task encoded as a single save-file line.
      *
      * <p>The completion flag is written as {@code 1} or {@code 0} rather than the

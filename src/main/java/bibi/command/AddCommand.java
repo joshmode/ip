@@ -38,7 +38,7 @@ public class AddCommand extends Command {
         }
 
         tasks.add(task);
-        ui.showMessage("Added. Remembering it is my job. Doing it is still yours:");
+        ui.showMessage(task.describeAddition());
         ui.showDetails(task.toString());
         ui.showPlain("Your list holds " + Ui.describeCount(tasks.size()) + ".");
         saveTasks(tasks, ui, storage);

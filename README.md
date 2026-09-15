@@ -2,9 +2,11 @@
 
 [![Java CI](https://github.com/joshmode/ip/actions/workflows/gradle.yml/badge.svg)](https://github.com/joshmode/ip/actions/workflows/gradle.yml)
 
-Bibi is your friendly neighbourhood clanker! 
+Bibi is a small, dependable task keeper with a dry sense of humor.
 
-Use me to log your tasks _simply_ and _safely_. Privacy and confidentiality is at the core of our work. Created as part of CS2103T 26/27.
+Log your ToDos, deadlines and events _simply_ and _safely_. Everything stays in a
+plain text file beside the app — nothing is uploaded, and nothing leaves your
+machine. Created as part of CS2103T 26/27.
 
 📖 **[Read the User Guide](https://joshmode.github.io/ip/)** — or see [`docs/README.md`](docs/README.md).
 
@@ -126,6 +128,21 @@ Bibi creates its `data/bibi.txt` save file relative to the folder the command is
 run in, so copying the JAR into an empty folder gives it a fresh task list, and
 running it there again restores what was saved.
 
+### A note on macOS and Apple Silicon
+
+The fat JAR bundles JavaFX's native libraries for Windows, Linux and Intel macOS.
+The two macOS builds ship libraries under identical filenames, so only one set
+survives packaging, and it is the Intel one.
+
+Windows and Linux need nothing extra. On an Apple Silicon Mac, if the window
+fails to open with an `UnsatisfiedLinkError`, either run the JAR under an Intel
+(x86_64) JDK through Rosetta, or use the text interface, which needs no native
+libraries at all:
+
+```
+java -cp "bibi.jar" bibi.Bibi
+```
+
 ## Acknowledgements
 
 ### Third-party libraries
@@ -139,22 +156,57 @@ running it there again restores what was saved.
 
 ### AI assistance
 
-This project was built with heavy use of **Claude (Opus 5), through Claude Code**,
-by [@joshmode](https://github.com/joshmode). The use was widespread rather than
-localised, so it is cited here rather than in individual comments, as the course
-policy on reuse directs.
+**This project was written with extensive AI assistance.** The tools used were
+**Claude (Opus 5), through Claude Code** and **OpenAI Codex**, both driven by
+[@joshmode](https://github.com/joshmode), who is the sole author of the work in
+the sense the course means: every design decision was made by the author, and
+every generated change was read, run and verified before it was committed.
 
-Concretely, the assistant was used to:
+The use was **widespread rather than localized**. It is therefore declared here,
+in full, rather than annotated next to individual lines — which is what the
+course reuse policy asks for when assistance is not confined to a few places.
+There is no part of the Java source that an assistant did not touch, so a
+per-file marker would be noise rather than information.
 
-- draft and refactor most of the Java across the increments, including the JavaFX
-  interface, the parser, and the command classes;
-- write the JUnit tests and the scripted console tests, and diagnose the failures
-  they surfaced;
-- write the commit messages, pull request descriptions, and this documentation.
+#### What the assistants were used for
 
-Design decisions — what each feature should do, how errors should behave, and what
-the product should feel like — were made in conversation rather than delegated, and
-every change was reviewed and verified before being merged.
+| Area | Extent of assistance |
+|---|---|
+| Java source | Drafting and refactoring across every increment, including the parser, the command classes, the task types, `Storage`, and the JavaFX interface |
+| Tests | Writing the JUnit tests and the scripted console test plan, and diagnosing the failures they surfaced |
+| Documentation | This README, the user guide in `docs/`, commit messages and pull request descriptions |
+| Review | Reviewing the code against the SE-EDU coding standard and the course rubric, and proposing the fixes that followed |
+
+#### What was not delegated
+
+The product decisions were made by the author in conversation with the tools, not
+handed to them: what each command should do, how strict the input handling should
+be, what the error messages should say, how the window should look, and what
+Bibi's voice should be. Where an assistant proposed something that conflicted
+with an earlier decision, the earlier decision won.
+
+Every change was verified before merging: `./gradlew checkstyleMain checkstyleTest
+test javadoc` clean, the scripted console tests passing, and the window opened and
+driven by hand for anything that changed it.
+
+### Images
+
+| File | Origin |
+|---|---|
+| `src/main/resources/images/DaBibi.png` | Generated with **Google Gemini 3.8 Flash**, resized to 256×256 and otherwise unaltered |
+
+### Compliance with the course reuse policy
+
+Recorded explicitly so a reader can check each requirement against this file:
+
+| Requirement | How this project meets it |
+|---|---|
+| Widespread AI use is declared in the README, naming the tool, the user, and the extent | See **AI assistance** above: the tools, the author, and a per-area breakdown of what they did |
+| AI use confined to a few places is marked next to that code instead | Not applicable — the use here is widespread, so the declaration above replaces per-line markers |
+| Reused or adapted code is credited | The only external structure reused is the JavaFX interface layout, credited under **Course materials** below; no third-party source files are copied into this repository |
+| Third-party libraries are listed under Acknowledgements | See **Third-party libraries** above. All four are course-standard for this project; no library beyond them has been added |
+| Generated binaries are not committed | `build/` is git-ignored and no JAR is tracked; the runnable JAR is distributed through GitHub releases |
+| Generated and reused assets are attributed | See **Images** above. Bibi's portrait is AI-generated and says so, with the tool named |
 
 ### Course materials
 

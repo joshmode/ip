@@ -145,11 +145,35 @@ public class CommandTest {
 
     @Test
     public void helpCommand_always_listsTheCommands(@TempDir Path tempDir) throws BibiException {
-        String said = run(new HelpCommand(), new TaskList(), storageIn(tempDir));
+        String said = run(new HelpCommand(false), new TaskList(), storageIn(tempDir));
 
         assertTrue(said.contains("deadline <description> /by <time>"));
         assertTrue(said.contains("sort"));
         assertTrue(said.contains("undo"));
+    }
+
+    @Test
+    public void helpCommand_withoutTheFlag_omitsTheExamples(@TempDir Path tempDir) throws BibiException {
+        String said = run(new HelpCommand(false), new TaskList(), storageIn(tempDir));
+
+        // The short help is what someone who forgot a command word needs; the
+        // reference detail behind the flag would bury it.
+        assertFalse(said.contains("Examples:"));
+        assertFalse(said.contains("d/M/yy uses 00-99 for 2000-2099."));
+        assertTrue(said.contains("Run help --examples"));
+    }
+
+    @Test
+    public void helpCommand_withTheFlag_addsExamplesAfterTheCommandList(@TempDir Path tempDir)
+            throws BibiException {
+        String said = run(new HelpCommand(true), new TaskList(), storageIn(tempDir));
+
+        // The examples follow the list rather than replacing it, so the flag
+        // reads as the short help with more added.
+        assertTrue(said.contains("Usage: <command> [arguments]"));
+        assertTrue(said.indexOf("Usage: <command> [arguments]") < said.indexOf("Examples:"));
+        assertTrue(said.contains("deadline return book /by 21/12/2026 1800"));
+        assertTrue(said.contains("d/M/yy uses 00-99 for 2000-2099."));
     }
 
     @Test
@@ -166,7 +190,7 @@ public class CommandTest {
     @Test
     public void isExit_everyCommandExceptExit_false() {
         assertFalse(new ListCommand().isExit());
-        assertFalse(new HelpCommand().isExit());
+        assertFalse(new HelpCommand(false).isExit());
         assertFalse(new SortCommand().isExit());
         assertFalse(new MarkCommand(1).isExit());
     }
@@ -190,7 +214,7 @@ public class CommandTest {
 
         String said = run(new SortCommand(), tasks, storage);
 
-        assertTrue(said.contains("Sorted, earliest first:"));
+        assertTrue(said.contains("Sorted it, but not your life. Earliest first:"));
         assertEquals("[D][ ] sooner (by: 15 Oct 2019)", tasks.get(1).toString());
         assertEquals("[T][ ] undated", tasks.get(3).toString());
         assertTrue(Files.readString(storage.getFilePath()).startsWith("D | 0 | sooner"));

@@ -84,4 +84,13 @@ public class Event extends Task {
     public boolean occursOn(LocalDate queryDate) {
         return !queryDate.isBefore(startTime.getDate()) && !queryDate.isAfter(endTime.getDate());
     }
+
+    /**
+     * Returns a confirmation noting that an event keeps its own schedule, which
+     * is what separates it from a task the user can quietly postpone.
+     */
+    @Override
+    public String describeAddition() {
+        return "Added. It starts on time. Be there or be square:";
+    }
 }

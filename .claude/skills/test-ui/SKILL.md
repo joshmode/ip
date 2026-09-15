@@ -5,9 +5,13 @@ description: Run and verify scripted command-line UI tests for this project's Ja
 
 # Test UI
 
-> This file is mirrored at `.claude/skills/test-ui/SKILL.md`.
-> Update both copies together. The runner script lives here only; both copies
-> invoke this one, so it never drifts.
+> This file is mirrored at `.codex/skills/test-ui/SKILL.md`.
+> Update both copies together.
+>
+> The runner script itself is **not** mirrored. Both copies invoke the single
+> copy at `.codex/skills/test-ui/scripts/run_ui_tests.py`, because two copies of
+> the same script would drift apart and the path is repo-relative, so it resolves
+> the same whichever assistant reads this file.
 
 Update test/ui-test-plan.md when a user-visible behaviour changes. Every case must include an aim, console input, and expected output.
 
@@ -18,6 +22,8 @@ $env:JAVA_HOME = "C:\Program Files\Java\jdk-25.0.4"
 $env:Path = "$env:JAVA_HOME\bin;$env:Path"
 python .codex/skills/test-ui/scripts/run_ui_tests.py --project-root . --plan test/ui-test-plan.md
 ~~~
+
+On macOS or Linux, use `python3` with the same arguments.
 
 The script compiles the application, runs each case, checks expected output fragments in order, and records console input and output. Stop at the first failed case; report its expected and actual output without changing the test plan to hide the failure.
 

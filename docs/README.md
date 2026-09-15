@@ -18,6 +18,12 @@ java -jar bibi.jar
 Bibi saves your tasks to `data/bibi.txt` beside wherever you started it, so a fresh
 folder gives you a fresh list.
 
+> **On an Apple Silicon Mac**, if the window does not open and you see an
+> `UnsatisfiedLinkError`, the bundled graphics libraries are the Intel ones. Run the
+> JAR under an Intel (x86_64) JDK through Rosetta, or use the text interface, which
+> needs no graphics libraries: `java -cp bibi.jar bibi.Bibi`. Windows and Linux need
+> nothing extra.
+
 > **Tip:** type in the box at the bottom and press <kbd>Enter</kbd>, or click **Send**.
 > Everything is a short typed command, with keyboard shortcuts to keep things moving.
 
@@ -62,6 +68,10 @@ Added. Remembering it is my job. Doing it is still yours:
   [D][ ] submit CS2103T iP (by: 18 Sep 2026 11:59PM)
 Your list holds 1 task.
 ```
+
+Each kind gets its own confirmation, so you can tell at a glance which one you
+just added — a ToDo waits on you alone, a deadline runs out, and an event happens
+whether or not you are ready for it.
 
 ### Writing dates
 
@@ -167,10 +177,19 @@ and can be undone. Closing Bibi discards undo history; it is not written to the 
 
 ```
 help
+help --examples
 bye
 ```
 
-`help` groups the commands, examples, date formats, and keyboard shortcuts.
+`help` lists every command, grouped by what it is for, with a one-line
+description each — enough to find the command word you have forgotten without
+reading past it.
+
+`help --examples` prints that same list and then adds the reference detail:
+worked examples, every accepted date format, how task numbers behave, and the
+keyboard shortcuts. Anything else after `help` is rejected, so a mistyped flag
+is reported rather than quietly ignored.
+
 `bye` closes Bibi. Changes are saved after each task-changing command; watch for
 a save warning if a write could not finish.
 
@@ -184,7 +203,7 @@ follow-up questions.
 ## When something goes wrong
 
 Bibi tries to say what is actually wrong rather than just refusing. Mistakes are shown
-in red so you can spot them when scrolling back:
+in amber, with a rule down the left edge, so you can spot them when scrolling back:
 
 - **An unknown command** names the word it could not place.
 - **A missing part** shows the shape of the command, with an example.
@@ -213,7 +232,7 @@ in red so you can spot them when scrolling back:
 | `unmark` | reopens a task | `unmark 2` |
 | `remove` | deletes a task | `remove 2` |
 | `undo` | restores the most recent change once, in this session | `undo` |
-| `help` | lists the commands | `help` |
+| `help` | lists the commands; `--examples` adds examples and date formats | `help --examples` |
 | `bye` | closes Bibi | `bye` |
 | `hi`, `hello`, `hey`, `thanks` | replies briefly without changing tasks | `hello!` |
 

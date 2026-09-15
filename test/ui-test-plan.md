@@ -19,7 +19,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Added. Remembering it is my job. Doing it is still yours:
+Bibi: Added. Do or do not. There is no try:
 [T][ ] borrow book
 Your list holds 1 task.
 Bibi: Here is everything on your list:
@@ -29,7 +29,8 @@ Bibi: See you.
 
 ## Test 2: Add and list a deadline
 
-Aim: Confirm that text after /by is retained and shown with a deadline.
+Aim: Confirm that text after /by is retained and shown with a deadline, under the
+confirmation wording that belongs to a deadline.
 
 ### Input
 
@@ -42,6 +43,7 @@ bye
 ### Expected output
 
 ```text
+Bibi: Added. Remembering it is my job. Doing it is still yours:
 [D][ ] return book (by: 15 Oct 2019)
 Your list holds 1 task.
 1. [D][ ] return book (by: 15 Oct 2019)
@@ -49,7 +51,8 @@ Your list holds 1 task.
 
 ## Test 3: Add and list an event
 
-Aim: Confirm that text after /from and /to is retained and shown with an event.
+Aim: Confirm that text after /from and /to is retained and shown with an event,
+under the confirmation wording that belongs to an event.
 
 ### Input
 
@@ -62,6 +65,7 @@ bye
 ### Expected output
 
 ```text
+Bibi: Added. It starts on time. Be there or be square:
 [E][ ] project meeting (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
 Your list holds 1 task.
 1. [E][ ] project meeting (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
@@ -89,7 +93,7 @@ bye
 Bibi: Task 1 done. Look at us getting things done.
   [T][X] join sports club
 1. [T][X] join sports club
-Bibi: Task 1 is open again.
+Bibi: We're not making progress, huh? Task 1 is open again.
   [T][ ] join sports club
 1. [T][ ] join sports club
 ```
@@ -381,7 +385,8 @@ Bibi: I could not read the date 'someday'.
 
 ## Test 16: Show the list of commands
 
-Aim: Confirm that help is recognised on its own, and lists every command.
+Aim: Confirm that help is recognised on its own, lists every command grouped by
+what it is for, and points at the examples rather than printing them.
 
 ### Input
 
@@ -393,25 +398,71 @@ bye
 ### Expected output
 
 ```text
-Bibi: Here's the rundown:
-  todo <description>
-  deadline <description> /by <time>
-  event <description> /from <start> /to <end>
-  list
-  sort
-  find <keyword>
-  on <date>
-  mark <number>
-  unmark <number>
-  remove <number>
-  undo
-  help
-  bye
-  hi, hello, hey or thanks
+Bibi: Usage: <command> [arguments]
+  Add
+    todo <description>
+    deadline <description> /by <time>
+    event <description> /from <start> /to <end>
+  View
+    list
+    sort
+    find <keyword>
+    on <date>
+  Update
+    mark <number>
+    unmark <number>
+    remove <number>
+    undo
+  Session
+    help [--examples]
+    bye
+    hi, hello, hey, thanks
+Bibi: Run help --examples for examples, date formats and keyboard shortcuts.
+Bibi: See you.
+```
+
+## Test 16a: Show the examples behind the help flag
+
+Aim: Confirm that `help --examples` keeps the command list and adds the worked
+examples, date formats, numbering notes and keyboard shortcuts after it, and
+that any other argument to help is rejected rather than ignored.
+
+### Input
+
+```text
+help --examples
+help me
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Usage: <command> [arguments]
+    todo <description>
+    help [--examples]
+Bibi: Run help --examples for examples, date formats and keyboard shortcuts.
+Bibi: Examples:
+  todo read book
+  deadline return book /by 21/12/2026 1800
+  event study group /from 21/12/2026 1800 /to 21/12/2026 2000
+  find book
+  on 21/12/2026
+  mark 2
+Bibi: Dates:
+  d/M/yyyy, d-M-yyyy, d.M.yyyy, d MMM yyyy or d MMMM yyyy.
   d/M/yy uses 00-99 for 2000-2099. Numeric dates are always day first.
+  Existing yyyy-MM-dd input still works. Examples: 1/2/2026, 21 December 2026, 21/12/26.
   Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.
-  Numbers come from the full list, including find/on results.
-  GUI: Enter sends; Up/Down recall commands without sending. Down past the newest restores your draft.
+Bibi: Task numbers:
+  Numbers come from the full list, including find/on results. Sort and remove can change them;
+  use list for current numbers before acting on an older reply.
+  undo restores the last task change once this session; there is no redo.
+Bibi: Keyboard, in the window:
+  Enter sends; Up/Down recall commands without sending. Down past the newest restores your draft.
+  Rejected commands stay for editing. Select transcript text and use Ctrl+C (Cmd+C on macOS) to copy.
+  New replies scroll into view when you're near the bottom; scroll up to keep your reading position.
+Bibi: help takes nothing or --examples after it, but I found 'me'.
 Bibi: See you.
 ```
 
@@ -467,7 +518,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Sorted, earliest first:
+Bibi: Sorted it, but not your life. Earliest first:
 1. [E][ ] orientation (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
 2. [D][ ] pay fees (by: 15 Oct 2019)
 3. [D][ ] submit report (by: 01 Dec 2019)
@@ -561,7 +612,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Added. Remembering it is my job. Doing it is still yours:
+Bibi: Added. Do or do not. There is no try:
 Bibi: You already have that one, as task 1: [T][ ] read book.
 Bibi: Added. Remembering it is my job. Doing it is still yours:
 Bibi: You already have that one, as task 2: [D][ ] pay fees (by: 15 Oct 2019).
@@ -589,7 +640,7 @@ bye
 ### Expected output
 
 ```text
-Bibi: Task 1 is off the list:
+Bibi: Eeeeesh, another one bites the dust. Task 1 is off the list:
   [T][ ] read book
 Your list holds 1 task.
 Bibi: Here is everything on your list:
@@ -820,18 +871,18 @@ bye
 2. [D][ ] Return Book (by: 21 Dec 2026)
 Bibi: Task 2 done. Look at us getting things done.
   [D][X] Return Book (by: 21 Dec 2026)
-Bibi: Sorted, earliest first:
+Bibi: Sorted it, but not your life. Earliest first:
 1. [D][ ] Pay Fees (by: 01 Feb 2026)
 2. [D][X] Return Book (by: 21 Dec 2026)
 3. [T][ ] Read Book
 Bibi: Here is what you have on 21 Dec 2026:
 2. [D][X] Return Book (by: 21 Dec 2026)
-Bibi: Task 1 is off the list:
+Bibi: Eeeeesh, another one bites the dust. Task 1 is off the list:
   [D][ ] Pay Fees (by: 01 Feb 2026)
 Your list holds 2 tasks.
 1. [D][X] Return Book (by: 21 Dec 2026)
 2. [T][ ] Read Book
-Bibi: Task 1 is open again.
+Bibi: We're not making progress, huh? Task 1 is open again.
   [D][ ] Return Book (by: 21 Dec 2026)
 ```
 
@@ -864,10 +915,10 @@ bye
 ### Expected output
 
 ```text
-Bibi: Task 2 is off the list:
+Bibi: Eeeeesh, another one bites the dust. Task 2 is off the list:
   [D][X] return book (by: 21 Dec 2026 6:00PM)
 Your list holds 2 tasks.
-Bibi: Last change undone. Your list holds 3 tasks.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 3 tasks.
 1. [T][ ] first
 2. [D][X] return book (by: 21 Dec 2026 6:00PM)
 3. [T][ ] last
@@ -905,20 +956,20 @@ bye
 ### Expected output
 
 ```text
-Bibi: Last change undone. Your list holds 0 tasks.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 0 tasks.
 [T][ ] second
 Bibi: Task 1 done. Look at us getting things done.
-Bibi: Last change undone. Your list holds 1 task.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 1 task.
 1. [T][ ] second
 Bibi: Task 1 done. Look at us getting things done.
-Bibi: Task 1 is open again.
-Bibi: Last change undone. Your list holds 1 task.
+Bibi: We're not making progress, huh? Task 1 is open again.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 1 task.
 1. [T][X] second
 [D][ ] pay fees (by: 01 Feb 2026)
-Bibi: Sorted, earliest first:
+Bibi: Sorted it, but not your life. Earliest first:
 1. [D][ ] pay fees (by: 01 Feb 2026)
 2. [T][X] second
-Bibi: Last change undone. Your list holds 2 tasks.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 2 tasks.
 1. [T][X] second
 2. [D][ ] pay fees (by: 01 Feb 2026)
 ```
@@ -955,10 +1006,10 @@ Bibi: That task number does not exist: use a number from 1 to 1.
 Bibi: Here is what matches:
 1. [T][ ] Read Book
 Bibi: Hey. I'm here. Type help if you need the rundown.
-Bibi: Sorted, earliest first:
+Bibi: Sorted it, but not your life. Earliest first:
 1. [T][ ] Read Book
-Bibi: Task 1 is open again.
-Bibi: Last change undone. Your list holds 0 tasks.
+Bibi: We're not making progress, huh? Task 1 is open again.
+Bibi: Fickle, aren't ya? Last change undone. Your list holds 0 tasks.
 Bibi: Nothing on the list. I'll assume that's good news.
 Bibi: undo does not take anything after it, but I found 'extra'.
 Bibi: There is no change to undo in this session.

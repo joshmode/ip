@@ -68,4 +68,13 @@ public class Deadline extends Task {
     public boolean occursOn(LocalDate queryDate) {
         return dueTime.isOn(queryDate);
     }
+
+    /**
+     * Returns the confirmation that divides the labor: Bibi keeps the date, the
+     * user does the work.
+     */
+    @Override
+    public String describeAddition() {
+        return "Added. Remembering it is my job. Doing it is still yours:";
+    }
 }

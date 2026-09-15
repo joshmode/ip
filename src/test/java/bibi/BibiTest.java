@@ -24,7 +24,7 @@ public class BibiTest {
 
         String response = bibi.getResponse("todo borrow book").text();
 
-        assertTrue(response.contains("Added. Remembering it is my job. Doing it is still yours:"));
+        assertTrue(response.contains("Added. Do or do not. There is no try:"));
         assertTrue(response.contains("[T][ ] borrow book"));
         // Singular, because "1 tasks" is the kind of wrongness users notice.
         assertTrue(response.contains("Your list holds 1 task."));
@@ -146,7 +146,7 @@ public class BibiTest {
 
         String response = bibi.getResponse("sort").text();
 
-        assertTrue(response.contains("Sorted, earliest first:"));
+        assertTrue(response.contains("Sorted it, but not your life. Earliest first:"));
         assertTrue(response.contains("1. [D][ ] pay fees"));
         assertTrue(response.contains("2. [D][ ] submit report"));
         // The undated task goes last, not first.

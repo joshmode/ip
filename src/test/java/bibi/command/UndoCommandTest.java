@@ -50,7 +50,7 @@ public class UndoCommandTest {
 
             Reply reply = run(new UndoCommand(), tasks, storage);
 
-            assertEquals("Last change undone. Your list holds 2 tasks.\n"
+            assertEquals("Fickle, aren't ya? Last change undone. Your list holds 2 tasks.\n"
                     + "1. [T][ ] undated\n2. [D][X] due (by: 02 Dec 2019 6:00PM)", reply.text());
             assertFalse(reply.isError());
             assertEquals(expectedSavedTasks, Files.readAllLines(storage.getFilePath()));
@@ -68,7 +68,7 @@ public class UndoCommandTest {
 
         Reply reply = run(new UndoCommand(), tasks, storage);
 
-        assertEquals("Last change undone. Your list holds 0 tasks.", reply.text());
+        assertEquals("Fickle, aren't ya? Last change undone. Your list holds 0 tasks.", reply.text());
         assertTrue(tasks.isEmpty());
         assertEquals("", Files.readString(storage.getFilePath()));
     }
@@ -82,7 +82,8 @@ public class UndoCommandTest {
 
         Reply reply = run(new UndoCommand(), tasks, storage);
 
-        assertEquals("Last change undone. Your list holds 1 task.\n1. [T][ ] original", reply.text());
+        assertEquals("Fickle, aren't ya? Last change undone. Your list holds 1 task.\n"
+                + "1. [T][ ] original", reply.text());
         assertEquals(List.of("T | 0 | original"), Files.readAllLines(storage.getFilePath()));
     }
 
@@ -127,7 +128,7 @@ public class UndoCommandTest {
         assertThrows(BibiException.class, () -> run(new DeleteCommand(2), tasks, storage));
         assertThrows(BibiException.class, () -> run(new MarkCommand(0), tasks, storage));
         List<Command> otherCommands = List.of(new UnmarkCommand(1), new SortCommand(), new ListCommand(),
-                new FindCommand("added"), new OnCommand(LocalDate.of(2019, 12, 2)), new HelpCommand(),
+                new FindCommand("added"), new OnCommand(LocalDate.of(2019, 12, 2)), new HelpCommand(false),
                 new SocialCommand(false), new SocialCommand(true));
         for (Command command : otherCommands) {
             run(command, tasks, storage);
@@ -164,7 +165,7 @@ public class UndoCommandTest {
         Reply reply = run(new UndoCommand(), tasks, new Storage(blockedPath));
 
         assertTrue(reply.isError());
-        assertTrue(reply.text().contains("Last change undone. Your list holds 0 tasks."));
+        assertTrue(reply.text().contains("Fickle, aren't ya? Last change undone. Your list holds 0 tasks."));
         assertTrue(reply.text().contains("is a folder"));
         assertTrue(tasks.isEmpty());
         assertThrows(BibiException.class, tasks::undo);
