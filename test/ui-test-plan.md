@@ -29,7 +29,8 @@ Bibi: See you.
 
 ## Test 2: Add and list a deadline
 
-Aim: Confirm that text after /by is retained and shown with a deadline.
+Aim: Confirm that text after /by is retained and shown with a deadline, under the
+confirmation wording that belongs to a deadline.
 
 ### Input
 
@@ -42,6 +43,7 @@ bye
 ### Expected output
 
 ```text
+Bibi: Added. Remembering it is my job. Doing it is still yours:
 [D][ ] return book (by: 15 Oct 2019)
 Your list holds 1 task.
 1. [D][ ] return book (by: 15 Oct 2019)
@@ -49,7 +51,8 @@ Your list holds 1 task.
 
 ## Test 3: Add and list an event
 
-Aim: Confirm that text after /from and /to is retained and shown with an event.
+Aim: Confirm that text after /from and /to is retained and shown with an event,
+under the confirmation wording that belongs to an event.
 
 ### Input
 
@@ -62,6 +65,7 @@ bye
 ### Expected output
 
 ```text
+Bibi: Added. It starts on time. Be there or be square:
 [E][ ] project meeting (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)
 Your list holds 1 task.
 1. [E][ ] project meeting (from: 06 Aug 2019 2:00PM to: 06 Aug 2019 4:00PM)

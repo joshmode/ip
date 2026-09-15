@@ -169,7 +169,7 @@ public class TaskTest {
                 new Todo("read book").describeAddition());
         assertEquals("Added. Remembering it is my job. Doing it is still yours:",
                 new Deadline("return book", "2019-06-06").describeAddition());
-        assertEquals("Added. It starts on time. Whether you do is your business:",
+        assertEquals("Added. It starts on time. Be there or be square:",
                 new Event("camp", "2019-08-10", "2019-08-12").describeAddition());
     }
 

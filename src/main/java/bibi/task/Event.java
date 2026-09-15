@@ -91,6 +91,6 @@ public class Event extends Task {
      */
     @Override
     public String describeAddition() {
-        return "Added. It starts on time. Whether you do is your business:";
+        return "Added. It starts on time. Be there or be square:";
     }
 }
