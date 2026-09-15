@@ -196,7 +196,7 @@ driven by hand for anything that changed it.
 
 | File | Origin |
 |---|---|
-| `src/main/resources/images/DaBibi.png` | Taken from https://www.echoneon.com/product/mini-robot-neon-sign/, resized to 256×256 and otherwise unaltered |
+| `src/main/resources/images/DaBibi.png` | Not the author's own work: taken from https://www.echoneon.com/product/mini-robot-neon-sign/ and otherwise unaltered. The file is 1000×1000 JPEG data stored under the `.png` name the GUI loads |
 
 ### Compliance with the course reuse policy
 
@@ -208,7 +208,7 @@ Recorded explicitly so a reader can check each requirement against this file:
 | Reused or adapted code is credited | The only external structure reused is the JavaFX interface layout, credited under **Course materials** below; no third-party source files are copied into this repository |
 | Third-party libraries are listed under Acknowledgements | See **Third-party libraries** above. All four are course-standard for this project; no library beyond them has been added |
 | Generated binaries are not committed | `build/` is git-ignored and no JAR is tracked; the runnable JAR is distributed through GitHub releases |
-| Generated and reused assets are attributed | See **Images** above. Bibi's portrait is AI-generated and says so, with the tool named |
+| Generated and reused assets are attributed | See **Images** above: Bibi's portrait is reused rather than the author's own, and is credited to the page it came from |
 
 ### Course materials
 
