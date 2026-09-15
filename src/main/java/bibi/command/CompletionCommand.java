@@ -49,7 +49,14 @@ public abstract class CompletionCommand extends Command {
                 ? describeUnchanged(taskNumber)
                 : describeChange(taskNumber));
         ui.showDetails(task.toString());
-        saveTasks(tasks, ui, storage);
+
+        // A list that did not change has nothing to write. Saving anyway would
+        // put the warning about losing unsaved work under a line that has just
+        // said nothing happened, which leaves the user with two replies that
+        // cannot both be true.
+        if (!wasAlreadyThere) {
+            saveTasks(tasks, ui, storage);
+        }
     }
 
     /**
