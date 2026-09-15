@@ -189,6 +189,12 @@ Every change was verified before merging: `./gradlew checkstyleMain checkstyleTe
 test javadoc` clean, the scripted console tests passing, and the window opened and
 driven by hand for anything that changed it.
 
+### Images
+
+| File | Origin |
+|---|---|
+| `src/main/resources/images/DaBibi.png` | Generated with **Google Gemini 3.8 Flash**, then cropped to the head so it stays legible at the 22-pixel size the transcript draws it at |
+
 ### Compliance with the course reuse policy
 
 Recorded explicitly so a reader can check each requirement against this file:
@@ -200,6 +206,7 @@ Recorded explicitly so a reader can check each requirement against this file:
 | Reused or adapted code is credited | The only external structure reused is the JavaFX interface layout, credited under **Course materials** below; no third-party source files are copied into this repository |
 | Third-party libraries are listed under Acknowledgements | See **Third-party libraries** above. All four are course-standard for this project; no library beyond them has been added |
 | Generated binaries are not committed | `build/` is git-ignored and no JAR is tracked; the runnable JAR is distributed through GitHub releases |
+| Generated and reused assets are attributed | See **Images** above. Bibi's portrait is AI-generated and says so, with the tool named |
 
 ### Course materials
 
