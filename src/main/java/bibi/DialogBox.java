@@ -38,6 +38,13 @@ public class DialogBox extends HBox {
     /** How much of the window's width one of the user's chips may occupy. */
     private static final double USER_CHIP_WIDTH_FRACTION = 0.75;
 
+    /**
+     * Pixels allowed on top of a measured line, so that a fractional width is
+     * never rounded down into clipping the last character or the descenders of
+     * the last line.
+     */
+    private static final double MEASUREMENT_ALLOWANCE = 2.0;
+
     @FXML
     private TextArea dialog;
 
@@ -128,9 +135,12 @@ public class DialogBox extends HBox {
         measurement.setFont(dialog.getFont());
         // TextArea's skin uses these bounds, which include the font's full line height.
         measurement.setBoundsType(TextBoundsType.LOGICAL_VERTICAL_CENTER);
-        dialog.setPrefWidth(Math.ceil(measurement.getLayoutBounds().getWidth()) + horizontalInsets + 2);
-        measurement.setWrappingWidth(Math.max(1, dialog.getWidth() - horizontalInsets - 2));
-        double preferredHeight = Math.ceil(measurement.getLayoutBounds().getHeight()) + verticalInsets + 2;
+        dialog.setPrefWidth(Math.ceil(measurement.getLayoutBounds().getWidth())
+                + horizontalInsets + MEASUREMENT_ALLOWANCE);
+        measurement.setWrappingWidth(Math.max(1,
+                dialog.getWidth() - horizontalInsets - MEASUREMENT_ALLOWANCE));
+        double preferredHeight = Math.ceil(measurement.getLayoutBounds().getHeight())
+                + verticalInsets + MEASUREMENT_ALLOWANCE;
         if (dialog.getPrefHeight() != preferredHeight) {
             dialog.setPrefHeight(preferredHeight);
             // Width can change during HBox layout. Its parent must then recalculate

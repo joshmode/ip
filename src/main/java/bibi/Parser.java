@@ -1,5 +1,6 @@
 package bibi;
 
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +50,7 @@ public final class Parser {
             + "for example: deadline return book /by 21/12/2026.";
     private static final String USAGE_EVENT = "Use event <description> /from <start> /to <end>, "
             + "for example: event project meeting /from 21/12/2026 1400 /to 21/12/2026 1600.";
+    private static final String USAGE_ON = "Use on <date>, for example: on 21/12/2026.";
 
     /** Matches only complete social inputs, so task descriptions never become conversation. */
     private static final Pattern SOCIAL_INPUT = Pattern.compile("(?i)(hi|hello|hey|thanks)\\s*[.!?,]*");
@@ -74,11 +76,11 @@ public final class Parser {
     private static final Pattern TO_MARKER = Pattern.compile("(?<!\\S)/to(?=\\s|[0-9]+(?:[./-]|\\s+[A-Za-z])|$)",
             Pattern.CASE_INSENSITIVE);
 
-    /** Matches a task number written as digits above zero, whatever its length. */
-    private static final Pattern DIGITS_ABOVE_ZERO = Pattern.compile("\\+?\\d+");
+    /** Matches digits with no sign or a leading plus, whatever their length. */
+    private static final Pattern UNSIGNED_DIGITS = Pattern.compile("\\+?\\d+");
 
-    /** Matches a task number written as negative digits, whatever its length. */
-    private static final Pattern DIGITS_BELOW_ONE = Pattern.compile("-\\d+");
+    /** Matches digits with a leading minus, whatever their length. */
+    private static final Pattern NEGATIVE_DIGITS = Pattern.compile("-\\d+");
 
     /**
      * Hides the constructor, because this class holds only static helpers and
@@ -137,9 +139,7 @@ public final class Parser {
             case "unmark" -> new UnmarkCommand(parseTaskNumber(argument, "unmark"));
             case "remove" -> new DeleteCommand(parseTaskNumber(argument, "remove"));
             case "find" -> new FindCommand(requireKeyword(collapseSpaces(argument)));
-            // Any time of day in the query is ignored, since the question is which
-            // tasks belong to the day as a whole.
-            case "on" -> new OnCommand(TaskDateTime.parse(argument).getDate());
+            case "on" -> new OnCommand(parseQueryDate(argument));
             // Pointing at help, rather than listing the commands here as well,
             // keeps the full list in one place.
             default -> throw new BibiException("I don't recognize '" + parts[0] + "'. "
@@ -314,6 +314,28 @@ public final class Parser {
     }
 
     /**
+     * Reads the date that a query such as {@code on 21/12/2026} asks about.
+     *
+     * <p>A missing date is answered here rather than left to the date parser,
+     * which knows what a date should look like but not which command wanted
+     * one. Naming the command and an example keeps this rejection as useful as
+     * every other missing-argument rejection.
+     *
+     * <p>Any time of day is dropped, since the question is which tasks belong
+     * to the day as a whole.
+     *
+     * @param argument whatever followed the command word
+     * @return the calendar date being asked about
+     * @throws BibiException if no date was given, or it cannot be read
+     */
+    private static LocalDate parseQueryDate(String argument) throws BibiException {
+        if (argument.isEmpty()) {
+            throw new BibiException("I need a date to look up. " + USAGE_ON);
+        }
+        return TaskDateTime.parse(argument).getDate();
+    }
+
+    /**
      * Reads the task number that a command such as {@code mark 2} refers to.
      *
      * @param numberText the text supplied after the command word
@@ -335,10 +357,10 @@ public final class Parser {
             // A run of digits too long to fit an int is still a number, so
             // calling it "not a task number" would tell the user something
             // untrue. Which end it overflows decides which explanation fits.
-            if (DIGITS_BELOW_ONE.matcher(numberText).matches()) {
+            if (NEGATIVE_DIGITS.matcher(numberText).matches()) {
                 throw belowOneException(numberText, commandWord);
             }
-            if (DIGITS_ABOVE_ZERO.matcher(numberText).matches()) {
+            if (UNSIGNED_DIGITS.matcher(numberText).matches()) {
                 throw new BibiException("Task numbers do not go as high as " + numberText
                         + ". Use list to see the numbers. Use " + commandWord
                         + " <number>, for example: " + commandWord + " 1.");

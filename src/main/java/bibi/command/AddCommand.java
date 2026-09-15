@@ -33,8 +33,9 @@ public class AddCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage) throws BibiException {
         int duplicateNumber = tasks.findSameTaskNumber(task);
         if (duplicateNumber > 0) {
+            Task duplicate = tasks.get(duplicateNumber);
             throw new BibiException("You already have that one, as task " + duplicateNumber
-                    + ": " + tasks.get(duplicateNumber) + ". Nothing changed.");
+                    + ": " + duplicate + ". Nothing changed.");
         }
 
         tasks.add(task);

@@ -114,6 +114,54 @@ public class CommandTest {
     }
 
     @Test
+    public void markCommand_taskAlreadyDone_saysNothingChanged(@TempDir Path tempDir)
+            throws BibiException {
+        // Confirming a change that did not happen is how a user comes to believe
+        // they ticked off a task they did not.
+        TaskList tasks = new TaskList(new Todo("read book"));
+        Storage storage = storageIn(tempDir);
+        run(new MarkCommand(1), tasks, storage);
+
+        String said = run(new MarkCommand(1), tasks, storage);
+
+        assertTrue(said.contains("Task 1 was already done."));
+        assertFalse(said.contains("Look at us getting things done."));
+        assertTrue(said.contains("[T][X] read book"));
+    }
+
+    @Test
+    public void unmarkCommand_taskAlreadyOpen_saysNothingChanged(@TempDir Path tempDir)
+            throws BibiException {
+        TaskList tasks = new TaskList(new Todo("read book"));
+        Storage storage = storageIn(tempDir);
+
+        String said = run(new UnmarkCommand(1), tasks, storage);
+
+        assertTrue(said.contains("Task 1 was never done"));
+        assertFalse(said.contains("We're not making progress"));
+        assertTrue(said.contains("[T][ ] read book"));
+        // Nothing changed, so nothing was written.
+        assertFalse(Files.exists(storage.getFilePath()));
+    }
+
+    @Test
+    public void markCommand_taskAlreadyDone_doesNotWarnAboutUnsavedWork(@TempDir Path tempDir)
+            throws BibiException, IOException {
+        // A save failure warns that the change is applied but unsaved. Under a
+        // reply that has just said nothing changed, that warning cannot be true,
+        // so a command that changes nothing must not attempt a save at all.
+        Path inTheWay = Files.createDirectory(tempDir.resolve("bibi.txt"));
+        TaskList tasks = new TaskList(new Todo("read book"));
+        Storage storage = new Storage(inTheWay);
+        run(new MarkCommand(1), tasks, storage);
+
+        String said = run(new MarkCommand(1), tasks, storage);
+
+        assertTrue(said.contains("was already done"));
+        assertFalse(said.contains("isn't saved"));
+    }
+
+    @Test
     public void unmarkCommand_completedTask_reopensIt(@TempDir Path tempDir)
             throws BibiException {
         Task done = new Todo("read book");

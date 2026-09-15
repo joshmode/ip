@@ -18,11 +18,10 @@ java -jar bibi.jar
 Bibi saves your tasks to `data/bibi.txt` beside wherever you started it, so a fresh
 folder gives you a fresh list.
 
-> **On an Apple Silicon Mac**, if the window does not open and you see an
-> `UnsatisfiedLinkError`, the bundled graphics libraries are the Intel ones. Run the
-> JAR under an Intel (x86_64) JDK through Rosetta, or use the text interface, which
-> needs no graphics libraries: `java -cp bibi.jar bibi.Bibi`. Windows and Linux need
-> nothing extra.
+> **On an Intel Mac**, the window will not open: the bundled graphics libraries are
+> the Apple Silicon ones, since that is what current Macs run. Use the text interface
+> instead, which needs no graphics libraries: `java -cp bibi.jar bibi.Bibi`. Apple
+> Silicon Macs, Windows and 64-bit Linux need nothing extra.
 
 > **Tip:** type in the box at the bottom and press <kbd>Enter</kbd>, or click **Send**.
 > Everything is a short typed command, with keyboard shortcuts to keep things moving.
@@ -152,7 +151,9 @@ remove 2
 ```
 
 Numbers come from the most recent listing. `mark` ticks a task off, `unmark` reopens it,
-and `remove` takes it off the list for good.
+and `remove` takes it off the list for good. Marking a task that is already done, or
+reopening one that was never done, says so rather than reporting a change that did
+not happen.
 
 Sorting or removing a task can make numbers in older replies stale. Use `list`
 again before acting on an old entry. Confirmations show the affected task so you

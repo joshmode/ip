@@ -128,20 +128,26 @@ Bibi creates its `data/bibi.txt` save file relative to the folder the command is
 run in, so copying the JAR into an empty folder gives it a fresh task list, and
 running it there again restores what was saved.
 
-### A note on macOS and Apple Silicon
+### A note on architectures
 
-The fat JAR bundles JavaFX's native libraries for Windows, Linux and Intel macOS.
-The two macOS builds ship libraries under identical filenames, so only one set
-survives packaging, and it is the Intel one.
+The fat JAR bundles JavaFX's native libraries for Windows (x86-64), Linux
+(x86-64) and Apple Silicon macOS, which covers every machine the course expects.
 
-Windows and Linux need nothing extra. On an Apple Silicon Mac, if the window
-fails to open with an `UnsatisfiedLinkError`, either run the JAR under an Intel
-(x86_64) JDK through Rosetta, or use the text interface, which needs no native
-libraries at all:
+It is one architecture per operating system by necessity: the two macOS builds
+of JavaFX ship their libraries under identical filenames, so only one set can
+survive packaging. Apple Silicon is the one bundled, because it is what the JDK
+in the course's macOS advisory targets.
+
+On an Intel Mac, or on a Linux machine that is not x86-64, the window will not
+open. Use the text interface, which needs no native libraries at all:
 
 ```
 java -cp "bibi.jar" bibi.Bibi
 ```
+
+To build a JAR for one of those machines instead, swap the `mac-aarch64`
+classifier in `build.gradle` for `mac`, or `linux` for `linux-aarch64`, and run
+`./gradlew clean shadowJar` again.
 
 ## Acknowledgements
 
@@ -168,7 +174,7 @@ The use was **widespread rather than localized**. It is therefore declared here,
 in full, rather than annotated next to individual lines — which is what the
 course reuse policy asks for when assistance is not confined to a few places.
 The codebase was extensively parsed and/or altered by agentic AI, at the author's
-sole behest. 
+sole behest.
 
 #### What the assistants were used for
 
@@ -185,7 +191,7 @@ The product decisions were made by the author in conversation with the tools, no
 handed to them: what each command should do, how strict the input handling should
 be, what the error messages should say, how the window should look, and what
 Bibi's voice should be. Assistant proposals and diffs were thoroughly checked prior
-to commit. Baseline code was written and developed by hand. All design decisions and 
+to commit. Baseline code was written and developed by hand. All design decisions and
 specifications are solely attributed to the author.
 
 Every change was verified before merging: `./gradlew checkstyleMain checkstyleTest
@@ -196,7 +202,7 @@ driven by hand for anything that changed it.
 
 | File | Origin |
 |---|---|
-| `src/main/resources/images/DaBibi.png` | Taken from https://www.echoneon.com/product/mini-robot-neon-sign/, resized to 256×256 and otherwise unaltered |
+| `src/main/resources/images/DaBibi.png` | Not the author's own work: taken from https://www.echoneon.com/product/mini-robot-neon-sign/ and otherwise unaltered. The file is 1000×1000 JPEG data stored under the `.png` name the GUI loads |
 
 ### Compliance with the course reuse policy
 
@@ -208,7 +214,7 @@ Recorded explicitly so a reader can check each requirement against this file:
 | Reused or adapted code is credited | The only external structure reused is the JavaFX interface layout, credited under **Course materials** below; no third-party source files are copied into this repository |
 | Third-party libraries are listed under Acknowledgements | See **Third-party libraries** above. All four are course-standard for this project; no library beyond them has been added |
 | Generated binaries are not committed | `build/` is git-ignored and no JAR is tracked; the runnable JAR is distributed through GitHub releases |
-| Generated and reused assets are attributed | See **Images** above. Bibi's portrait is AI-generated and says so, with the tool named |
+| Generated and reused assets are attributed | See **Images** above: Bibi's portrait is reused rather than the author's own, and is credited to the page it came from |
 
 ### Course materials
 
