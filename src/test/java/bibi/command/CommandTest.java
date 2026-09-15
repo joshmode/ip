@@ -114,6 +114,34 @@ public class CommandTest {
     }
 
     @Test
+    public void markCommand_taskAlreadyDone_saysNothingChanged(@TempDir Path tempDir)
+            throws BibiException {
+        // Confirming a change that did not happen is how a user comes to believe
+        // they ticked off a task they did not.
+        TaskList tasks = new TaskList(new Todo("read book"));
+        Storage storage = storageIn(tempDir);
+        run(new MarkCommand(1), tasks, storage);
+
+        String said = run(new MarkCommand(1), tasks, storage);
+
+        assertTrue(said.contains("Task 1 was already done."));
+        assertFalse(said.contains("Look at us getting things done."));
+        assertTrue(said.contains("[T][X] read book"));
+    }
+
+    @Test
+    public void unmarkCommand_taskAlreadyOpen_saysNothingChanged(@TempDir Path tempDir)
+            throws BibiException {
+        TaskList tasks = new TaskList(new Todo("read book"));
+
+        String said = run(new UnmarkCommand(1), tasks, storageIn(tempDir));
+
+        assertTrue(said.contains("Task 1 was never done"));
+        assertFalse(said.contains("We're not making progress"));
+        assertTrue(said.contains("[T][ ] read book"));
+    }
+
+    @Test
     public void unmarkCommand_completedTask_reopensIt(@TempDir Path tempDir)
             throws BibiException {
         Task done = new Todo("read book");

@@ -22,4 +22,9 @@ public class MarkCommand extends CompletionCommand {
     protected String describeChange(int taskNumber) {
         return "Task " + taskNumber + " done. Look at us getting things done.";
     }
+
+    @Override
+    protected String describeUnchanged(int taskNumber) {
+        return "Task " + taskNumber + " was already done. Doing it twice won't count twice.";
+    }
 }

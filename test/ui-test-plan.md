@@ -1008,7 +1008,7 @@ Bibi: Here is what matches:
 Bibi: Hey. I'm here. Type help if you need the rundown.
 Bibi: Sorted it, but not your life. Earliest first:
 1. [T][ ] Read Book
-Bibi: We're not making progress, huh? Task 1 is open again.
+Bibi: Task 1 was never done, so it stays open.
 Bibi: Fickle, aren't ya? Last change undone. Your list holds 0 tasks.
 Bibi: Nothing on the list. I'll assume that's good news.
 Bibi: undo does not take anything after it, but I found 'extra'.
@@ -1037,6 +1037,36 @@ Bibi: I need a date to look up. Use on <date>, for example: on 21/12/2026.
 Bibi: Use find followed by a keyword, for example: find book
 Bibi: Here is what you have on 21 Dec 2026:
 1. [D][ ] return book (by: 21 Dec 2026)
+```
+
+## Test 35: Report a completion command that changed nothing
+
+Aim: Confirm that marking a task that is already done, or reopening one that was
+never done, says so instead of reporting a change that did not happen, and that
+the task itself is still shown.
+
+### Input
+
+```text
+todo read book
+mark 1
+mark 1
+unmark 1
+unmark 1
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Task 1 done. Look at us getting things done.
+[T][X] read book
+Bibi: Task 1 was already done. Doing it twice won't count twice.
+[T][X] read book
+Bibi: We're not making progress, huh? Task 1 is open again.
+[T][ ] read book
+Bibi: Task 1 was never done, so it stays open.
+[T][ ] read book
 ```
 
 ## GUI checks

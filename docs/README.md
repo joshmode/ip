@@ -151,7 +151,9 @@ remove 2
 ```
 
 Numbers come from the most recent listing. `mark` ticks a task off, `unmark` reopens it,
-and `remove` takes it off the list for good.
+and `remove` takes it off the list for good. Marking a task that is already done, or
+reopening one that was never done, says so rather than reporting a change that did
+not happen.
 
 Sorting or removing a task can make numbers in older replies stale. Use `list`
 again before acting on an old entry. Confirmations show the affected task so you

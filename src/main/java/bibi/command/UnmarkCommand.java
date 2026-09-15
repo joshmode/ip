@@ -22,4 +22,9 @@ public class UnmarkCommand extends CompletionCommand {
     protected String describeChange(int taskNumber) {
         return "We're not making progress, huh? Task " + taskNumber + " is open again.";
     }
+
+    @Override
+    protected String describeUnchanged(int taskNumber) {
+        return "Task " + taskNumber + " was never done, so it stays open.";
+    }
 }
