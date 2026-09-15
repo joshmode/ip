@@ -1,12 +1,11 @@
 package bibi;
 
+import bibi.task.Task;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-
-import bibi.task.Task;
 
 /**
  * Handles everything Bibi shows to the user and reads back from them.
@@ -205,7 +204,7 @@ public class Ui {
      * updating one list rather than several.
      */
     public void showWelcome() {
-        showMessage("I'm Bibi. Alright, I'm here. What are we putting off today?");
+        showMessage("I'm Bibi. Alright, what did you wake me up for?");
         showMessage("Add work with todo, deadline or event.");
         showMessage("Type help to see everything else I can do.");
         showMessage("Dates go day first: 21/12/2026 or 21 Dec 2026 6 pm.");

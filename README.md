@@ -193,7 +193,7 @@ driven by hand for anything that changed it.
 
 | File | Origin |
 |---|---|
-| `src/main/resources/images/DaBibi.png` | Generated with **Google Gemini 3.8 Flash**, resized to 256×256 and otherwise unaltered |
+| `src/main/resources/images/DaBibi.png` | Taken from https://www.echoneon.com/product/mini-robot-neon-sign/, resized to 256×256 and otherwise unaltered |
 
 ### Compliance with the course reuse policy
 
