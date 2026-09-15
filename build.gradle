@@ -35,20 +35,23 @@ dependencies {
     // means the fat JAR built on one operating system still runs on the others;
     // naming only the platform it was built on is the usual reason a JAR works
     // for its author and for nobody else.
+    //
+    // One architecture per operating system, though: the two macOS builds use
+    // identical library names (libglass.dylib and the rest), so only the first
+    // of them survives packaging. Apple Silicon is the architecture the course
+    // advisory's JDK targets on macOS, so it is the one bundled; an Intel Mac
+    // runs the text interface, which needs no native libraries. The same holds
+    // for Linux, where the x86-64 build is the one named.
     implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'win'
-    implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'mac'
     implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'mac-aarch64'
     implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'linux'
     implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'win'
-    implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'mac'
     implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'mac-aarch64'
     implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'linux'
     implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'win'
-    implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'mac'
     implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'mac-aarch64'
     implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'linux'
     implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'win'
-    implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'mac'
     implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'mac-aarch64'
     implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'linux'
 
