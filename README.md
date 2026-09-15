@@ -193,7 +193,7 @@ driven by hand for anything that changed it.
 
 | File | Origin |
 |---|---|
-| `src/main/resources/images/DaBibi.png` | Generated with **Google Gemini 3.8 Flash**, then cropped to the head so it stays legible at the 22-pixel size the transcript draws it at |
+| `src/main/resources/images/DaBibi.png` | Generated with **Google Gemini 3.8 Flash**, resized to 256×256 and otherwise unaltered |
 
 ### Compliance with the course reuse policy
 
