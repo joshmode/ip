@@ -76,11 +76,11 @@ public final class Parser {
     private static final Pattern TO_MARKER = Pattern.compile("(?<!\\S)/to(?=\\s|[0-9]+(?:[./-]|\\s+[A-Za-z])|$)",
             Pattern.CASE_INSENSITIVE);
 
-    /** Matches a task number written as digits above zero, whatever its length. */
-    private static final Pattern DIGITS_ABOVE_ZERO = Pattern.compile("\\+?\\d+");
+    /** Matches digits with no sign or a leading plus, whatever their length. */
+    private static final Pattern UNSIGNED_DIGITS = Pattern.compile("\\+?\\d+");
 
-    /** Matches a task number written as negative digits, whatever its length. */
-    private static final Pattern DIGITS_BELOW_ONE = Pattern.compile("-\\d+");
+    /** Matches digits with a leading minus, whatever their length. */
+    private static final Pattern NEGATIVE_DIGITS = Pattern.compile("-\\d+");
 
     /**
      * Hides the constructor, because this class holds only static helpers and
@@ -357,10 +357,10 @@ public final class Parser {
             // A run of digits too long to fit an int is still a number, so
             // calling it "not a task number" would tell the user something
             // untrue. Which end it overflows decides which explanation fits.
-            if (DIGITS_BELOW_ONE.matcher(numberText).matches()) {
+            if (NEGATIVE_DIGITS.matcher(numberText).matches()) {
                 throw belowOneException(numberText, commandWord);
             }
-            if (DIGITS_ABOVE_ZERO.matcher(numberText).matches()) {
+            if (UNSIGNED_DIGITS.matcher(numberText).matches()) {
                 throw new BibiException("Task numbers do not go as high as " + numberText
                         + ". Use list to see the numbers. Use " + commandWord
                         + " <number>, for example: " + commandWord + " 1.");
