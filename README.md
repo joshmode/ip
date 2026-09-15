@@ -2,11 +2,11 @@
 
 [![Java CI](https://github.com/joshmode/ip/actions/workflows/gradle.yml/badge.svg)](https://github.com/joshmode/ip/actions/workflows/gradle.yml)
 
-Bibi is a small, dependable task keeper with a dry sense of humor.
+Bibi is your friendly local clanker! A small, dependable task keeper with a dry sense of humor.
 
 Log your ToDos, deadlines and events _simply_ and _safely_. Everything stays in a
 plain text file beside the app — nothing is uploaded, and nothing leaves your
-machine. Created as part of CS2103T 26/27.
+machine. Created as part of CS2103T 26/27 Sem 1.
 
 📖 **[Read the User Guide](https://joshmode.github.io/ip/)** — or see [`docs/README.md`](docs/README.md).
 
@@ -16,7 +16,7 @@ download it from the repo link.
 set up as below.
 add your tasks.
 let it manage your tasks for you 😉
-And it is FREE!
+And it is completely FREE! (yes, in this economy)
 
 ## Setting up in Intellij
 
@@ -161,20 +161,22 @@ java -cp "bibi.jar" bibi.Bibi
 [@joshmode](https://github.com/joshmode), who is the sole author of the work in
 the sense the course means: every design decision was made by the author, and
 every generated change was read, run and verified before it was committed.
+Tweaks were made where appropriate, and most baseline code was written by hand,
+with autocomplete/assistance to further develop ideas.
 
 The use was **widespread rather than localized**. It is therefore declared here,
 in full, rather than annotated next to individual lines — which is what the
 course reuse policy asks for when assistance is not confined to a few places.
-There is no part of the Java source that an assistant did not touch, so a
-per-file marker would be noise rather than information.
+The codebase was extensively parsed and/or altered by agentic AI, at the author's
+sole behest. 
 
 #### What the assistants were used for
 
 | Area | Extent of assistance |
 |---|---|
-| Java source | Drafting and refactoring across every increment, including the parser, the command classes, the task types, `Storage`, and the JavaFX interface |
+| Java source | Drafting and refactoring across every increment, including the parser, class division, `Storage`, and the JavaFX interface |
 | Tests | Writing the JUnit tests and the scripted console test plan, and diagnosing the failures they surfaced |
-| Documentation | This README, the user guide in `docs/`, commit messages and pull request descriptions |
+| Documentation | This README, the user guide in `docs/`, occasionally commit messages and pull request descriptions |
 | Review | Reviewing the code against the SE-EDU coding standard and the course rubric, and proposing the fixes that followed |
 
 #### What was not delegated
@@ -182,8 +184,9 @@ per-file marker would be noise rather than information.
 The product decisions were made by the author in conversation with the tools, not
 handed to them: what each command should do, how strict the input handling should
 be, what the error messages should say, how the window should look, and what
-Bibi's voice should be. Where an assistant proposed something that conflicted
-with an earlier decision, the earlier decision won.
+Bibi's voice should be. Assistant proposals and diffs were thoroughly checked prior
+to commit. Baseline code was written and developed by hand. All design decisions and 
+specifications are solely attributed to the author.
 
 Every change was verified before merging: `./gradlew checkstyleMain checkstyleTest
 test javadoc` clean, the scripted console tests passing, and the window opened and
@@ -202,7 +205,6 @@ Recorded explicitly so a reader can check each requirement against this file:
 | Requirement | How this project meets it |
 |---|---|
 | Widespread AI use is declared in the README, naming the tool, the user, and the extent | See **AI assistance** above: the tools, the author, and a per-area breakdown of what they did |
-| AI use confined to a few places is marked next to that code instead | Not applicable — the use here is widespread, so the declaration above replaces per-line markers |
 | Reused or adapted code is credited | The only external structure reused is the JavaFX interface layout, credited under **Course materials** below; no third-party source files are copied into this repository |
 | Third-party libraries are listed under Acknowledgements | See **Third-party libraries** above. All four are course-standard for this project; no library beyond them has been added |
 | Generated binaries are not committed | `build/` is git-ignored and no JAR is tracked; the runnable JAR is distributed through GitHub releases |
