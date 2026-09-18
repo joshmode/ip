@@ -138,7 +138,7 @@ The fat JAR bundles JavaFX's native libraries for Windows (x86-64), Linux
 It is one architecture per operating system by necessity: the two macOS builds
 of JavaFX ship their libraries under identical filenames, so only one set can
 survive packaging. Apple Silicon is the one bundled, because it is what the JDK
-in the course's macOS advisory targets, and since Intel Macs are largely deprecated.
+in the course's macOS advisory targets, and since Intel Macs are discontinued.
 
 On an Intel Mac, or on a Linux machine that is not x86-64, the window will not
 open. Use the text interface, which needs no native libraries at all:
