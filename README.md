@@ -154,7 +154,7 @@ classifier in `build.gradle` for `mac`, or `linux` for `linux-aarch64`, and run
 ## Acknowledgements
 
 ### Third-party libraries
-Special thanks to the providers of the following Open-Source softwares.
+Special thanks to the providers of the following Open-Source software.
 
 | Library | Used for |
 |---------|----------|
