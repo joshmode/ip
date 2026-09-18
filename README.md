@@ -197,7 +197,7 @@ to commit. Baseline code was written and developed by hand. All design decisions
 structures and specifications are solely attributed to the author.
 
 Every change was verified before merging: `./gradlew checkstyleMain checkstyleTest
-test javadoc` clean, the scripted console tests passing, and smoked tested prior to
+test javadoc` clean, the scripted console tests passing, and smoke tested thoroughly prior to
 commit.
 
 ### Images
