@@ -1,10 +1,5 @@
 package bibi;
 
-import java.time.LocalDate;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import bibi.command.AddCommand;
 import bibi.command.Command;
 import bibi.command.DeleteCommand;
@@ -22,6 +17,10 @@ import bibi.task.Deadline;
 import bibi.task.Event;
 import bibi.task.TaskDateTime;
 import bibi.task.Todo;
+import java.time.LocalDate;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Turns a line of typed text into the {@link Command} it asks for.
@@ -137,7 +136,7 @@ public final class Parser {
             case "event" -> new AddCommand(parseEvent(argument));
             case "mark" -> new MarkCommand(parseTaskNumber(argument, "mark"));
             case "unmark" -> new UnmarkCommand(parseTaskNumber(argument, "unmark"));
-            case "remove" -> new DeleteCommand(parseTaskNumber(argument, "remove"));
+            case "remove", "delete" -> new DeleteCommand(parseTaskNumber(argument, commandWord));
             case "find" -> new FindCommand(requireKeyword(collapseSpaces(argument)));
             case "on" -> new OnCommand(parseQueryDate(argument));
             // Pointing at help, rather than listing the commands here as well,

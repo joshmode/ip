@@ -68,8 +68,8 @@ Added. Remembering it is my job. Doing it is still yours:
 Your list holds 1 task.
 ```
 
-Each kind gets its own confirmation, so you can tell at a glance which one you
-just added — a ToDo waits on you alone, a deadline runs out, and an event happens
+Each task type gets its own confirmation, so you can tell at a glance which one you
+just added — a ToDo waits on you to stop procrastinating, a deadline runs out, and an event happens
 whether or not you are ready for it.
 
 ### Writing dates
@@ -147,11 +147,11 @@ away without running `list` first.
 ```
 mark 2
 unmark 2
-remove 2
+remove 2 OR delete 2
 ```
 
 Numbers come from the most recent listing. `mark` ticks a task off, `unmark` reopens it,
-and `remove` takes it off the list for good. Marking a task that is already done, or
+and `remove`/`delete` takes it off the list for good. Marking a task that is already done, or
 reopening one that was never done, says so rather than reporting a change that did
 not happen.
 
@@ -231,7 +231,7 @@ in amber, with a rule down the left edge, so you can spot them when scrolling ba
 | `on` | shows what falls on a date | `on 18/9/2026` |
 | `mark` | ticks a task off | `mark 2` |
 | `unmark` | reopens a task | `unmark 2` |
-| `remove` | deletes a task | `remove 2` |
+| `remove`|`delete` | deletes a task | `remove 2` |
 | `undo` | restores the most recent change once, in this session | `undo` |
 | `help` | lists the commands; `--examples` adds examples and date formats | `help --examples` |
 | `bye` | closes Bibi | `bye` |

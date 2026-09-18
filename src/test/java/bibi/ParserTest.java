@@ -76,6 +76,7 @@ public class ParserTest {
         assertInstanceOf(MarkCommand.class, Parser.parse("mark 2"));
         assertInstanceOf(UnmarkCommand.class, Parser.parse("unmark 2"));
         assertInstanceOf(DeleteCommand.class, Parser.parse("remove 2"));
+        assertInstanceOf(DeleteCommand.class, Parser.parse("delete 2"));
     }
 
     @Test
@@ -176,9 +177,14 @@ public class ParserTest {
     }
 
     @Test
-    public void parse_taskNumberMissing_exceptionThrown() {
-        BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("remove"));
-        assertTrue(thrown.getMessage().contains("Use remove followed by a task number"));
+    public void parse_taskNumberMissing_exceptionNamesTheWordTyped() {
+        // remove and delete are one command, so the message has to echo the word
+        // the user actually typed. 
+        BibiException afterRemove = assertThrows(BibiException.class, () -> Parser.parse("remove"));
+        assertTrue(afterRemove.getMessage().contains("Use remove followed by a task number"));
+
+        BibiException afterDelete = assertThrows(BibiException.class, () -> Parser.parse("delete"));
+        assertTrue(afterDelete.getMessage().contains("Use delete followed by a task number"));
     }
 
     @Test
