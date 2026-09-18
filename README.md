@@ -2,7 +2,7 @@
 
 [![Java CI](https://github.com/joshmode/ip/actions/workflows/gradle.yml/badge.svg)](https://github.com/joshmode/ip/actions/workflows/gradle.yml)
 
-Bibi is your (not so) friendly local clanker! A small, QUICK and dependable task keeper with a dry sense of humor, 
+Bibi is your (not so) friendly local clanker! A small, QUICK and dependable task keeper with a dry sense of humor,
 borne in a post-apocalyptic cyberpunk world.
 
 Log your ToDos, deadlines and events _simply_ and _safely_. Everything stays in a
@@ -193,7 +193,7 @@ The product decisions were made by the author in conversation with the tools, no
 handed to them: what each command should do, how strict the input handling should
 be, what the error messages should say, how the window should look, and what
 Bibi's voice should be. Assistant proposals and diffs were thoroughly checked prior
-to commit. Baseline code was written and developed by hand. All design decisions, 
+to commit. Baseline code was written and developed by hand. All design decisions,
 structures and specifications are solely attributed to the author.
 
 Every change was verified before merging: `./gradlew checkstyleMain checkstyleTest
