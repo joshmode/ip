@@ -2,11 +2,12 @@
 
 [![Java CI](https://github.com/joshmode/ip/actions/workflows/gradle.yml/badge.svg)](https://github.com/joshmode/ip/actions/workflows/gradle.yml)
 
-Bibi is your friendly local clanker! A small, dependable task keeper with a dry sense of humor.
+Bibi is your (not so) friendly local clanker! A small, QUICK and dependable task keeper with a dry sense of humor, 
+borne in a post-apocalyptic cyberpunk world.
 
 Log your ToDos, deadlines and events _simply_ and _safely_. Everything stays in a
-plain text file beside the app — nothing is uploaded, and nothing leaves your
-machine. Created as part of CS2103T 26/27 Sem 1.
+plaintext file beside the app: nothing is uploaded, and nothing leaves your
+machine. Your plans, private. Created as part of CS2103T 26/27 Sem 1.
 
 📖 **[Read the User Guide](https://joshmode.github.io/ip/)** — or see [`docs/README.md`](docs/README.md).
 
@@ -16,14 +17,15 @@ download it from releases.
 double click the downloaded file.
 add your tasks.
 let it manage your tasks for you 😉
-And it is completely FREE! (yes, in this economy)
 
-## Setting up in Intellij (for the old-fashioned)
+and it is completely FREE! (yes, in this economy)
 
-Prerequisites: JDK 25, update Intellij to the most recent version.
+## Setting up in IntelliJ (for the old-fashioned)
 
-1. Open Intellij (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
-2. Open the project into Intellij as follows:
+Prerequisites: JDK 25, update IntelliJ to the most recent version.
+
+1. Open IntelliJ (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
+2. Open the project into IntelliJ as follows:
    1. Click `Open`.
    2. Select the project directory, and click `OK`.
    3. If there are any further prompts, accept the defaults.
@@ -136,7 +138,7 @@ The fat JAR bundles JavaFX's native libraries for Windows (x86-64), Linux
 It is one architecture per operating system by necessity: the two macOS builds
 of JavaFX ship their libraries under identical filenames, so only one set can
 survive packaging. Apple Silicon is the one bundled, because it is what the JDK
-in the course's macOS advisory targets.
+in the course's macOS advisory targets, and since Intel Macs are largely deprecated.
 
 On an Intel Mac, or on a Linux machine that is not x86-64, the window will not
 open. Use the text interface, which needs no native libraries at all:
@@ -152,6 +154,7 @@ classifier in `build.gradle` for `mac`, or `linux` for `linux-aarch64`, and run
 ## Acknowledgements
 
 ### Third-party libraries
+Special thanks to the providers of the following Open-Source softwares.
 
 | Library | Used for |
 |---------|----------|
@@ -168,11 +171,10 @@ classifier in `build.gradle` for `mac`, or `linux` for `linux-aarch64`, and run
 the sense the course means: every design decision was made by the author, and
 every generated change was read, run and verified before it was committed.
 Tweaks were made where appropriate, and most baseline code was written by hand,
-with autocomplete/assistance to further develop ideas.
+with IDE autocomplete and/or AI assistance to further develop ideas.
 
 The use was **widespread rather than localized**. It is therefore declared here,
-in full, rather than annotated next to individual lines — which is what the
-course reuse policy asks for when assistance is not confined to a few places.
+in full, rather than annotated next to individual lines, per course policy.
 The codebase was extensively parsed and/or altered by agentic AI, at the author's
 sole behest.
 
@@ -191,12 +193,12 @@ The product decisions were made by the author in conversation with the tools, no
 handed to them: what each command should do, how strict the input handling should
 be, what the error messages should say, how the window should look, and what
 Bibi's voice should be. Assistant proposals and diffs were thoroughly checked prior
-to commit. Baseline code was written and developed by hand. All design decisions and
-specifications are solely attributed to the author.
+to commit. Baseline code was written and developed by hand. All design decisions, 
+structures and specifications are solely attributed to the author.
 
 Every change was verified before merging: `./gradlew checkstyleMain checkstyleTest
-test javadoc` clean, the scripted console tests passing, and the window opened and
-driven by hand for anything that changed it.
+test javadoc` clean, the scripted console tests passing, and smoked tested prior to
+commit.
 
 ### Images
 
@@ -222,4 +224,3 @@ The structure of the JavaFX interface follows the
 [JavaFX tutorial @SE-EDU](https://se-education.org/guides/tutorials/javaFx.html), and
 the Checkstyle rules are the ones published with
 [addressbook-level3](https://github.com/se-edu/addressbook-level3/tree/master/config/checkstyle).
-Crediting course materials is not required, but is done here for completeness.
