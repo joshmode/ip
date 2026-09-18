@@ -69,8 +69,8 @@ Your list holds 1 task.
 ```
 
 Each task type gets its own confirmation, so you can tell at a glance which one you
-just added — a ToDo waits on you to stop procrastinating, a deadline runs out, and an event happens
-whether or not you are ready for it.
+just added — a ToDo waits on you to stop procrastinating, a deadline runs out, and
+an event happens whether or not you are ready for it.
 
 ### Writing dates
 
@@ -147,13 +147,15 @@ away without running `list` first.
 ```
 mark 2
 unmark 2
-remove 2 OR delete 2
+remove 2
+delete 2
 ```
 
-Numbers come from the most recent listing. `mark` ticks a task off, `unmark` reopens it,
-and `remove`/`delete` takes it off the list for good. Marking a task that is already done, or
-reopening one that was never done, says so rather than reporting a change that did
-not happen.
+Numbers come from the most recent listing. `mark` ticks a task off, `unmark` reopens
+it, and `remove` takes it off the list for good. `delete` is the same command under
+another name, so use whichever comes to mind. Marking a task that is already done,
+or reopening one that was never done, says so rather than reporting a change that
+did not happen.
 
 Sorting or removing a task can make numbers in older replies stale. Use `list`
 again before acting on an old entry. Confirmations show the affected task so you
@@ -231,13 +233,13 @@ in amber, with a rule down the left edge, so you can spot them when scrolling ba
 | `on` | shows what falls on a date | `on 18/9/2026` |
 | `mark` | ticks a task off | `mark 2` |
 | `unmark` | reopens a task | `unmark 2` |
-| `remove`|`delete` | deletes a task | `remove 2` |
+| `remove` or `delete` | deletes a task | `delete 2` |
 | `undo` | restores the most recent change once, in this session | `undo` |
 | `help` | lists the commands; `--examples` adds examples and date formats | `help --examples` |
 | `bye` | closes Bibi | `bye` |
 | `hi`, `hello`, `hey`, `thanks` | replies briefly without changing tasks | `hello!` |
 
-## Running without the window, for the old-fashioned.
+## Running without the window, for the old-fashioned
 
 Bibi also has a text-only interface, which is what its automated tests drive:
 
