@@ -1,7 +1,7 @@
 # Bibi User Guide
 
 Bibi keeps track of what needs doing, with a dry sense of humor and a dependable memory.
-Tell it what needs doing, and it keeps the list between sessions. Doing it is still yours.
+Tell it what you need done, and it keeps track between sessions. Doing it, however, is still your job ;)
 
 ![Bibi in use](Ui.png)
 
@@ -9,7 +9,7 @@ Tell it what needs doing, and it keeps the list between sessions. Doing it is st
 
 1. Make sure you have **Java 25** installed.
 2. Download `bibi.jar` from the [latest release](https://github.com/joshmode/ip/releases).
-3. Put it in a folder of its own, then run it:
+3. Put it in a folder of its own, and double click on the file. Or run it:
 
 ```
 java -jar bibi.jar
@@ -237,7 +237,7 @@ in amber, with a rule down the left edge, so you can spot them when scrolling ba
 | `bye` | closes Bibi | `bye` |
 | `hi`, `hello`, `hey`, `thanks` | replies briefly without changing tasks | `hello!` |
 
-## Running without the window
+## Running without the window, for the old-fashioned.
 
 Bibi also has a text-only interface, which is what its automated tests drive:
 
@@ -245,4 +245,4 @@ Bibi also has a text-only interface, which is what its automated tests drive:
 java -cp bibi.jar bibi.Bibi
 ```
 
-Same chatbot, same save file — only the last step differs.
+Same chatbot, same save file, but on a command line interface, the good old-fashioned way.
