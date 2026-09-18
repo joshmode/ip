@@ -411,7 +411,7 @@ Bibi: Usage: <command> [arguments]
   Update
     mark <number>
     unmark <number>
-    remove <number>
+    remove|delete <number>
     undo
   Session
     help [--examples]
@@ -455,7 +455,7 @@ Bibi: Dates:
   Existing yyyy-MM-dd input still works. Examples: 1/2/2026, 21 December 2026, 21/12/26.
   Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.
 Bibi: Task numbers:
-  Numbers come from the full list, including find/on results. Sort and remove can change them;
+  Numbers come from the full list, including find/on results. Sort and remove/delete change them;
   use list for current numbers before acting on an older reply.
   undo restores the last task change once this session; there is no redo.
 Bibi: Keyboard, in the window:
@@ -1067,6 +1067,39 @@ Bibi: We're not making progress, huh? Task 1 is open again.
 [T][ ] read book
 Bibi: Task 1 was never done, so it stays open.
 [T][ ] read book
+```
+
+## Test 36: Remove a task with the delete alias
+
+Aim: Confirm that `delete` does the same work as `remove`, in any capitalization,
+and that when the number is missing or unreadable the reply names the word that
+was actually typed rather than the other spelling of the same command.
+
+### Input
+
+```text
+todo read book
+todo join sports club
+delete 1
+list
+DELETE 1
+delete
+delete two
+bye
+```
+
+### Expected output
+
+```text
+Bibi: Eeeeesh, another one bites the dust. Task 1 is off the list:
+  [T][ ] read book
+Your list holds 1 task.
+Bibi: Here is everything on your list:
+1. [T][ ] join sports club
+Bibi: Eeeeesh, another one bites the dust. Task 1 is off the list:
+  [T][ ] join sports club
+Bibi: Use delete followed by a task number, for example: delete 2
+Bibi: 'two' is not a task number. Use delete followed by one number, for example: delete 2
 ```
 
 ## GUI checks

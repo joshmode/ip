@@ -179,12 +179,23 @@ public class ParserTest {
     @Test
     public void parse_taskNumberMissing_exceptionNamesTheWordTyped() {
         // remove and delete are one command, so the message has to echo the word
-        // the user actually typed. 
+        // the user actually typed. Naming the other one points them at a command
+        // they did not use, which is worse than saying nothing.
         BibiException afterRemove = assertThrows(BibiException.class, () -> Parser.parse("remove"));
         assertTrue(afterRemove.getMessage().contains("Use remove followed by a task number"));
+        assertFalse(afterRemove.getMessage().contains("delete"));
 
         BibiException afterDelete = assertThrows(BibiException.class, () -> Parser.parse("delete"));
         assertTrue(afterDelete.getMessage().contains("Use delete followed by a task number"));
+        assertFalse(afterDelete.getMessage().contains("remove"));
+    }
+
+    @Test
+    public void parse_taskNumberUnreadable_exceptionNamesTheWordTyped() {
+        // A different branch of parseTaskNumber from the test above, worded
+        // "one number" rather than "a task number", so the two do not overlap.
+        BibiException thrown = assertThrows(BibiException.class, () -> Parser.parse("delete two"));
+        assertTrue(thrown.getMessage().contains("Use delete followed by one number"));
     }
 
     @Test
