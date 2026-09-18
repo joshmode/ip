@@ -44,11 +44,11 @@ is optional: `deadline return book /by21/12/2026` also works.
 
 ## Adding things to do
 
-Bibi keeps three kinds of task.
+Bibi keeps three kinds of tasks.
 
 | Kind | What it is | Command |
 |------|------------|---------|
-| ToDo | something with no particular date | `todo <description>` |
+| To Do | something with no particular date | `todo <description>` |
 | Deadline | something due by a date | `deadline <description> /by <when>` |
 | Event | something that runs from one time to another | `event <description> /from <start> /to <end>` |
 
@@ -60,7 +60,7 @@ deadline submit CS2103T iP /by 18/9/2026 2359
 event tutorial /from 15/9/2026 14:00 /to 15/9/2026 15:00
 ```
 
-Bibi confirms each one and tells you how long your list is:
+Bibi validates each one and tells you how many tasks you have:
 
 ```
 Added. Remembering it is my job. Doing it is still yours:
@@ -69,12 +69,12 @@ Your list holds 1 task.
 ```
 
 Each task type gets its own confirmation, so you can tell at a glance which one you
-just added — a ToDo waits on you to stop procrastinating, a deadline runs out, and
-an event happens whether or not you are ready for it.
+just added — a ToDo waits on you to stop procrastinating, a deadline runs the clock down,
+and an event happens whether or not you are ready for it.
 
 ### Writing dates
 
-Dates are real dates, not free text, which is what lets Bibi sort them and search
+Dates are parsed as real dates, not free text, which is what lets Bibi sort them and search
 them by day.
 
 | Form | Example |
@@ -123,7 +123,7 @@ sort
 ```
 
 Sorts everything with a date into chronological order, earliest first, and puts undated
-ToDos at the end — a ToDo has no particular moment to be ready for.
+ToDos at the end — a ToDo has no particular deadline to be ready for.
 
 The new order is **kept**, not just displayed. That matters because the numbers you type
 into `mark`, `unmark` and `remove` come from the list, so an order that vanished when you
