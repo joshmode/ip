@@ -1,11 +1,12 @@
 package bibi;
 
-import bibi.task.Task;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+
+import bibi.task.Task;
 
 /**
  * Handles everything Bibi shows to the user and reads back from them.
@@ -238,7 +239,7 @@ public class Ui {
                 "Update",
                 "  mark <number>                                mark a task done",
                 "  unmark <number>                              reopen a task",
-                "  remove|delete <number>                              delete a task",
+                "  remove|delete <number>                       delete a task",
                 "  undo                                         reverse the last task change",
                 "Session",
                 "  help [--examples]                            show this reference",
@@ -273,7 +274,7 @@ public class Ui {
                 "Optional time: 1800, 18:00, 6 pm or 6:00 pm. Display: 21 Dec 2026 6:00PM.");
         showMessage("Task numbers:");
         showDetails(
-                "Numbers come from the full list, including find/on results. Sort and remove/delete can change the numbers;",
+                "Numbers come from the full list, including find/on results. Sort and remove/delete change them;",
                 "use list for current numbers before acting on an older reply.",
                 "undo restores the last task change once this session; there is no redo.");
         showMessage("Keyboard, in the window:");

@@ -135,8 +135,11 @@ public class UiTest {
         ui.showHelp();
 
         String text = ui.takeCapturedReply().text();
+        // "remove|delete" is the help entry verbatim, so a bare "delete" in the
+        // description below it cannot satisfy this on its own.
         for (String command : new String[] {"todo", "deadline", "event", "list", "sort",
-            "find", "on", "mark", "unmark", "remove", "delete", "undo", "help", "bye", "hi", "hello", "hey", "thanks"}) {
+            "find", "on", "mark", "unmark", "remove|delete", "undo", "help", "bye",
+            "hi", "hello", "hey", "thanks"}) {
             assertTrue(text.contains(command), "help omitted " + command);
         }
     }
@@ -263,7 +266,7 @@ public class UiTest {
         assertTrue(text.contains("d/M/yy uses 00-99 for 2000-2099."));
         assertTrue(text.contains("Numeric dates are always day first."));
         assertTrue(text.contains("Existing yyyy-MM-dd input still works."));
-        assertTrue(text.contains("Sort and remove can change them"));
+        assertTrue(text.contains("Sort and remove/delete change them"));
         assertTrue(text.contains("Up/Down recall commands without sending"));
         assertTrue(text.contains("restores your draft"));
         assertTrue(text.contains("Ctrl+C (Cmd+C on macOS)"));

@@ -131,7 +131,7 @@ public class BibiTest {
         // would be a silently dropped argument rather than a missing call.
         for (String commandWord : new String[] {
             "todo", "deadline", "event", "list", "sort", "find", "on", "mark", "unmark",
-            "remove", "delete", "undo", "help", "bye", "hi", "hello", "hey", "thanks"}) {
+            "remove|delete", "undo", "help", "bye", "hi", "hello", "hey", "thanks"}) {
             assertTrue(response.contains(commandWord), "help omitted " + commandWord);
         }
     }
