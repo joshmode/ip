@@ -111,9 +111,24 @@ public final class Parser {
         // between the command word and its argument is read as the user meant
         // it, rather than as an unknown command.
         String[] parts = input.split("\\s+", 2);
-        String commandWord = parts[0].toLowerCase(Locale.ROOT);
         String argument = parts.length > 1 ? parts[1].strip() : "";
+        return toCommand(parts[0], argument);
+    }
 
+    /**
+     * Builds the command named by one command word.
+     *
+     * <p>Kept apart from {@link #parse} so that reading a line and choosing a
+     * command stay at their own levels of detail. Everything here is one entry
+     * per command word; the work of splitting the line is above.
+     *
+     * @param typedWord the command word as the user typed it, in their own case
+     * @param argument whatever followed the command word, already stripped
+     * @return the command that word asks for
+     * @throws BibiException if the word is unknown, or its argument malformed
+     */
+    private static Command toCommand(String typedWord, String argument) throws BibiException {
+        String commandWord = typedWord.toLowerCase(Locale.ROOT);
         return switch (commandWord) {
             case "bye" -> {
                 requireNoArgument(argument, "bye");
@@ -142,7 +157,7 @@ public final class Parser {
             case "on" -> new OnCommand(parseQueryDate(argument));
             // Pointing at help, rather than listing the commands here as well,
             // keeps the full list in one place.
-            default -> throw new BibiException("I don't recognize '" + parts[0] + "'. "
+            default -> throw new BibiException("I don't recognize '" + typedWord + "'. "
                     + "Check the command word, or type help for examples.");
         };
     }
